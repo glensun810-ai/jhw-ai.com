@@ -1,0 +1,38 @@
+# Sensitive files
+.env
+*.db
+database/*.db
+
+# SSL certificates
+SSL/
+*.crt
+*.key
+*.pem
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+*.egg-info/
+
+# Logs
+*.log
+logs/
+
+# IDE / Editor
+.vscode/
+.idea/
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Deployment reports (contain server details)
+*部署报告*
+*完成报告*
+*检查清单*
+
+# Backups
+*.bak
+backups/

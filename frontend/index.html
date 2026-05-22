@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>进化湾® | AI 产业集群服务平台 — 从技术到商业价值的全链路加速器</title>
+    <meta name="description" content="进化湾®由深圳云程企航商务服务有限公司与深圳市云协同创新数据空间服务有限公司联合打造，立足深圳南山，为企业与创业者提供AI营销、AI视频、创业孵化、人才认证等端到端产业服务。">
+    <meta name="keywords" content="进化湾,AI产业集群,AI营销,GEO优化,AI视频,AI创业孵化,深圳南山,AI认证,人工智能商业化">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; color: #2c3e50; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        
+        /* 头部导航 */
+        header { background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); box-shadow: 0 1px 20px rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #f0f0f0; }
+        header .container { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; }
+        .logo { font-size: 24px; font-weight: 700; color: #1a1a2e; letter-spacing: 0.5px; }
+        .logo span { color: #0f4c81; }
+        .logo .reg { font-size: 9px; vertical-align: super; color: #999; font-weight: 400; }
+        .nav-links { display: flex; gap: 36px; align-items: center; }
+        .nav-links a { color: #555; text-decoration: none; font-weight: 500; font-size: 15px; transition: color 0.25s; position: relative; }
+        .nav-links a:hover { color: #0f4c81; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #0f4c81; transition: width 0.3s; }
+        .nav-links a:hover::after { width: 100%; }
+        .contact-btn { background: #0f4c81; color: #fff; padding: 10px 28px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 15px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(15,76,129,0.2); }
+        .contact-btn:hover { background: #0a3d62; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,76,129,0.3); }
+        
+        /* Hero 区域 */
+        .hero { background: linear-gradient(160deg, #0a0a1a 0%, #16213e 40%, #0f4c81 100%); color: #fff; padding: 120px 0 100px; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.03" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,165.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom center; background-size: cover; pointer-events: none; }
+        .hero h1 { font-size: 3.2em; margin-bottom: 24px; line-height: 1.25; font-weight: 700; letter-spacing: -0.5px; }
+        .hero .subtitle { font-size: 1.35em; margin-bottom: 16px; opacity: 0.95; max-width: 820px; margin-left: auto; margin-right: auto; font-weight: 300; }
+        .hero .tagline { font-size: 1.05em; color: rgba(255,255,255,0.7); margin-bottom: 48px; letter-spacing: 2px; text-transform: uppercase; }
+        .hero .cta-group { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .hero .cta-btn { padding: 16px 48px; border-radius: 6px; text-decoration: none; font-size: 1.1em; font-weight: 600; transition: all 0.3s; }
+        .hero .cta-primary { background: #fff; color: #0f4c81; box-shadow: 0 8px 30px rgba(255,255,255,0.2); }
+        .hero .cta-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,255,255,0.3); }
+        .hero .cta-secondary { background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); color: #fff; backdrop-filter: blur(4px); }
+        .hero .cta-secondary:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
+        
+        /* 核心定位 */
+        .positioning { padding: 100px 0; background: #fafbfc; text-align: center; }
+        .positioning .label { color: #0f4c81; font-size: 14px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 16px; }
+        .positioning h2 { font-size: 2.4em; margin-bottom: 20px; color: #1a1a2e; font-weight: 700; line-height: 1.3; }
+        .positioning .divider { width: 60px; height: 4px; background: linear-gradient(90deg, #0f4c81, #16213e); margin: 0 auto 32px; border-radius: 2px; }
+        .positioning .main-text { font-size: 1.2em; color: #555; max-width: 920px; margin: 0 auto 48px; line-height: 1.9; }
+        .positioning .operators { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+        .positioning .operator { background: #fff; padding: 32px 48px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.06); border: 1px solid #eee; transition: transform 0.3s; }
+        .positioning .operator:hover { transform: translateY(-4px); }
+        .positioning .operator strong { color: #0f4c81; display: block; margin-bottom: 8px; font-size: 1.05em; }
+        .positioning .operator span { color: #888; font-size: 0.95em; }
+        
+        /* 价值主张 */
+        .value-prop { padding: 100px 0; background: #fff; }
+        .value-prop .container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        .value-item { text-align: center; padding: 20px; }
+        .value-item .icon { font-size: 3em; margin-bottom: 20px; display: block; }
+        .value-item h3 { color: #1a1a2e; margin-bottom: 16px; font-size: 1.3em; font-weight: 600; }
+        .value-item p { color: #666; line-height: 1.8; }
+        
+        /* 服务矩阵 */
+        .services { padding: 100px 0; background: #fafbfc; }
+        .services .section-label { color: #0f4c81; font-size: 14px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; text-align: center; margin-bottom: 12px; }
+        .services h2 { text-align: center; font-size: 2.4em; margin-bottom: 16px; color: #1a1a2e; font-weight: 700; }
+        .services .section-subtitle { text-align: center; color: #666; margin-bottom: 60px; font-size: 1.15em; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 32px; }
+        .service-card { background: #fff; border-radius: 12px; padding: 40px 36px; box-shadow: 0 4px 24px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: all 0.35s; position: relative; overflow: hidden; }
+        .service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #0f4c81, #16213e); transform: scaleX(0); transition: transform 0.35s; }
+        .service-card:hover::before { transform: scaleX(1); }
+        .service-card:hover { transform: translateY(-8px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+        .service-card .icon { font-size: 2.8em; margin-bottom: 20px; display: block; }
+        .service-card h3 { color: #1a1a2e; margin-bottom: 12px; font-size: 1.4em; font-weight: 600; }
+        .service-card .desc { color: #666; margin-bottom: 24px; line-height: 1.8; font-size: 0.95em; }
+        .service-card ul { list-style: none; padding-left: 0; }
+        .service-card ul li { padding: 10px 0; padding-left: 28px; position: relative; color: #555; font-size: 0.95em; border-bottom: 1px solid #f8f8f8; }
+        .service-card ul li:last-child { border-bottom: none; }
+        .service-card ul li:before { content: "✓"; color: #27ae60; position: absolute; left: 0; font-weight: bold; font-size: 1.1em; }
+        .service-card .contact-link { display: inline-block; margin-top: 24px; color: #0f4c81; text-decoration: none; font-weight: 600; font-size: 0.95em; transition: all 0.3s; }
+        .service-card .contact-link:hover { letter-spacing: 1px; }
+        
+        /* 线下空间 */
+        .space { padding: 100px 0; background: linear-gradient(160deg, #1a1a2e, #16213e); color: #fff; }
+        .space .section-label { color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; text-align: center; margin-bottom: 12px; }
+        .space h2 { text-align: center; font-size: 2.4em; margin-bottom: 16px; font-weight: 700; }
+        .space .section-subtitle { text-align: center; color: rgba(255,255,255,0.6); margin-bottom: 60px; font-size: 1.15em; }
+        .space-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; }
+        .space-feature { background: rgba(255,255,255,0.06); padding: 32px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); transition: all 0.3s; }
+        .space-feature:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); }
+        .space-feature h4 { color: #fff; margin-bottom: 16px; font-size: 1.2em; font-weight: 600; }
+        .space-feature p { color: rgba(255,255,255,0.7); line-height: 1.8; font-size: 0.95em; }
+        
+        /* 合作机构 */
+        .partners { padding: 100px 0; background: #fff; }
+        .partners .section-label { color: #0f4c81; font-size: 14px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; text-align: center; margin-bottom: 12px; }
+        .partners h2 { text-align: center; font-size: 2.4em; margin-bottom: 16px; color: #1a1a2e; font-weight: 700; }
+        .partners .section-subtitle { text-align: center; color: #666; margin-bottom: 60px; font-size: 1.15em; }
+        .partner-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; text-align: center; }
+        .partner-item { background: #fafbfc; padding: 36px 24px; border-radius: 12px; color: #555; font-weight: 500; border: 1px solid #f0f0f0; transition: all 0.3s; }
+        .partner-item:hover { background: #f0f4f8; transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+        
+        /* 需求表单 */
+        .form-section { padding: 100px 0; background: #fafbfc; }
+        .form-section .section-label { color: #0f4c81; font-size: 14px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; text-align: center; margin-bottom: 12px; }
+        .form-section h2 { text-align: center; font-size: 2.4em; margin-bottom: 16px; color: #1a1a2e; font-weight: 700; }
+        .form-section .section-subtitle { text-align: center; color: #666; margin-bottom: 60px; font-size: 1.15em; max-width: 700px; margin-left: auto; margin-right: auto; }
+        .form-container { max-width: 720px; margin: 0 auto; background: #fff; padding: 60px; border-radius: 16px; box-shadow: 0 8px 40px rgba(0,0,0,0.06); border: 1px solid #f0f0f0; }
+        .form-group { margin-bottom: 28px; }
+        .form-group label { display: block; margin-bottom: 10px; font-weight: 600; color: #333; font-size: 0.95em; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px 18px; border: 2px solid #eee; border-radius: 8px; font-size: 1em; font-family: inherit; transition: all 0.3s; background: #fafbfc; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #0f4c81; background: #fff; box-shadow: 0 0 0 4px rgba(15,76,129,0.1); }
+        .form-group input.error, .form-group select.error, .form-group textarea.error { border-color: #e74c3c; background: #fff5f5; }
+        .form-group input.error:focus, .form-group select.error:focus, .form-group textarea.error:focus { border-color: #e74c3c; box-shadow: 0 0 0 4px rgba(231,76,60,0.1); }
+        .form-group textarea { height: 130px; resize: vertical; }
+        .error-message { color: #e74c3c; font-size: 0.85em; margin-top: 6px; display: none; align-items: center; gap: 4px; }
+        .error-message.show { display: flex; }
+        .error-message::before { content: '⚠'; font-size: 0.9em; }
+        .form-message { padding: 16px 20px; border-radius: 10px; margin-bottom: 24px; display: none; font-size: 0.95em; line-height: 1.6; }
+        .form-message.show { display: block; }
+        .form-message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .form-message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .submit-btn { background: linear-gradient(135deg, #0f4c81, #16213e); color: #fff; padding: 18px 60px; border: none; border-radius: 8px; font-size: 1.1em; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s; box-shadow: 0 8px 24px rgba(15,76,129,0.3); }
+        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(15,76,129,0.4); }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .form-note { text-align: center; margin-top: 28px; color: #888; font-size: 0.95em; }
+        .form-note a { color: #0f4c81; text-decoration: none; font-weight: 600; }
+        .form-note a:hover { text-decoration: underline; }
+        
+        /* 页脚 */
+        footer { background: #1a1a2e; color: #aaa; padding: 80px 0 40px; }
+        footer .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 60px; }
+        footer h4 { color: #fff; margin-bottom: 24px; font-size: 1.1em; font-weight: 600; }
+        footer p { line-height: 1.9; font-size: 0.95em; }
+        footer a { color: #ccc; text-decoration: none; transition: color 0.3s; }
+        footer a:hover { color: #fff; }
+        footer .wechat-info { text-align: center; padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 40px; }
+        footer .wechat-info p { margin-bottom: 20px; color: #ccc; }
+        footer .wechat-qr { width: 160px; height: 160px; background: #fff; margin: 0 auto 20px; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        footer .wechat-qr img { width: 100%; height: 100%; object-fit: cover; }
+        footer .copyright { text-align: center; font-size: 0.9em; opacity: 0.6; }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex !important;
+            }
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: #fff;
+                flex-direction: column;
+                padding: 80px 30px 30px;
+                box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+                transition: right 0.3s ease;
+                z-index: 1000;
+            }
+            .nav-links.active {
+                right: 0;
+            }
+            .nav-links a {
+                padding: 15px 0;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 1.1em;
+            }
+            .contact-btn {
+                display: none;
+            }
+            .hero h1 { font-size: 2.2em; }
+            .hero .subtitle { font-size: 1.1em; }
+            .service-grid {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                gap: 16px;
+                padding-bottom: 20px;
+                scrollbar-width: none; /* Firefox */
+            }
+            .service-grid::-webkit-scrollbar {
+                display: none; /* Chrome, Safari */
+            }
+            .service-card {
+                flex: 0 0 85%;
+                scroll-snap-align: start;
+                min-width: 280px;
+            }
+            .nav-links { display: none; }
+            .form-container { padding: 36px 24px; }
+            footer .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+            .value-prop .container { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .service-card {
+                flex: 0 0 90%;
+                min-width: 260px;
+            }
+        }
+        
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f0f0f0;
+            border-top-color: #0f4c81;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面加载动画 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-spinner"></div>
+    </div>
+    
+    <!-- 头部导航 -->
+    <header>
+        <div class="container">
+            <div class="logo">
+            <img src="/static/logo.png" alt="进化湾® Logo" style="height: 45px; width: auto; display: block;">
+            <noscript><span style="font-size: 24px; font-weight: 700; color: #1a1a2e;">进化<span style="color: #0f4c81;">湾</span><sup style="font-size: 9px; vertical-align: super; color: #999;">®</sup></span></noscript>
+        </div>
+            <nav class="nav-links" id="navLinks">
+                <a href="#services">核心服务</a>
+                <a href="#space">产业基地</a>
+                <a href="#partners">生态伙伴</a>
+                <a href="#form">联系我们</a>
+            </nav>
+            <button class="hamburger" id="hamburgerBtn" aria-label="菜单" style="display: none; flex-direction: column; justify-content: space-between; width: 30px; height: 24px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001;">
+                <span style="display: block; height: 3px; width: 100%; background: #1a1a2e; border-radius: 3px; transition: all 0.3s;"></span>
+                <span style="display: block; height: 3px; width: 100%; background: #1a1a2e; border-radius: 3px; transition: all 0.3s;"></span>
+                <span style="display: block; height: 3px; width: 100%; background: #1a1a2e; border-radius: 3px; transition: all 0.3s;"></span>
+            </button>
+            <a href="#form" class="contact-btn">获取方案</a>
+        </div>
+    </header>
+
+    <!-- Hero 区域 -->
+    <section class="hero">
+        <div class="container">
+            <h1>让 AI 成为<br>确定性的商业增长引擎</h1>
+            <p class="subtitle">进化湾®整合前沿 AI 产业资源，为企业智能化转型与 AI 创业者提供从技术落地到商业变现的全链路加速服务</p>
+            <p class="tagline">立足深圳南山 · 服务全国 AI 产业生态</p>
+            <div class="cta-group">
+                <a href="#form" class="cta-btn cta-primary">提交需求，获取方案</a>
+                <a href="#services" class="cta-btn cta-secondary">探索服务体系</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 核心定位 -->
+    <section class="positioning">
+        <div class="container">
+            <div class="label">平台定位</div>
+            <h2>AI 产业化的"最后一公里"<br>从这里开始</h2>
+            <div class="divider"></div>
+            <p class="main-text">
+                进化湾®由 <strong>深圳云程企航商务服务有限公司</strong> 与 <strong>深圳市云协同创新数据空间服务有限公司</strong> 联合打造，落地深圳南山区核心科技园区。我们不是孵化器，也不是单纯的办公空间，而是连接 AI 技术能力、产业应用场景、资本资源与专业人才的<strong>商业加速枢纽</strong>。
+            </p>
+            <div class="operators">
+                <div class="operator">
+                    <strong>深圳云程企航商务服务有限公司</strong>
+                    <span>平台运营主体 · 商业服务专家</span>
+                </div>
+                <div class="operator">
+                    <strong>深圳市云协同创新数据空间服务有限公司</strong>
+                    <span>联合打造 · 数据空间服务</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 价值主张 -->
+    <section class="value-prop">
+        <div class="container">
+            <div class="value-item">
+                <span class="icon">🎯</span>
+                <h3>精准匹配</h3>
+                <p>基于您的具体业务场景，精准匹配最适合的 AI 技术伙伴与解决方案，避免试错成本。</p>
+            </div>
+            <div class="value-item">
+                <span class="icon">⚡</span>
+                <h3>快速落地</h3>
+                <p>从需求诊断到方案实施，全链路专业服务护航，确保 AI 技术在 30 天内产生商业价值。</p>
+            </div>
+            <div class="value-item">
+                <span class="icon">📈</span>
+                <h3>可衡量 ROI</h3>
+                <p>每个服务模块均设计可量化的效果指标，让您的每一分投入都看得见回报。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服务矩阵 -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-label">核心服务体系</div>
+            <h2>覆盖 AI 商业化全链路</h2>
+            <p class="section-subtitle">从技术部署到商业变现，我们为不同类型客户提供针对性的专业服务</p>
+            <div class="service-grid">
+                <!-- 服务1 -->
+                <div class="service-card">
+                    <span class="icon">🚀</span>
+                    <h3>AI 营销与增长</h3>
+                    <p class="desc">基于 GEO（生成式搜索引擎优化）与 AI 智能内容技术，帮助企业构建自动化营销体系，实现获客成本降低 40%+，转化率提升 200%+。</p>
+                    <ul>
+                        <li>GEO 优化诊断与策略部署</li>
+                        <li>AI 智能内容生产（文案/视频/社交）</li>
+                        <li>私域流量自动化运营系统</li>
+                        <li>AI 广告投放效果优化</li>
+                        <li>企业 AI 营销全案咨询</li>
+                    </ul>
+                    <a href="#form" class="contact-link">了解服务详情 →</a>
+                </div>
+                
+                <!-- 服务2 -->
+                <div class="service-card">
+                    <span class="icon">🎬</span>
+                    <h3>AI 视频与数字人</h3>
+                    <p class="desc">提供从数字人定制到批量视频生产的完整解决方案，将企业视频制作成本降低 90%，内容产出效率提升 50 倍。</p>
+                    <ul>
+                        <li>企业级数字人形象与声音克隆</li>
+                        <li>AI 批量短视频智能生成</li>
+                        <li>7×24 小时 AI 直播中台部署</li>
+                        <li>企业宣传片 AI 制作服务</li>
+                        <li>多平台视频矩阵运营支持</li>
+                    </ul>
+                    <a href="#form" class="contact-link">了解服务详情 →</a>
+                </div>
+                
+                <!-- 服务3 -->
+                <div class="service-card">
+                    <span class="icon">💡</span>
+                    <h3>AI 创业孵化</h3>
+                    <p class="desc">为 AI 创业者提供从创意验证、产品开发到融资对接的全流程陪跑，显著降低创业风险，提升项目成功率。</p>
+                    <ul>
+                        <li>AI 应用 MVP 快速验证（30 天）</li>
+                        <li>SaaS 产品从 0 到 1 全流程辅导</li>
+                        <li>垂直行业 AI 工具开发咨询</li>
+                        <li>商业计划与融资路演辅导</li>
+                        <li>创业导师 1 对 1 深度陪跑</li>
+                    </ul>
+                    <a href="#form" class="contact-link">了解服务详情 →</a>
+                </div>
+                
+                <!-- 服务4 -->
+                <div class="service-card">
+                    <span class="icon">🎓</span>
+                    <h3>AI 人才认证与培训</h3>
+                    <p class="desc">联合权威机构推出 AI 专业认证体系，为企业输送经过实战验证的 AI 专业人才，解决"有工具无人用"的痛点。</p>
+                    <ul>
+                        <li>AI 工程师专业认证</li>
+                        <li>Prompt 工程师能力认证</li>
+                        <li>AI 营销师职业培训</li>
+                        <li>企业 AI 内训定制服务</li>
+                        <li>AI 人才就业推荐通道</li>
+                    </ul>
+                    <a href="#form" class="contact-link">了解服务详情 →</a>
+                </div>
+                
+                <!-- 服务5 -->
+                <div class="service-card">
+                    <span class="icon">💼</span>
+                    <h3>AI 投融资对接</h3>
+                    <p class="desc">连接优质 AI 项目与专业投资机构，通过项目打磨、路演辅导与精准对接，打通从创意到资本的关键路径。</p>
+                    <ul>
+                        <li>AI 项目闭门路演活动</li>
+                        <li>投资人 1 对 1 诊断辅导</li>
+                        <li>股权设计与融资顾问</li>
+                        <li>AI 产业基金专项对接</li>
+                        <li>投后管理咨询支持</li>
+                    </ul>
+                    <a href="#form" class="contact-link">了解服务详情 →</a>
+                </div>
+                
+                <!-- 服务6 -->
+                <div class="service-card">
+                    <span class="icon">🔧</span>
+                    <h3>AI 技术部署</h3>
+                    <p class="desc">为技术基础薄弱的企业与个人提供 AI 工具配置、环境搭建与工作流程优化，让 AI 技术真正"用起来"。</p>
+                    <ul>
+                        <li>企业级 AI 大模型部署方案</li>
+                        <li>AI 创作工具环境配置</li>
+                        <li>RPA + AI 自动化工作流搭建</li>
+                        <li>AI 工具选型与成本优化</li>
+                        <li>企业 AI 技术栈咨询</li>
+                    </ul>
+                    <a href="#form" class="contact-link">了解服务详情 →</a>
+                </div>
+                
+                <!-- 服务7 -->
+                <div class="service-card">
+                    <span class="icon">🛡️</span>
+                    <h3>AI 合规与风控</h3>
+                    <p class="desc">帮助企业建立 AI 应用合规体系，规避内容风险、数据风险与法律风险，确保 AI 应用安全稳健运行。</p>
+                    <ul>
+                        <li>AI 生成内容合规审核</li>
+                        <li>企业数据安全防护方案</li>
+                        <li>AI 应用法律合规咨询</li>
+                        <li>AI 伦理与风险管控体系</li>
+                        <li>企业 AI 使用规范制定</li>
+                    </ul>
+                    <a href="#form" class="contact-link">了解服务详情 →</a>
+                </div>
+                
+                <!-- 服务8 -->
+                <div class="service-card">
+                    <span class="icon">🏭</span>
+                    <h3>行业 AI 解决方案</h3>
+                    <p class="desc">针对传统行业痛点，提供定制化的 AI 转型解决方案，实现降本增效与业务创新，重获竞争优势。</p>
+                    <ul>
+                        <li>AI + 电商（智能选品/客服/供应链）</li>
+                        <li>AI + 教育（智能课件/批改/学习）</li>
+                        <li>AI + 医疗（辅助诊断/病历管理）</li>
+                        <li>AI + 制造（智能质检/预测维护）</li>
+                        <li>垂直行业 AI 转型咨询</li>
+                    </ul>
+                    <a href="#form" class="contact-link">了解服务详情 →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 线下空间 -->
+    <section class="space" id="space">
+        <div class="container">
+            <div class="section-label">线下产业基地</div>
+            <h2>深圳南山核心科技园区<br>AI 产业集聚高地</h2>
+            <p class="section-subtitle">实体空间不仅是办公场所，更是产业资源对接、技术展示与商业合作的枢纽平台</p>
+            <div class="space-features">
+                <div class="space-feature">
+                    <h4>📍 地理位置</h4>
+                    <p>深圳市南山区粤海街道高新区社区沙河西路 1809 号深圳湾科技生态园 2 栋 A1101</p>
+                </div>
+                <div class="space-feature">
+                    <h4>🏢 AI 产业集聚区</h4>
+                    <p>汇聚 AI 营销、AI 视频、AI 创业团队、企业服务 AI、AI 安全等领域优秀企业，形成产业协同效应。</p>
+                </div>
+                <div class="space-feature">
+                    <h4>🎥 AI 商业展示中心</h4>
+                    <p>实时演示 AI 技术在企业降本增效、获客增长中的实际应用案例，让技术价值看得见。</p>
+                </div>
+                <div class="space-feature">
+                    <h4>💼 投融资路演厅</h4>
+                    <p>定期举办 AI 项目闭门路演，连接创业者与专业投资机构，打通资本对接通道。</p>
+                </div>
+                <div class="space-feature">
+                    <h4>🎓 实训与认证中心</h4>
+                    <p>提供 AI 技能实训、专业认证考试与人才就业对接服务，解决产业人才缺口。</p>
+                </div>
+                <div class="space-feature">
+                    <h4>🔧 技术配置工坊</h4>
+                    <p>为企业与个人提供 AI 工具配置、环境搭建与操作培训，降低技术使用门槛。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 合作机构 -->
+    <section class="partners" id="partners">
+        <div class="container">
+            <div class="section-label">生态伙伴与资源</div>
+            <h2>联合产业上下游优质资源<br>构建完整 AI 服务生态</h2>
+            <p class="section-subtitle">与行业领先机构深度合作，确保为客户提供最专业、最前沿的 AI 服务</p>
+            <div class="partner-grid">
+                <div class="partner-item">千万级 AI 垂直社区</div>
+                <div class="partner-item">AI 视频头部企业</div>
+                <div class="partner-item">AI 创业导师联盟</div>
+                <div class="partner-item">AI 专业认证机构</div>
+                <div class="partner-item">AI 产业投资基金</div>
+                <div class="partner-item">OPC 创业企业集群</div>
+                <div class="partner-item">AI 技术服务商联盟</div>
+                <div class="partner-item">行业数字化转型顾问</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 需求表单 -->
+    <section class="form-section" id="form">
+        <div class="container">
+            <div class="section-label">联系我们</div>
+            <h2>开始您的 AI 转型之旅</h2>
+            <p class="section-subtitle">请填写您的需求，我们的专业顾问将在 24 小时内与您联系，提供定制化解决方案与初步诊断报告。</p>
+            <div class="form-container">
+                <!-- 表单提交到后端 API -->
+                <form action="https://www.jhw-ai.com/api/submit" method="POST" id="mainForm" target="hidden_iframe" onsubmit="return submitForm()">
+                    <!-- 表单消息提示区域 -->
+                    <div id="formMessage" class="form-message"></div>
+                    
+                    <div class="form-group">
+                        <label for="name">姓名 *</label>
+                        <input type="text" id="name" name="name" placeholder="请输入您的姓名" required>
+                        <div id="nameError" class="error-message">请输入至少2个字符的姓名</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company">公司名称 / 身份 *</label>
+                        <input type="text" id="company" name="company" placeholder="请输入公司名称或您的身份（如：企业代表、创业者、个人）" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">联系电话 *</label>
+                        <input type="tel" id="phone" name="phone" placeholder="请输入11位手机号码" required>
+                        <div id="phoneError" class="error-message">请输入有效的11位手机号码</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="wechat">微信号（选填）</label>
+                        <input type="text" id="wechat" name="wechat" value="YCQH_SZ">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="service">感兴趣的服务 *</label>
+                        <select id="service" name="service" required>
+                            <option value="">请选择您需要的服务</option>
+                            <option value="ai-marketing">AI 营销与增长</option>
+                            <option value="ai-video">AI 视频与数字人</option>
+                            <option value="ai-startup">AI 创业孵化</option>
+                            <option value="ai-certification">AI 人才认证与培训</option>
+                            <option value="ai-investment">AI 投融资对接</option>
+                            <option value="ai-tools">AI 技术部署</option>
+                            <option value="ai-compliance">AI 合规与风控</option>
+                            <option value="ai-industry">行业 AI 解决方案</option>
+                            <option value="other">其他 AI 相关需求</option>
+                        </select>
+                        <div id="serviceError" class="error-message">请选择您需要的服务</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="budget">预算范围（选填）</label>
+                        <select id="budget" name="budget">
+                            <option value="">请选择预算范围（非必填）</option>
+                            <option value="1万以内">1 万元以内</option>
+                            <option value="1-5万">1 - 5 万元</option>
+                            <option value="5-20万">5 - 20 万元</option>
+                            <option value="20万以上">20 万元以上</option>
+                            <option value="面议">需进一步沟通</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="details">具体需求描述 *</label>
+                        <textarea id="details" name="details" placeholder="请详细描述您的需求或面临的问题，例如：我们希望通过 AI 技术提升电商店铺的客服效率与转化率..." required></textarea>
+                        <div id="detailsError" class="error-message">请至少输入10个字符描述您的需求</div>
+                    </div>
+                    
+                    <button type="submit" id="submitBtn" class="submit-btn">提交需求，获取专属方案</button>
+                </form>
+                <p class="form-note">
+                    或直接通过微信联系我们：<a href="weixin://addfriend/YCQH_SZ">YCQH_SZ</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4>关于进化湾®</h4>
+                    <p>进化湾®是深圳云程企航商务服务有限公司与深圳市云协同创新数据空间服务有限公司联合打造的 AI 产业综合服务平台。我们致力于构建 AI 技术、产业资源、资本对接与人才培养的完整生态闭环，让 AI 真正成为可衡量、可落地的商业价值。</p>
+                </div>
+                
+                <div>
+                    <h4>联系我们</h4>
+                    <p>📍 地址：<br>深圳市南山区粤海街道高新区社区沙河西路 1809 号深圳湾科技生态园 2 栋 A1101</p>
+                    <p>📞 电话：<a href="tel:18718528592">18718528592</a></p>
+                    <p>📧 邮箱：<a href="mailto:YCQH_SZ@163.com">YCQH_SZ@163.com</a></p>
+                    <p>🌐 官网：<a href="https://www.jhw-ai.com">www.jhw-ai.com</a></p>
+                </div>
+                
+                <div>
+                    <h4>快速链接</h4>
+                    <p><a href="#services">核心服务</a></p>
+                    <p><a href="#space">产业基地</a></p>
+                    <p><a href="#partners">生态伙伴</a></p>
+                    <p><a href="#form">联系我们</a></p>
+                </div>
+                
+                <div>
+                    <h4>关注我们</h4>
+                    <p>扫码添加微信<br>获取 AI 解决方案</p>
+                </div>
+            </div>
+            
+            <div class="wechat-info">
+                <p>扫码添加微信，获取 AI 解决方案</p>
+                <div class="qr-grid" style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                    <div class="qr-item">
+                        <p style="color: #ccc; font-size: 0.9em; margin-bottom: 10px;">个人微信</p>
+                        <div class="wechat-qr" style="width: 160px; height: 160px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+                            <img src="/static/wechat-qr.png" alt="微信二维码" style="width: 100%; height: 100%; object-fit: cover;">
+                            <noscript><p style="color: #999; font-size: 0.8em; padding: 10px;">上传 wechat-qr.png</p></noscript>
+                        </div>
+                        <p style="margin-top: 10px; color: #fff; font-size: 0.9em;">YCQH_SZ</p>
+                    </div>
+                    <div class="qr-item">
+                        <p style="color: #ccc; font-size: 0.9em; margin-bottom: 10px;">企业微信</p>
+                        <div class="wechat-qr" style="width: 160px; height: 160px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+                            <img src="/static/wecom-qr.png" alt="企业微信二维码" style="width: 100%; height: 100%; object-fit: cover;">
+                            <noscript><p style="color: #999; font-size: 0.8em; padding: 10px;">上传 wecom-qr.png</p></noscript>
+                        </div>
+                        <p style="margin-top: 10px; color: #fff; font-size: 0.9em;">企业服务</p>
+                    </div>
+                    <div class="qr-item">
+                        <p style="color: #ccc; font-size: 0.9em; margin-bottom: 10px;">社群入口</p>
+                        <div class="wechat-qr" style="width: 160px; height: 160px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+                            <img src="/static/group-qr.png" alt="社群二维码" style="width: 100%; height: 100%; object-fit: cover;">
+                            <noscript><p style="color: #999; font-size: 0.8em; padding: 10px;">上传 group-qr.png</p></noscript>
+                        </div>
+                        <p style="margin-top: 10px; color: #fff; font-size: 0.9em;">AI 交流群</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="copyright">
+                © 2026 深圳云程企航商务服务有限公司 版权所有 | 进化湾® | 粤ICP备2026019539号-2
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // 页面加载完成后隐藏加载动画
+        window.addEventListener('load', function() {
+            var loader = document.getElementById('pageLoader');
+            if (loader) {
+                setTimeout(function() {
+                    loader.classList.add('hidden');
+                    // 动画完成后移除元素
+                    setTimeout(function() {
+                        loader.style.display = 'none';
+                    }, 500);
+                }, 300); // 至少显示 300ms，避免闪烁
+            }
+        });
+        
+        // 汉堡菜单控制
+        document.addEventListener('DOMContentLoaded', function() {
+            var hamburger = document.getElementById('hamburgerBtn');
+            var navLinks = document.getElementById('navLinks');
+            
+            if (hamburger && navLinks) {
+                hamburger.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    hamburger.classList.toggle('active');
+                });
+                
+                // 点击菜单项后关闭菜单
+                navLinks.querySelectorAll('a').forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        navLinks.classList.remove('active');
+                        hamburger.classList.remove('active');
+                    });
+                });
+            }
+            
+            // 平滑滚动增强
+            document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+        
+        // 表单提交处理（真实API提交）
+        function submitForm() {
+            var name = document.getElementById('name').value.trim();
+            var company = document.getElementById('company').value.trim();
+            var phone = document.getElementById('phone').value.trim();
+            var wechat = document.getElementById('wechat').value.trim();
+            var service = document.getElementById('service').value;
+            var budget = document.getElementById('budget').value;
+            var details = document.getElementById('details').value.trim();
+            var btn = document.getElementById('submitBtn');
+            var messageDiv = document.getElementById('formMessage');
+            
+            // 清除之前的错误状态
+            ['name', 'phone', 'service', 'details'].forEach(function(id) {
+                var el = document.getElementById(id);
+                var errorEl = document.getElementById(id + 'Error');
+                if (el) el.classList.remove('error');
+                if (errorEl) errorEl.classList.remove('show');
+            });
+            
+            var hasError = false;
+            
+            // 验证姓名
+            if (!name || name.length < 2) {
+                document.getElementById('name').classList.add('error');
+                document.getElementById('nameError').classList.add('show');
+                hasError = true;
+            }
+            
+            // 验证手机号
+            var phonePattern = /^1[3-9]\d{9}$/;
+            if (!phone || !phonePattern.test(phone.replace(/\s/g, ''))) {
+                document.getElementById('phone').classList.add('error');
+                document.getElementById('phoneError').classList.add('show');
+                hasError = true;
+            }
+            
+            // 验证服务类型
+            if (!service) {
+                document.getElementById('service').classList.add('error');
+                document.getElementById('serviceError').classList.add('show');
+                hasError = true;
+            }
+            
+            // 验证需求描述
+            if (!details || details.length < 10) {
+                document.getElementById('details').classList.add('error');
+                document.getElementById('detailsError').classList.add('show');
+                hasError = true;
+            }
+            
+            if (hasError) {
+                if (messageDiv) {
+                    messageDiv.className = 'form-message error show';
+                    messageDiv.textContent = '请检查表单，填写所有必填项';
+                }
+                return false;
+            }
+            
+            // 显示提交中...
+            if (btn) {
+                btn.textContent = '提交中...';
+                btn.disabled = true;
+            }
+            
+            // 准备表单数据
+            var formData = new FormData();
+            formData.append('name', name);
+            formData.append('company', company);
+            formData.append('phone', phone);
+            formData.append('wechat', wechat);
+            formData.append('service', service);
+            formData.append('budget', budget);
+            formData.append('details', details);
+            
+            // 发送真实请求
+            fetch('https://www.jhw-ai.com/api/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.code === 0) {
+                    // 成功
+                    if (messageDiv) {
+                        messageDiv.className = 'form-message success show';
+                        messageDiv.textContent = data.msg || '提交成功！我们的专业顾问将在 24 小时内与您联系。';
+                    }
+                    
+                    // 替换表单为成功消息
+                    setTimeout(function() {
+                        var formContainer = document.querySelector('.form-container');
+                        if (formContainer) {
+                            formContainer.innerHTML = `
+                                <div style="text-align: center; padding: 60px 20px;">
+                                    <div style="font-size: 4em; margin-bottom: 24px;">✅</div>
+                                    <h3 style="color: #27ae60; font-size: 1.8em; margin-bottom: 16px;">提交成功！</h3>
+                                    <p style="color: #666; font-size: 1.1em; line-height: 1.8;">
+                                        感谢您的咨询，<strong>${name}</strong>！<br>
+                                        我们的专业顾问将在 <strong style="color: #0f4c81;">24 小时内</strong> 与您联系。<br>
+                                        请保持电话 <strong>${phone}</strong> 畅通。
+                                    </p>
+                                </div>
+                            `;
+                        }
+                    }, 500);
+                } else if (data.code === -2) {
+                    // 重复提交
+                    if (messageDiv) {
+                        messageDiv.className = 'form-message error show';
+                        messageDiv.textContent = data.msg || '您最近已提交过需求，请耐心等待联系。';
+                    }
+                    if (btn) {
+                        btn.textContent = '提交需求，获取专属方案';
+                        btn.disabled = false;
+                    }
+                } else {
+                    // 其他错误
+                    if (messageDiv) {
+                        messageDiv.className = 'form-message error show';
+                        messageDiv.textContent = data.msg || '提交失败，请稍后重试或直接拨打电话 18718528592。';
+                    }
+                    if (btn) {
+                        btn.textContent = '提交需求，获取专属方案';
+                        btn.disabled = false;
+                    }
+                }
+            })
+            .catch(function(error) {
+                // 网络错误
+                if (messageDiv) {
+                    messageDiv.className = 'form-message error show';
+                    messageDiv.textContent = '网络错误，请检查网络连接或稍后重试。紧急需求请拨打 18718528592。';
+                }
+                if (btn) {
+                    btn.textContent = '提交需求，获取专属方案';
+                    btn.disabled = false;
+                }
+            });
+            
+            return false; // 阻止默认提交
+        }
+        
+        // 实时清除错误状态
+        ['name', 'phone', 'service', 'details'].forEach(function(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', function() {
+                    this.classList.remove('error');
+                    var errorEl = document.getElementById(id + 'Error');
+                    if (errorEl) errorEl.classList.remove('show');
+                });
+                el.addEventListener('change', function() {
+                    this.classList.remove('error');
+                    var errorEl = document.getElementById(id + 'Error');
+                    if (errorEl) errorEl.classList.remove('show');
+                });
+            }
+        });
+    </script>
+    
+    <!-- 隐藏 iframe 用于接收表单提交响应 -->
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display: none;"></iframe>
+</body>
+</html>

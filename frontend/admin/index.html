@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/admin/">
+    <title>进化湾® 线索管理后台</title>
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- Login View -->
+<div id="view-login" class="view">
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-logo">进化湾®</div>
+            <p class="login-subtitle">AI 产业服务平台 · 管理后台</p>
+            <div id="login-error" class="login-error hidden"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-username">用户名</label>
+                    <input type="text" id="login-username" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">密码</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">登 录</button>
+            </form>
+            <div class="login-footer">进化湾® 版权所有 © 2026</div>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard View -->
+<div id="view-dashboard" class="view hidden">
+    <header class="header">
+        <div class="header-left">
+            <h1>进化湾® <span>线索管理后台</span></h1>
+        </div>
+        <nav class="header-nav">
+            <a href="#" data-nav="dashboard" class="nav-link active">仪表盘</a>
+            <a href="#" data-nav="leads" class="nav-link">线索管理</a>
+        </nav>
+        <div class="header-right">
+            <a href="#" id="btn-export" class="btn btn-outline">导出 CSV</a>
+            <button id="btn-logout" class="btn btn-outline">退出登录</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="stats-grid" id="stats-cards">
+            <div class="stat-card stat-total">
+                <h3>总线索数</h3>
+                <div class="stat-num" id="stat-total">-</div>
+                <div class="stat-label">累计提交量</div>
+            </div>
+            <div class="stat-card stat-new">
+                <h3>新提交</h3>
+                <div class="stat-num" id="stat-new">-</div>
+                <div class="stat-label">待处理</div>
+            </div>
+            <div class="stat-card stat-contacting">
+                <h3>联系中</h3>
+                <div class="stat-num" id="stat-contacting">-</div>
+                <div class="stat-label">跟进中</div>
+            </div>
+            <div class="stat-card stat-converted">
+                <h3>已转化</h3>
+                <div class="stat-num" id="stat-converted">-</div>
+                <div class="stat-label">成交客户</div>
+            </div>
+        </div>
+
+        <div class="charts-row">
+            <div class="chart-card">
+                <h3>每日提交趋势（近 30 天）</h3>
+                <canvas id="chart-daily"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>服务类型分布</h3>
+                <canvas id="chart-service"></canvas>
+            </div>
+        </div>
+
+        <div class="recent-leads-card">
+            <h3>最近提交</h3>
+            <div class="mini-table-wrap">
+                <table class="mini-table" id="recent-leads-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>姓名</th><th>公司</th><th>服务类型</th><th>时间</th><th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Leads View -->
+<div id="view-leads" class="view hidden">
+    <header class="header">
+        <div class="header-left">
+            <h1>进化湾® <span>线索管理后台</span></h1>
+        </div>
+        <nav class="header-nav">
+            <a href="#" data-nav="dashboard" class="nav-link">仪表盘</a>
+            <a href="#" data-nav="leads" class="nav-link active">线索管理</a>
+        </nav>
+        <div class="header-right">
+            <a href="#" id="btn-export2" class="btn btn-outline">导出 CSV</a>
+            <button id="btn-logout2" class="btn btn-outline">退出登录</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="toolbar" id="leads-toolbar">
+            <input type="text" id="search-input" placeholder="搜索姓名、公司、电话、微信、需求描述...">
+            <select id="filter-status">
+                <option value="">全部状态</option>
+                <option value="新提交">新提交</option>
+                <option value="联系中">联系中</option>
+                <option value="已转化">已转化</option>
+                <option value="无效线索">无效线索</option>
+            </select>
+            <button id="btn-search" class="btn btn-primary">搜索</button>
+            <button id="btn-reset" class="btn btn-ghost">清除</button>
+        </div>
+
+        <div class="table-card">
+            <table class="data-table" id="leads-table">
+                <thead>
+                    <tr>
+                        <th data-sort="id" class="sortable">ID <span class="sort-icon"></span></th>
+                        <th data-sort="name" class="sortable">姓名 <span class="sort-icon"></span></th>
+                        <th data-sort="company">公司</th>
+                        <th>电话</th>
+                        <th>服务类型</th>
+                        <th data-sort="budget">预算</th>
+                        <th data-sort="submit_time" class="sortable sorted-desc">提交时间 <span class="sort-icon">▼</span></th>
+                        <th data-sort="status">状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <div id="empty-state" class="empty-state hidden">
+                <div class="empty-icon">📭</div>
+                <h3>暂无数据</h3>
+                <p>没有匹配的线索记录</p>
+            </div>
+
+            <div class="pagination" id="pagination">
+                <span class="page-info" id="page-info">共 0 条</span>
+                <div class="page-controls">
+                    <button id="btn-prev" class="btn btn-sm" disabled>上一页</button>
+                    <span id="page-indicator">第 1 / 1 页</span>
+                    <button id="btn-next" class="btn btn-sm" disabled>下一页</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Lead Detail Modal -->
+<div id="detail-modal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>线索详情 <span id="modal-lead-id"></span></h2>
+            <button class="modal-close" id="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-body">
+        </div>
+        <div class="modal-footer">
+            <button id="modal-save" class="btn btn-primary">保存修改</button>
+            <button id="modal-delete" class="btn btn-danger">删除线索</button>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loading-overlay" class="loading-overlay hidden">
+    <div class="spinner"></div>
+</div>
+
+<script src="js/chart.min.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
