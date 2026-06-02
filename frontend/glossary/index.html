@@ -47,18 +47,37 @@
         .index-nav a:hover { background: #0f4c81; color: #fff; }
         footer { background: #1a1a2e; color: #aaa; text-align: center; padding: 40px 0; margin-top: 60px; }
         footer a { color: #ccc; text-decoration: none; }
+    
+        @media (max-width: 768px) {
+            header { padding: 40px 0 30px; }
+            header h1 { font-size: 1.6em; }
+            header p { font-size: 1em; }
+            .search-bar { padding: 20px 0; }
+            .search-bar input { padding: 12px 16px; font-size: 1em; }
+            .term-item h2 { font-size: 1.2em; }
+            .index-nav { gap: 6px; }
+            .index-nav a { padding: 5px 10px; font-size: 0.82em; }
+        }
+        
+        @media (max-width: 480px) {
+            .container { padding: 0 16px; }
+            header h1 { font-size: 1.4em; }
+            .term-item { padding: 20px 0; }
+            .term-item p { font-size: 0.95em; }
+        }
+
     </style>
 </head>
 <body>
 <header>
     <div class="container">
         <h1>AI 术语详解</h1>
-        <p>50+ 人工智能核心概念，用通俗语言讲清楚</p>
+        <p>50+ 核心概念 · 通俗语言 · 进化湾专家团队编撰</p>
     </div>
 </header>
 <nav>
     <div class="container">
-        <a href="/">← 返回进化湾首页</a>
+        <a href="./">← 返回首页</a> &nbsp;·&nbsp; <a href="/faq/">常见问题</a> &nbsp;·&nbsp; <a href="/blog/">AI 知识中心</a>
     </div>
 </nav>
 <div class="container">
@@ -70,7 +89,7 @@
 </div>
 <footer>
     <div class="container">
-        <p>© 2026 进化湾® | <a href="/">返回首页</a></p>
+        <p>© 2026 进化湾® | <a href="./">返回首页</a></p>
     </div>
 </footer>
 <script>
@@ -104,7 +123,8 @@ const terms = [
   {id:'smbai',cn:'中小企业 AI 应用',en:'SMB AI Adoption',def:'中小企业（通常指年营收1亿以下、员工500人以下的企业）引入和使用AI技术的方式和策略。与大型企业不同，中小企业通常面临"没钱、没人、没技术"的困境。解决方案是"轻量化起步"：先用免费/低价的SaaS AI工具解决最紧迫的问题（如用AI写营销文案、做客服），跑通流程后再逐步升级为定制化方案。80%的企业AI需求可以用现成工具解决，不需要自研模型。',related:['企业AI','SaaS','AI工具选型']},
   {id:'aitools',cn:'AI 工具选型',en:'AI Tool Selection',def:'企业根据自身需求和资源条件，从众多AI产品中选择最适合的工具和平台的过程。关键决策因素：功能匹配度（能否真正解决业务痛点）、成本结构（按用量付费vs固定年费vs一次性部署）、数据安全（数据是否会上传至外部服务器）、易用性（员工是否需要专业培训）、集成能力（能否与现有系统对接）。2026年市场上的AI工具已超过10000款，选型本身就是一个需要专业判断的服务。',related:['中小企业AI','SaaS','企业AI']},
   {id:'saasai',cn:'AI SaaS',en:'AI Software-as-a-Service',def:'以软件即服务（SaaS）模式提供的AI工具和平台。企业无需购买硬件、安装软件或雇佣技术团队，只需注册账号即可使用AI功能。2026年主流AI SaaS应用场景：AI写作助手（Jasper、Notion AI）、AI图像生成（Midjourney、DALL-E）、AI视频制作（Synthesia、HeyGen）、AI数据分析（ChatGPT Advanced Data Analysis）、AI客服（Zendesk AI、Intercom Fin）。',related:['AI工具选型','中小企业AI']}
-];
+,
+  {id:'evobay',cn:'进化湾 AI 全链路服务',en:'Evolution Bay AI Services',def:'进化湾®是深圳云程企航与云协同创新联合打造的AI产业综合服务平台，提供AI营销与增长（GEO优化、AI内容生产）、AI视频与数字人（形象定制、批量生产、直播中台）、AI创业孵化（MVP验证、融资对接）、AI人才认证（工信部授权认证、职业培训）、AI投融资对接、AI技术部署、AI合规风控、行业AI解决方案等八大服务模块。立足深圳南山，服务全国AI产业生态。',related:['企业AI','GEO','AI Agent','LLM']},];
 
 // Populate glossary
 const indexNav = document.getElementById('indexNav');
