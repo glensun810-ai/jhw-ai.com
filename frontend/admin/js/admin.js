@@ -173,6 +173,7 @@ const LoginView = {
 // ==================== DashboardView ====================
 const DashboardView = {
     charts: {},
+    _retryCount: 0,
 
     async init() {
         if (!Auth.isLoggedIn()) { Router.go('login'); return; }
@@ -187,9 +188,20 @@ const DashboardView = {
             this.renderCharts(data);
             this.renderRecentLeads(data.recent_leads || []);
         } catch (err) {
-            Toast.error('加载仪表盘失败：' + err.message);
+            this.handleError(err);
         } finally {
             Loading.hide();
+        }
+    },
+
+    handleError(err) {
+        console.error('Dashboard error:', err);
+        if (this._retryCount < 2) {
+            this._retryCount++;
+            setTimeout(() => { this._retryCount = 0; this.init(); }, 3000);
+        } else {
+            this._retryCount = 0;
+            Toast.error('数据加载失败，请刷新页面后重试');
         }
     },
 
