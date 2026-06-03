@@ -316,7 +316,7 @@ a { color: var(--color-accent); text-decoration: none; }
     .header-right .btn { font-size: 0.75em; padding: 5px 8px; }
     .container { padding: 0 8px; margin: 8px auto; padding-bottom: 64px; }
     .bottom-tab-nav {
-    display: none;
+    display: flex;
     position: fixed;
     bottom: 0;
     left: 0;
