@@ -747,6 +747,50 @@ def admin_api_delete_lead(lead_id):
 
     return jsonify({'code': 0, 'msg': '删除成功'})
 
+
+
+@app.route('/admin/api/analytics')
+@admin_required
+def admin_api_analytics():
+    import sqlite3, datetime, os
+    db = os.path.join(os.path.dirname(DB_PATH), 'analytics.db')
+    if not os.path.exists(db):
+        return jsonify({'code': 0, 'data': {'total_views': 0, 'total_visitors': 0, 'today_views': 0, 'daily_trend': [], 'top_pages': []}})
+    conn = sqlite3.connect(db)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    tr = c.execute("SELECT value FROM summary WHERE metric='total_views'").fetchone()
+    ur = c.execute("SELECT value FROM summary WHERE metric='total_unique_visitors'").fetchone()
+    ts = datetime.date.today().isoformat()
+    tod = c.execute("SELECT SUM(count) as v FROM pageviews_daily WHERE date=?", (ts,)).fetchone()
+    trend = c.execute("SELECT date, SUM(count) as views FROM pageviews_daily WHERE date >= date('now', '-14 days') GROUP BY date ORDER BY date").fetchall()
+    top = c.execute("SELECT path, SUM(count) as views FROM pageviews_daily GROUP BY path ORDER BY views DESC LIMIT 10").fetchall()
+    conn.close()
+    return jsonify({'code': 0, 'data': {
+        'total_views': tr['value'] if tr else 0,
+        'total_visitors': ur['value'] if ur else 0,
+        'today_views': tod['v'] if tod and tod['v'] else 0,
+        'daily_trend': [{'date': r['date'], 'views': r['views']} for r in trend],
+        'top_pages': [{'path': r['path'], 'views': r['views']} for r in top]
+    }})
+
+
+@app.route('/admin/api/analytics/init', methods=['POST'])
+@admin_required
+def admin_api_analytics_init():
+    import sqlite3, os
+    db = os.path.join(os.path.dirname(DB_PATH), 'analytics.db')
+    os.makedirs(os.path.dirname(db), exist_ok=True)
+    conn = sqlite3.connect(db)
+    c = conn.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS pageviews_daily (date TEXT, path TEXT, count INTEGER DEFAULT 0, unique_ips INTEGER DEFAULT 0, PRIMARY KEY (date, path))")
+    c.execute("CREATE TABLE IF NOT EXISTS summary (metric TEXT PRIMARY KEY, value INTEGER)")
+    c.execute("INSERT OR IGNORE INTO summary VALUES ('total_views', 0)")
+    c.execute("INSERT OR IGNORE INTO summary VALUES ('total_unique_visitors', 0)")
+    conn.commit()
+    conn.close()
+    return jsonify({'code': 0, 'msg': '统计数据库已初始化'})
+
 @app.route('/health')
 def health():
     """健康检查"""
