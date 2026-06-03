@@ -120,6 +120,11 @@ const Router = {
             default: this.currentView = DashboardView;
         }
 
+        // 确保导航按钮高亮同步
+        document.querySelectorAll('[data-nav]').forEach(link => {
+            link.classList.toggle('active', link.dataset.nav === view);
+        });
+
         if (this.currentView && this.currentView.init) {
             this.currentView.init(params);
         }
@@ -619,7 +624,10 @@ const LeadsView = {
     },
 
     async deleteLead() {
-        if (!this._modalLead) return;
+        if (!this._modalLead) {
+            Toast.error('请先打开线索详情');
+            return;
+        }
         if (!confirm(`确认删除线索 #${this._modalLead.id}（${this._modalLead.name}）？此操作不可恢复。`)) return;
         try {
             await API.deleteLead(this._modalLead.id);
@@ -651,6 +659,34 @@ function bindGlobalEvents() {
         });
     });
 
+    // 汉堡菜单
+    ['hamburgerAdmin', 'hamburgerAdmin2'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const mobileNav = this.closest('.header').querySelector('.header-nav-mobile');
+                if (mobileNav) {
+                    const isVisible = mobileNav.style.display === 'flex';
+                    // 先关闭所有
+                    document.querySelectorAll('.header-nav-mobile').forEach(n => n.style.display = 'none');
+                    // 再切换当前
+                    mobileNav.style.display = isVisible ? 'none' : 'flex';
+                }
+            });
+        }
+    });
+    // 点击页面其他地方关闭菜单
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.header-nav-mobile').forEach(n => n.style.display = 'none');
+    });
+    // 点击导航项后关闭菜单
+    document.querySelectorAll('.header-nav-mobile .nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+            document.querySelectorAll('.header-nav-mobile').forEach(n => n.style.display = 'none');
+        });
+    });
+
     // Logout
     document.querySelectorAll('#btn-logout, #btn-logout2').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -665,6 +701,7 @@ function bindGlobalEvents() {
         try {
             const token = Auth.getToken();
             if (!token) return;
+            Toast.info('正在导出...');
             const qs = new URLSearchParams({ q: LeadsView.state.search, status: LeadsView.state.status });
             const resp = await fetch(`/admin/api/export?${qs}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -677,8 +714,9 @@ function bindGlobalEvents() {
             a.download = `leads_export_${new Date().toISOString().slice(0,10)}.csv`;
             a.click();
             URL.revokeObjectURL(url);
+            Toast.success('导出成功');
         } catch (err) {
-            console.error('Export error:', err);
+            Toast.error('导出失败：' + err.message);
         }
     };
     document.querySelectorAll('#btn-export, #btn-export2').forEach(btn => {
