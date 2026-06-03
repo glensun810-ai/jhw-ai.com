@@ -124,6 +124,14 @@ const Router = {
         document.querySelectorAll('[data-nav]').forEach(link => {
             link.classList.toggle('active', link.dataset.nav === view);
         });
+        // 底部 Tab 高亮同步
+        document.querySelectorAll('.tab-item').forEach(link => {
+            link.classList.toggle('active', link.dataset.nav === view);
+        });
+        // 关闭移动端下拉菜单
+        document.querySelectorAll('.header-nav-mobile').forEach(n => n.style.display = 'none');
+        // 滚动到顶部
+        window.scrollTo(0, 0);
 
         if (this.currentView && this.currentView.init) {
             this.currentView.init(params);
@@ -665,6 +673,14 @@ const LeadsView = {
 function bindGlobalEvents() {
     // Navigation
     document.querySelectorAll('[data-nav]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            Router.go(link.dataset.nav);
+        });
+    });
+
+    // 底部 Tab 同步：点击 tab-item 触发导航
+    document.querySelectorAll('.tab-item').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             Router.go(link.dataset.nav);
