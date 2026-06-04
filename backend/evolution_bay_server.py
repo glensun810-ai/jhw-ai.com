@@ -532,6 +532,9 @@ def export_csv():
 @app.route('/admin/api/export')
 @admin_required
 def admin_api_export_csv():
+    # 可选日期筛选
+    date_from = request.args.get('date_from', '')
+    date_to = request.args.get('date_to', '')
     """导出 CSV（API 版本，支持 Bearer token + query token）"""
     return export_csv()
 

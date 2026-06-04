@@ -826,7 +826,11 @@ function bindGlobalEvents() {
             const token = Auth.getToken();
             if (!token) return;
             Toast.info('正在导出...');
-            const qs = new URLSearchParams({ q: LeadsView.state.search, status: LeadsView.state.status });
+            var dateFrom = document.getElementById('filter-date-from') ? document.getElementById('filter-date-from').value : '';
+            var dateTo = document.getElementById('filter-date-to') ? document.getElementById('filter-date-to').value : '';
+            var qs = new URLSearchParams({ q: LeadsView.state.search, status: LeadsView.state.status });
+            if (dateFrom) qs.set('date_from', dateFrom);
+            if (dateTo) qs.set('date_to', dateTo);
             const resp = await fetch(`/admin/api/export?${qs}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
