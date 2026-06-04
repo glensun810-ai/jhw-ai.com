@@ -372,6 +372,42 @@ const DashboardView = {
         return 'invalid';
     },
 
+    async loadLogs(leadId) {
+        try {
+            const resp = await fetch('/admin/api/leads/' + leadId + '/logs', {
+                headers: { 'Authorization': 'Bearer ' + Auth.getToken() }
+            });
+            const data = await resp.json();
+            if (data.code !== 0) return;
+            this.renderLogs(data.data || []);
+        } catch (err) {
+            console.error('Load logs error:', err);
+        }
+    },
+
+    renderLogs(logs) {
+        var container = document.getElementById('modal-timeline');
+        if (!container) return;
+        if (!logs.length) {
+            container.innerHTML = '<div style="color:#999;font-size:0.85em;padding:8px 0;">暂无操作记录</div>';
+            return;
+        }
+        var html = '';
+        logs.forEach(function(log) {
+            var time = (log.created_at || '').slice(0, 16);
+            var action = '';
+            if (log.action === 'update_status') action = '状态变更: ' + (log.old_value || '?') + ' → ' + log.new_value;
+            else if (log.action === 'update_field') action = '字段更新: ' + log.field_name;
+            else if (log.action === 'delete') action = '线索已删除';
+            else action = log.action;
+            html += '<div style="padding:6px 0;border-bottom:1px solid #f0f0f0;font-size:0.85em;">';
+            html += '<span style="color:#999;">' + time + '</span>';
+            html += '<span style="margin-left:8px;color:#555;">' + action + '</span>';
+            html += '</div>';
+        });
+        container.innerHTML = html;
+    },
+
     esc(str) {
         const div = document.createElement('div');
         div.textContent = str;
@@ -583,6 +619,7 @@ const LeadsView = {
             const data = await API.getLead(id);
             const lead = data.data;
             this._modalLead = lead;
+            this.loadLogs(id);
 
             document.getElementById('modal-lead-id').textContent = `#${lead.id}`;
             document.getElementById('modal-body').innerHTML = this.buildModalHTML(lead);
@@ -665,6 +702,10 @@ const LeadsView = {
             <div class="detail-field">
                 <label>来源页面</label>
                 <div class="value" style="font-size:0.82em">${DashboardView.esc(lead.referrer || '-')}</div>
+            </div>
+            <div class="detail-field detail-full" style="margin-top:12px; padding-top:16px; border-top:1px solid var(--color-border)">
+                <label>操作记录</label>
+                <div id="modal-timeline" style="font-size:0.85em;color:#555;max-height:150px;overflow-y:auto;"></div>
             </div>
             <div class="detail-field detail-full" style="margin-top:12px; padding-top:16px; border-top:1px solid var(--color-border)">
                 <label>快速操作</label>

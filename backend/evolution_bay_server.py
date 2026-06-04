@@ -122,10 +122,31 @@ def init_db():
         )
     ''')
     
+    c.execute('CREATE TABLE IF NOT EXISTS lead_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, lead_id INTEGER NOT NULL, action TEXT NOT NULL, field_name TEXT, old_value TEXT, new_value TEXT, operator TEXT DEFAULT "admin", created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
     conn.commit()
     conn.close()
 
 init_db()
+
+
+def add_lead_log(lead_id, action, field_name=None, old_value=None, new_value=None, operator="admin"):
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("INSERT INTO lead_logs (lead_id, action, field_name, old_value, new_value, operator) VALUES (?,?,?,?,?,?)", (lead_id, action, field_name, old_value, new_value, operator))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
+
+def get_lead_logs(lead_id):
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    c.execute("SELECT * FROM lead_logs WHERE lead_id=? ORDER BY created_at DESC LIMIT 50", (lead_id,))
+    logs = [dict(row) for row in c.fetchall()]
+    conn.close()
+    return logs
 
 def get_db():
     """获取数据库连接"""
@@ -726,6 +747,8 @@ def admin_api_update_status(lead_id):
     if status not in valid_statuses:
         return jsonify({'code': -1, 'msg': '无效的状态值'})
 
+    old_lead = _get_lead_dict(lead_id)
+    old_status = old_lead["status"] if old_lead else ""
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     if note:
@@ -734,7 +757,7 @@ def admin_api_update_status(lead_id):
         c.execute('UPDATE leads SET status=? WHERE id=?', (status, lead_id))
     conn.commit()
     conn.close()
-
+    add_lead_log(lead_id, "update_status", "status", old_status, status)
     lead = _get_lead_dict(lead_id)
     return jsonify({'code': 0, 'msg': '状态更新成功', 'data': lead})
 
@@ -783,7 +806,14 @@ def admin_api_analytics():
     }})
 
 
-@app.route('/admin/api/analytics/init', methods=['POST'])
+@app.route('
+@app.route("/admin/api/leads/<int:lead_id>/logs")
+@admin_required
+def admin_api_lead_logs(lead_id):
+    logs = get_lead_logs(lead_id)
+    return jsonify({"code": 0, "data": logs})
+
+/admin/api/analytics/init', methods=['POST'])
 @admin_required
 def admin_api_analytics_init():
     import sqlite3, os
