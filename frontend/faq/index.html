@@ -219,7 +219,7 @@ faqs.forEach((f, i) => {
   const item = document.createElement('div');
   item.className = 'faq-item';
   item.id = 'faq' + i;
-  item.innerHTML = '<div class="faq-q"><span>' + f.q + '</span><span class="arrow">▼</span></div><div class="faq-a"><p>' + f.a + '</p></div>';
+  item.innerHTML = '<div class="faq-q"><span>' + f.q + '</span><span class="arrow">▼</span></div><div class="faq-a"><p>' + f.a + '</p><p style="margin-top:12px;"><a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">联系进化湾顾问 →</a></p></div>';
   item.querySelector('.faq-q').addEventListener('click', () => item.classList.toggle('open'));
   faqDiv.appendChild(item);
 });
