@@ -36,4 +36,17 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  </url>
+  <url>
+    <loc>https://www.jhw-ai.com/blog/guide/h200-b300-server-comparison.html</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.jhw-ai.com/blog/guide/ai-marketing-roi-case-study.html</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>

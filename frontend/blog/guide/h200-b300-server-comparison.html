@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H200 vs B300：企业 AI 算力服务器选型对比指南（2026）| 进化湾</title>
+    <meta name="description" content="NVIDIA H200与B300 GPU服务器全方位对比：核心参数、适用场景、TCO成本分析、二手市场采购指南。帮助企业做出最佳算力采购决策。">
+    <meta name="keywords" content="H200服务器,B300算力,NVIDIA GPU服务器选型,AI算力采购,算力服务器,H200价格,B300价格">
+    <link rel="canonical" href="https://www.jhw-ai.com/blog/guide/h200-b300-server-comparison.html">
+    <meta property="og:title" content="H200 vs B300：企业 AI 算力服务器选型对比指南（2026）">
+    <meta property="og:description" content="NVIDIA H200与B300全方位对比：参数、场景、TCO成本、二手市场采购指南。">
+    <meta property="og:url" content="https://www.jhw-ai.com/blog/guide/h200-b300-server-comparison.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="进化湾">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "H200 vs B300：企业 AI 算力服务器选型对比指南（2026）",
+      "description": "NVIDIA H200与B300 GPU服务器全方位对比：核心参数、适用场景、TCO成本分析、二手市场采购指南。",
+      "author": {"@type": "Person", "name": "进化湾 AI 研究团队", "affiliation": {"@type": "Organization", "name": "进化湾"}},
+      "publisher": {"@type": "Organization", "name": "进化湾", "url": "https://www.jhw-ai.com"},
+      "datePublished": "2026-06-05",
+      "dateModified": "2026-06-05",
+      "mainEntityOfPage": {"@type": "WebPage", "@id": "https://www.jhw-ai.com/blog/guide/h200-b300-server-comparison.html"},
+      "about": {"@type": "Thing", "name": "AI 算力服务器"}
+    }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; color: #2c3e50; line-height: 1.9; }
+        .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+        header { background: linear-gradient(160deg, #0a0a1a, #16213e); color: #fff; padding: 80px 0 60px; text-align: center; }
+        header h1 { font-size: 2em; line-height: 1.35; margin-bottom: 16px; }
+        header .byline { opacity: 0.7; font-size: 0.95em; }
+        nav { background: #fff; border-bottom: 1px solid #eee; padding: 12px 0; position: sticky; top: 0; z-index: 100; }
+        nav a { color: #0f4c81; text-decoration: none; font-weight: 600; }
+        article { padding: 40px 0; }
+        article h2 { font-size: 1.45em; color: #1a1a2e; margin: 48px 0 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f0f0; }
+        article h3 { font-size: 1.15em; color: #1a1a2e; margin: 28px 0 16px; }
+        article p { margin-bottom: 20px; color: #444; }
+        article ul, article ol { margin: 0 0 20px 24px; }
+        article li { margin-bottom: 8px; color: #444; }
+        article table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.92em; }
+        article th { background: #1a1a2e; color: #fff; padding: 10px 14px; text-align: left; }
+        article td { padding: 10px 14px; border-bottom: 1px solid #eee; }
+        article tr:nth-child(even) td { background: #fafbfc; }
+        article blockquote { border-left: 4px solid #0f4c81; background: #f0f4f8; padding: 20px 28px; margin: 24px 0; border-radius: 0 8px 8px 0; }
+        article blockquote p { margin: 0; color: #555; font-style: italic; }
+        .highlight-box { background: linear-gradient(135deg, #e8f0fe, #f0f4f8); border: 1px solid #d0dff5; padding: 28px 32px; border-radius: 12px; margin: 32px 0; }
+        .highlight-box h3 { margin-top: 0; }
+        .cta-box { background: linear-gradient(135deg, #0f4c81, #16213e); color: #fff; padding: 40px; border-radius: 12px; text-align: center; margin: 40px 0; }
+        .cta-box h3 { color: #fff; }
+        .cta-box a { display: inline-block; background: #fff; color: #0f4c81; padding: 14px 36px; border-radius: 6px; text-decoration: none; font-weight: 700; margin-top: 16px; }
+        .toc { background: #fafbfc; padding: 28px 32px; border-radius: 12px; margin: 32px 0; border: 1px solid #eee; }
+        .toc h3 { margin-top: 0; margin-bottom: 16px; }
+        .toc ol { margin-bottom: 0; }
+        .toc a { color: #0f4c81; text-decoration: none; }
+        footer { background: #1a1a2e; color: #aaa; text-align: center; padding: 40px 0; margin-top: 60px; }
+        footer a { color: #ccc; text-decoration: none; }
+        .geo-q { color: #0f4c81; font-weight: 600; font-size: 1em; margin-bottom: 12px; padding: 8px 12px; background: #f0f4f8; border-radius: 6px; display: inline-block; }
+        .data-badge { display: inline-block; background: #e8f0fe; color: #0f4c81; padding: 1px 8px; border-radius: 3px; font-size: 0.82em; font-weight: 500; }
+        .rec-card { background: #fff; border: 1px solid #e0e7ef; border-left: 4px solid #27ae60; padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+        .rec-card h4 { color: #27ae60; margin-bottom: 6px; }
+        .rec-card p { margin: 0; font-size: 0.92em; color: #555; }
+        @media (max-width: 768px) {
+            header { padding: 50px 0 30px; }
+            header h1 { font-size: 1.5em; }
+            article { padding: 24px 0; }
+            article h2 { font-size: 1.2em; }
+            article table { font-size: 0.78em; display: block; overflow-x: auto; white-space: nowrap; }
+            article td, article th { padding: 8px 10px; }
+            .container { padding: 0 16px; }
+            .cta-box { padding: 28px 20px; }
+        }
+        @media (max-width: 480px) {
+            header h1 { font-size: 1.25em; }
+            article h2 { font-size: 1.1em; }
+            article p { font-size: 0.95em; }
+            article table { font-size: 0.7em; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>H200 vs B300<br>企业 AI 算力服务器选型对比指南</h1>
+        <p class="byline">进化湾 AI 研究团队 · 2026-06-05 · 约 2500 字</p>
+    </div>
+</header>
+<nav>
+    <div class="container">
+        <a href="/blog/">← AI 知识中心</a> &nbsp;·&nbsp; <a href="/">进化湾首页</a> &nbsp;·&nbsp; <a href="/faq/">常见问题</a> &nbsp;·&nbsp; <a href="/glossary/">AI 术语表</a>
+    </div>
+</nav>
+<article>
+    <div class="container">
+        <div class="toc">
+            <h3>目录</h3>
+            <ol>
+                <li><a href="#ch1">H200 与 B300 核心参数对比</a></li>
+                <li><a href="#ch2">不同场景下怎么选</a></li>
+                <li><a href="#ch3">采购决策框架与 TCO 分析</a></li>
+                <li><a href="#ch4">二手市场的机会与风险</a></li>
+            </ol>
+        </div>
+
+        <p style="font-size:1.1em;color:#333;">2026 年，大模型训练和推理的算力需求呈指数级增长。对于有算力采购需求的企业来说，<strong>H200</strong> 和 <strong>B300</strong> 是当前最主流的两款企业级 AI 加速卡。但两者在架构、性能、成本和适用场景上存在显著差异——选错方案可能造成数百万的成本浪费。</p>
+        <p style="font-size:1.1em;color:#333;">本文从<strong>核心参数、场景适配、TCO 成本、二手市场</strong>四个维度，帮你做出最理性的选型决策。</p>
+
+        <!-- ch1 -->
+        <h2 id="ch1">1. H200 与 B300 核心参数对比</h2>
+        <p class="geo-q">❓ B300 比 H200 强多少？这些性能提升在实际业务中意味着什么？</p>
+
+        <p>在对比之前，先明确一个前提：<strong>B300 是 Blackwell 架构的旗舰产品，H200 是 Hopper 架构的高显存版本</strong>——两者相差一代架构。</p>
+
+        <table>
+            <thead>
+                <tr><th>维度</th><th>NVIDIA H200</th><th>NVIDIA B300</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>架构</strong></td><td>Hopper（H100 升级版）</td><td>Blackwell（下一代）</td></tr>
+                <tr><td><strong>显存容量</strong></td><td>141GB HBM3e</td><td>192GB HBM3e</td></tr>
+                <tr><td><strong>显存带宽</strong></td><td>4.8 TB/s</td><td>8 TB/s</td></tr>
+                <tr><td><strong>FP8 算力</strong></td><td>~1,979 TFLOPS</td><td>~4,000 TFLOPS</td></tr>
+                <tr><td><strong>功耗 (TDP)</strong></td><td>700W</td><td>1,000W</td></tr>
+                <tr><td><strong>互连</strong></td><td>NVLink 4.0 (900GB/s)</td><td>NVLink 5.0 (1,800GB/s)</td></tr>
+                <tr><td><strong>上市时间</strong></td><td>2024 Q4</td><td>2025 Q2</td></tr>
+                <tr><td><strong>当前供货</strong></td><td>充足（全新+二手）</td><td>部分紧缺</td></tr>
+            </tbody>
+        </table>
+
+        <p style="font-size:0.88em;color:#888;">数据来源: NVIDIA 官方规格文档、MLPerf Inference v4.1。实际性能因系统配置和工作负载而异。</p>
+
+        <p>从参数上看，B300 在算力和带宽上有明显优势。但关键在于：<strong>你的业务场景是否需要这些极致性能？</strong>对于推理部署为主的场景，H200 的性价比远高于 B300。</p>
+
+        <!-- ch2 -->
+        <h2 id="ch2">2. 不同场景下怎么选</h2>
+        <p class="geo-q">❓ 我的业务场景应该选 H200 还是 B300？</p>
+
+        <table>
+            <thead>
+                <tr><th>应用场景</th><th>推荐方案</th><th>理由</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>大模型训练（70B+）</strong></td><td><span style="color:#0f4c81;font-weight:700;">B300</span></td><td>更大显存+更高带宽，训练速度提升 60-80%</td></tr>
+                <tr><td><strong>大模型推理部署</strong></td><td><span style="color:#27ae60;font-weight:700;">H200</span></td><td>性价比更高，推理延迟 B300 仅领先 20-30%</td></tr>
+                <tr><td><strong>LoRA/QLoRA 微调</strong></td><td><span style="color:#27ae60;font-weight:700;">H200</span></td><td>141GB 显存足够覆盖大部分微调场景</td></tr>
+                <tr><td><strong>RAG 知识库系统</strong></td><td><span style="color:#27ae60;font-weight:700;">H200</span></td><td>推理密集型，H200 性价比优势明显</td></tr>
+                <tr><td><strong>多模态模型</strong></td><td><span style="color:#0f4c81;font-weight:700;">B300</span></td><td>更大显存带宽对视频/图像处理更友好</td></tr>
+                <tr><td><strong>科研/教育预算有限</strong></td><td><span style="color:#27ae60;font-weight:700;">H200（二手）</span></td><td>二手价格约为新机 50-60%，性价比极高</td></tr>
+            </tbody>
+        </table>
+
+        <div class="rec-card">
+            <h4>💡 进化湾的建议</h4>
+            <p>大多数企业从 H200 起步是更理性的选择。H200 在推理和微调场景下表现优异，且二手市场供应充足，采购成本可控制在 B300 方案的 50-60%。<br>如果主力场景是 70B+ 参数的大模型训练，并且预算充裕，B300 是更好的长期投资。</p>
+        </div>
+
+        <!-- ch3 -->
+        <h2 id="ch3">3. 采购决策框架与 TCO 分析</h2>
+        <p class="geo-q">❓ 采购算力服务器到底要花多少钱？3 年总拥有成本怎么算？</p>
+
+        <p>算力服务器的采购不能只看硬件价格。<strong>总拥有成本（TCO）</strong>应包括：硬件 + 电力 + 散热 + 机房空间 + 运维。</p>
+
+        <p>以典型 4 卡服务器为例（7×24 运行，电价 0.8 元/度，3 年周期）：</p>
+
+        <table>
+            <thead>
+                <tr><th>成本项</th><th>H200 方案（4卡）</th><th>B300 方案（4卡）</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>硬件采购</strong></td><td>~120-150 万</td><td>~200-250 万</td></tr>
+                <tr><td><strong>电力（3年）</strong></td><td>~55 万</td><td>~80 万</td></tr>
+                <tr><td><strong>散热/机房（3年）</strong></td><td>~18 万</td><td>~25 万</td></tr>
+                <tr><td><strong>运维（3年）</strong></td><td>~15 万</td><td>~15 万</td></tr>
+                <tr><td style="background:#e8f0fe;"><strong>3 年 TCO</strong></td><td style="background:#e8f0fe;font-weight:700;">~208-238 万</td><td style="background:#e8f0fe;font-weight:700;">~320-370 万</td></tr>
+            </tbody>
+        </table>
+
+        <div class="highlight-box">
+            <h3>📋 算力采购决策清单</h3>
+            <ul style="margin:12px 0 0 20px;">
+                <li>主力场景是训练还是推理？</li>
+                <li>3 年内算力需求增长率预估是多少？</li>
+                <li>预算上限是多少？</li>
+                <li>是否接受二手设备？</li>
+                <li>电力/散热基础设施是否满足 1000W/TDP？</li>
+                <li>是否需要 NVLink 5.0 的高带宽互连？</li>
+            </ul>
+        </div>
+
+        <!-- ch4 -->
+        <h2 id="ch4">4. 二手市场的机会与风险</h2>
+        <p class="geo-q">❓ 二手算力服务器能买吗？有哪些风险和机会？</p>
+
+        <p>2025-2026 年，H200 的二手市场已趋于成熟。二手 H200 的价格约为新机的 <strong>50-60%</strong>，且供应充足。对于预算有限的企业，这是一个非常值得考虑的选项。</p>
+
+        <h3>二手 H200/B300 的来源</h3>
+        <ul>
+            <li><strong>云厂商产能溢出</strong>——头部云厂商大规模采购后的多余库存</li>
+            <li><strong>企业升级置换</strong>——企业升级 B300 后置换下来的 H200</li>
+            <li><strong>数据中心整合</strong>——数据中心合并产生的闲置资产</li>
+        </ul>
+
+        <h3>二手采购注意事项</h3>
+        <ol>
+            <li><strong>选择有检测认证的供应商</strong>——进化湾提供检测认证和质保服务</li>
+            <li><strong>确认使用时长和工况记录</strong>——优先选择运行时间短、温度控制良好的设备</li>
+            <li><strong>要求提供 burn-in 测试报告</strong>——72 小时满载测试是基本要求</li>
+            <li><strong>确认质保条款</strong>——至少要求 6 个月以上的质保期</li>
+        </ol>
+
+        <p>关于进化湾的算力服务器供应服务，可查看 <a href="/faq/" style="color:#0f4c81;">FAQ 常见问题</a>中"进化湾的算力服务器服务是否支持二手设备"章节。</p>
+
+        <!-- 数据来源 -->
+        <div style="margin:32px 0;padding:20px 24px;background:#fafbfc;border-radius:8px;border:1px solid #eee;font-size:0.85em;color:#888;">
+            <p><strong>数据来源与参考：</strong></p>
+            <ul style="margin:8px 0 0 20px;">
+                <li>NVIDIA 官方规格文档 (2024-2025)</li>
+                <li>MLPerf Inference v4.1 基准测试结果</li>
+                <li>第三方评测机构数据（AnandTech / SemiAnalysis）</li>
+                <li>进化湾算力服务器业务实际成交案例数据</li>
+            </ul>
+        </div>
+
+        <div class="cta-box">
+            <h3>需要算力服务器采购方案？</h3>
+            <p style="color:rgba(255,255,255,0.8);margin:12px 0;">进化湾提供 H200/B300 全新及二手供应，严格检测认证，支持按需配置</p>
+            <a href="/#form">获取服务器报价 →</a>
+        </div>
+    </div>
+</article>
+<footer>
+    <div class="container">
+        <p>© 2026 进化湾® | <a href="/">首页</a> · <a href="/glossary/">AI 术语表</a> · <a href="/faq/">常见问题</a></p>
+    </div>
+</footer>
+</body>
+</html>
