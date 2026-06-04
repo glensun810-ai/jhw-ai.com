@@ -30,8 +30,13 @@ const Toast = {
 const Auth = {
     getToken() { return localStorage.getItem(CONFIG.TOKEN_KEY); },
     setToken(t) { localStorage.setItem(CONFIG.TOKEN_KEY, t); },
-    clearToken() { localStorage.removeItem(CONFIG.TOKEN_KEY); },
-    isLoggedIn() { return !!this.getToken(); }
+    clearToken() { 
+        localStorage.removeItem(CONFIG.TOKEN_KEY);
+        localStorage.removeItem('admin_last_page');
+    },
+    isLoggedIn() { return !!this.getToken(); },
+    getLastPage() { return localStorage.getItem('admin_last_page') || 'dashboard'; },
+    setLastPage(page) { localStorage.setItem('admin_last_page', page); }
 };
 
 // ==================== API Client ====================
@@ -105,6 +110,9 @@ const Router = {
     currentView: null,
 
     go(view, params) {
+        // 保存当前页面
+        if (view !== 'login') Auth.setLastPage(view);
+        
         document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
         const el = document.getElementById(`view-${view}`);
         if (el) el.classList.remove('hidden');
@@ -910,7 +918,7 @@ function bindGlobalEvents() {
 function init() {
     bindGlobalEvents();
     if (Auth.isLoggedIn()) {
-        Router.go('dashboard');
+        Router.go(Auth.getLastPage());
     } else {
         Router.go('login');
     }
