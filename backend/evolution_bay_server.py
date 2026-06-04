@@ -580,6 +580,12 @@ def _get_stats():
     c.execute('SELECT COUNT(*) as total FROM leads')
     total = c.fetchone()['total']
 
+    # 今日新增
+    c.execute("SELECT COUNT(*) FROM leads WHERE date(submit_time) = date('now', 'localtime')")
+    today_count = c.fetchone()[0]
+    c.execute("SELECT COUNT(*) FROM leads WHERE date(submit_time) = date('now', 'localtime') AND status='新提交'")
+    today_new = c.fetchone()[0]
+
     # 按状态统计
     c.execute('SELECT status, COUNT(*) as count FROM leads GROUP BY status')
     status_stats = {row['status']: row['count'] for row in c.fetchall()}
@@ -616,6 +622,8 @@ def _get_stats():
     return jsonify({
         'code': 0,
         'total': total,
+        'today': today_count,
+        'today_new': today_new,
         'status_stats': status_stats,
         'service_stats': service_stats,
         'daily_stats_30d': daily_stats_30d,

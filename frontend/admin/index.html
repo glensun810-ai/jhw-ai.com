@@ -79,6 +79,11 @@
                 <div class="stat-num" id="stat-converted">-</div>
                 <div class="stat-label">成交客户</div>
             </div>
+            <div class="stat-card" style="border-left-color:#3498db;">
+                <h3>今日新增</h3>
+                <div class="stat-num" id="stat-today-new">-</div>
+                <div class="stat-label">本日新提交</div>
+            </div>
         </div>
 
         <div class="charts-row">
@@ -105,7 +110,40 @@
                 </table>
             </div>
         </div>
-    </main>
+    
+    <!-- 访问统计 -->
+    <div class="analytics-section" style="margin-top:24px;">
+        <div class="chart-card">
+            <h3>网站访问统计</h3>
+            <div class="stats-grid" style="margin-bottom:20px;">
+                <div class="stat-card" style="border-left-color:#0f4c81;">
+                    <h3>累计访问</h3>
+                    <div class="stat-num" id="ana-total-views">-</div>
+                    <div class="stat-label">总页面浏览量</div>
+                </div>
+                <div class="stat-card" style="border-left-color:#27ae60;">
+                    <h3>独立访客</h3>
+                    <div class="stat-num" id="ana-total-visitors">-</div>
+                    <div class="stat-label">累计 IP 数</div>
+                </div>
+                <div class="stat-card" style="border-left-color:#f39c12;">
+                    <h3>今日访问</h3>
+                    <div class="stat-num" id="ana-today-views">-</div>
+                    <div class="stat-label">本日浏览量</div>
+                </div>
+            </div>
+            <div id="ana-chart-container">
+                <h4 style="color:#666;margin-bottom:12px;">近14天访问趋势</h4>
+                <canvas id="ana-chart" height="200"></canvas>
+            </div>
+            <div id="ana-top-pages" style="margin-top:16px;">
+                <h4 style="color:#666;margin-bottom:12px;">热门页面</h4>
+                <div id="ana-pages-list"></div>
+            </div>
+        </div>
+    </div>
+
+</main>
         <!-- 底部导航（手机端） -->
         <nav class="bottom-tab-nav" id="bottomTabDashboard">
             <a href="#" data-nav="dashboard" class="tab-item active">

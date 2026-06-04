@@ -195,6 +195,7 @@ const DashboardView = {
             this.renderStats(data);
             this.renderCharts(data);
             this.renderRecentLeads(data.recent_leads || []);
+            this.loadAnalytics();
         } catch (err) {
             this.handleError(err);
         } finally {
@@ -218,6 +219,7 @@ const DashboardView = {
         document.getElementById('stat-new').textContent = data.status_stats['新提交'] || 0;
         document.getElementById('stat-contacting').textContent = data.status_stats['联系中'] || 0;
         document.getElementById('stat-converted').textContent = data.status_stats['已转化'] || 0;
+        document.getElementById('stat-today-new').textContent = data.today_new || 0;
 
         // Click stat cards to navigate to filtered leads
         document.querySelectorAll('.stat-card').forEach(card => {
@@ -290,6 +292,59 @@ const DashboardView = {
                 }
             }
         });
+    },
+
+    async loadAnalytics() {
+        try {
+            const token = Auth.getToken();
+            if (!token) return;
+            const resp = await fetch('/admin/api/analytics', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await resp.json();
+            if (data.code !== 0) return;
+            const d = data.data;
+            
+            document.getElementById('ana-total-views').textContent = d.total_views || 0;
+            document.getElementById('ana-total-visitors').textContent = d.total_visitors || 0;
+            document.getElementById('ana-today-views').textContent = d.today_views || 0;
+            
+            // 趋势图
+            const canvas = document.getElementById('ana-chart');
+            if (canvas && d.daily_trend && d.daily_trend.length > 0 && typeof Chart !== 'undefined') {
+                new Chart(canvas, {
+                    type: 'line',
+                    data: {
+                        labels: d.daily_trend.map(function(r) { return r.date.slice(5); }),
+                        datasets: [{
+                            label: '访问量',
+                            data: d.daily_trend.map(function(r) { return r.views; }),
+                            borderColor: '#0f4c81',
+                            backgroundColor: 'rgba(15,76,129,0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+                });
+            } else if (canvas) {
+                document.getElementById('ana-chart-container').innerHTML = '<p style="color:#999;padding:12px;">趋势数据将在 Nginx 日志解析脚本运行后自动生成。</p>';
+            }
+            
+            // 热门页面
+            var list = document.getElementById('ana-pages-list');
+            if (list && d.top_pages && d.top_pages.length > 0) {
+                var h = '<table class="mini-table"><thead><tr><th>页面</th><th>访问量</th></tr></thead><tbody>';
+                d.top_pages.forEach(function(p) {
+                    var path = p.path.length > 40 ? p.path.slice(0,40) + '...' : p.path;
+                    h += '<tr><td>' + path + '</td><td>' + p.views + '</td></tr>';
+                });
+                h += '</tbody></table>';
+                list.innerHTML = h;
+            }
+        } catch (err) {
+            console.error('Analytics load error:', err);
+        }
     },
 
     renderRecentLeads(leads) {
