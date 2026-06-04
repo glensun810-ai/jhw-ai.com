@@ -809,14 +809,14 @@ def admin_api_analytics():
     }})
 
 
-@app.route('
 @app.route("/admin/api/leads/<int:lead_id>/logs")
 @admin_required
 def admin_api_lead_logs(lead_id):
     logs = get_lead_logs(lead_id)
     return jsonify({"code": 0, "data": logs})
 
-/admin/api/analytics/init', methods=['POST'])
+
+@app.route('/admin/api/analytics/init', methods=['POST'])
 @admin_required
 def admin_api_analytics_init():
     import sqlite3, os
