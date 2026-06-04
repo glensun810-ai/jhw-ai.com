@@ -195,6 +195,8 @@ const DashboardView = {
             this.renderStats(data);
             this.renderCharts(data);
             this.renderRecentLeads(data.recent_leads || []);
+            this.renderServiceFunnel(data.service_funnel);
+            this.renderSourceStats(data.source_stats);
             this.loadAnalytics();
         } catch (err) {
             this.handleError(err);
@@ -345,6 +347,55 @@ const DashboardView = {
         } catch (err) {
             console.error('Analytics load error:', err);
         }
+    },
+
+    renderServiceFunnel(funnel) {
+        var container = document.getElementById('chart-funnel-container');
+        if (!container) return;
+        if (!funnel || Object.keys(funnel).length === 0) {
+            container.innerHTML = '<p style="color:#999;font-size:0.85em;">暂无服务转化数据</p>';
+            return;
+        }
+        
+        // 生成转化率表格
+        var statuses = ['新提交', '联系中', '已转化', '无效线索'];
+        var html = '<table class="mini-table"><thead><tr><th>服务</th>';
+        statuses.forEach(function(s) { html += '<th>' + s + '</th>'; });
+        html += '<th>转化率</th></tr></thead><tbody>';
+        
+        Object.keys(funnel).forEach(function(svc) {
+            html += '<tr><td><strong>' + svc + '</strong></td>';
+            var total = 0;
+            var converted = 0;
+            statuses.forEach(function(st) {
+                var count = funnel[svc][st] || 0;
+                html += '<td>' + count + '</td>';
+                total += count;
+                if (st === '已转化') converted = count;
+            });
+            var rate = total > 0 ? (converted / total * 100).toFixed(0) : 0;
+            html += '<td><strong>' + rate + '%</strong></td></tr>';
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    },
+
+    renderSourceStats(stats) {
+        var container = document.getElementById('chart-source-container');
+        if (!container) return;
+        if (!stats || stats.length === 0) {
+            container.innerHTML = '<p style="color:#999;font-size:0.85em;">暂无来源数据</p>';
+            return;
+        }
+        
+        var total = stats.reduce(function(s, r) { return s + r.count; }, 0);
+        var html = '<table class="mini-table"><thead><tr><th>来源</th><th>数量</th><th>占比</th></tr></thead><tbody>';
+        stats.forEach(function(r) {
+            var pct = total > 0 ? (r.count / total * 100).toFixed(1) : 0;
+            html += '<tr><td>' + r.source + '</td><td>' + r.count + '</td><td>' + pct + '%</td></tr>';
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
     },
 
     renderRecentLeads(leads) {

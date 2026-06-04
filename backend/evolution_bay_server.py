@@ -619,6 +619,20 @@ def _get_stats():
     service_stats = [{'service': get_service_label(row['service']), 'count': row['count']}
                      for row in c.fetchall()]
 
+    # 服务类型×状态交叉统计（转化漏斗）
+    c.execute('''
+        SELECT service, status, COUNT(*) as count
+        FROM leads
+        GROUP BY service, status
+        ORDER BY service, status
+    ''')
+    service_funnel = {}
+    for row in c.fetchall():
+        svc = get_service_label(row['service'])
+        if svc not in service_funnel:
+            service_funnel[svc] = {}
+        service_funnel[svc][row['status']] = row['count']
+
     # 按日期统计（最近 30 天）
     c.execute('''
         SELECT DATE(submit_time) as date, COUNT(*) as count
@@ -628,6 +642,21 @@ def _get_stats():
         ORDER BY date
     ''')
     daily_stats_30d = [{'date': row['date'], 'count': row['count']} for row in c.fetchall()]
+
+    # 线索来源分析
+    c.execute('SELECT form_source, COUNT(*) as count FROM leads GROUP BY form_source ORDER BY count DESC')
+    source_stats = [{'source': row['form_source'] or 'website', 'count': row['count']} for row in c.fetchall()]
+
+    # 来源趋势（最近7天）
+    c.execute('''
+        SELECT form_source, DATE(submit_time) as date, COUNT(*) as count
+        FROM leads
+        WHERE submit_time > datetime('now', '-7 days')
+        GROUP BY form_source, DATE(submit_time)
+        ORDER BY form_source, date
+    ''')
+    source_trend = [{'source': row['form_source'] or 'website', 'date': row['date'], 'count': row['count']} 
+                    for row in c.fetchall()]
 
     # 最近 5 条线索
     columns = ['id', 'name', 'company', 'phone', 'wechat', 'service', 'budget',
@@ -650,8 +679,11 @@ def _get_stats():
         'today_new': today_new,
         'status_stats': status_stats,
         'service_stats': service_stats,
+        'service_funnel': service_funnel,
         'daily_stats_30d': daily_stats_30d,
-        'recent_leads': recent_leads
+        'recent_leads': recent_leads,
+        'source_stats': source_stats,
+        'source_trend': source_trend
     })
 
 
