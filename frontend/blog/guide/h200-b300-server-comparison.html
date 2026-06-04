@@ -128,10 +128,12 @@
                 <tr><td><strong>互连</strong></td><td>NVLink 4.0 (900GB/s)</td><td>NVLink 5.0 (1,800GB/s)</td></tr>
                 <tr><td><strong>上市时间</strong></td><td>2024 Q4</td><td>2025 Q2</td></tr>
                 <tr><td><strong>当前供货</strong></td><td>充足（全新+二手）</td><td>部分紧缺</td></tr>
+                <tr style="background:#fff3e0;"><td><strong>中国市场参考价（全新·每卡）</strong></td><td><strong>¥80-120 万</strong></td><td><strong>¥150-250 万</strong></td></tr>
+                <tr style="background:#fff3e0;"><td><strong>8 卡整机参考价</strong></td><td><strong>¥600-900 万</strong></td><td><strong>¥1,200-2,000 万</strong></td></tr>
             </tbody>
         </table>
 
-        <p style="font-size:0.88em;color:#888;">数据来源: NVIDIA 官方规格文档、MLPerf Inference v4.1。实际性能因系统配置和工作负载而异。</p>
+        <p style="font-size:0.88em;color:#888;">数据来源: NVIDIA 官方规格文档、MLPerf Inference v4.1、2026 年 6 月中国市场实际成交行情。实际价格受供需关系、渠道和交货周期影响波动较大。</p>
 
         <p>从参数上看，B300 在算力和带宽上有明显优势。但关键在于：<strong>你的业务场景是否需要这些极致性能？</strong>对于推理部署为主的场景，H200 的性价比远高于 B300。</p>
 
@@ -149,7 +151,7 @@
                 <tr><td><strong>LoRA/QLoRA 微调</strong></td><td><span style="color:#27ae60;font-weight:700;">H200</span></td><td>141GB 显存足够覆盖大部分微调场景</td></tr>
                 <tr><td><strong>RAG 知识库系统</strong></td><td><span style="color:#27ae60;font-weight:700;">H200</span></td><td>推理密集型，H200 性价比优势明显</td></tr>
                 <tr><td><strong>多模态模型</strong></td><td><span style="color:#0f4c81;font-weight:700;">B300</span></td><td>更大显存带宽对视频/图像处理更友好</td></tr>
-                <tr><td><strong>科研/教育预算有限</strong></td><td><span style="color:#27ae60;font-weight:700;">H200（二手）</span></td><td>二手价格约为新机 50-60%，性价比极高</td></tr>
+                <tr><td><strong>科研/教育预算有限</strong></td><td><span style="color:#27ae60;font-weight:700;">H200（二手）</span></td><td>二手价格约为新机 50-60%，是当前最具性价比的选择</td></tr>
             </tbody>
         </table>
 
@@ -164,20 +166,24 @@
 
         <p>算力服务器的采购不能只看硬件价格。<strong>总拥有成本（TCO）</strong>应包括：硬件 + 电力 + 散热 + 机房空间 + 运维。</p>
 
-        <p>以典型 4 卡服务器为例（7×24 运行，电价 0.8 元/度，3 年周期）：</p>
+        <p>以典型 8 卡服务器为例（7×24 运行，电价 0.8 元/度，3 年周期），基于 2026 年 6 月中国市场价格：</p>
 
         <table>
             <thead>
-                <tr><th>成本项</th><th>H200 方案（4卡）</th><th>B300 方案（4卡）</th></tr>
+                <tr><th>成本项</th><th>H200 方案（8卡）</th><th>B300 方案（8卡）</th></tr>
             </thead>
             <tbody>
-                <tr><td><strong>硬件采购</strong></td><td>~120-150 万</td><td>~200-250 万</td></tr>
+                <tr><td><strong>硬件采购（全新）</strong></td><td>~600-900 万</td><td>~1,200-2,000 万</td></tr>
+                <tr><td><strong>硬件采购（二手）</strong></td><td>~300-500 万</td><td>—（二手极少）</td></tr>
                 <tr><td><strong>电力（3年）</strong></td><td>~55 万</td><td>~80 万</td></tr>
                 <tr><td><strong>散热/机房（3年）</strong></td><td>~18 万</td><td>~25 万</td></tr>
                 <tr><td><strong>运维（3年）</strong></td><td>~15 万</td><td>~15 万</td></tr>
-                <tr><td style="background:#e8f0fe;"><strong>3 年 TCO</strong></td><td style="background:#e8f0fe;font-weight:700;">~208-238 万</td><td style="background:#e8f0fe;font-weight:700;">~320-370 万</td></tr>
+                <tr><td style="background:#e8f0fe;"><strong>3 年 TCO（全新）</strong></td><td style="background:#e8f0fe;font-weight:700;">~688-988 万</td><td style="background:#e8f0fe;font-weight:700;">~1,320-2,120 万</td></tr>
+                <tr><td style="background:#e8f0fe;"><strong>3 年 TCO（二手 H200）</strong></td><td style="background:#e8f0fe;font-weight:700;">~388-588 万</td><td style="background:#e8f0fe;font-weight:700;">—</td></tr>
             </tbody>
         </table>
+
+        <p style="font-size:0.88em;color:#888;">注：2026 年 6 月中国高端 AI 加速卡市场溢价严重，H200 和 B300 的实际成交价已达官方指导价的 3-6 倍。以上价格基于市场实际成交行情估算。</p>
 
         <div class="highlight-box">
             <h3>📋 算力采购决策清单</h3>
@@ -195,7 +201,7 @@
         <h2 id="ch4">4. 二手市场的机会与风险</h2>
         <p class="geo-q">❓ 二手算力服务器能买吗？有哪些风险和机会？</p>
 
-        <p>2025-2026 年，H200 的二手市场已趋于成熟。二手 H200 的价格约为新机的 <strong>50-60%</strong>，且供应充足。对于预算有限的企业，这是一个非常值得考虑的选项。</p>
+        <p>2025-2026 年，H200 的二手市场已趋于成熟。在当前新机溢价严重的市场环境下，<strong>二手 H200 是最具性价比的选择</strong>——8 卡整机价格约 <strong>¥300-500 万</strong>，约为新机的 50%，且供应相对充足。对于预算有限但又需要高性能算力的企业，这是一个非常值得考虑的选项。</p>
 
         <h3>二手 H200/B300 的来源</h3>
         <ul>
@@ -221,8 +227,10 @@
                 <li>NVIDIA 官方规格文档 (2024-2025)</li>
                 <li>MLPerf Inference v4.1 基准测试结果</li>
                 <li>第三方评测机构数据（AnandTech / SemiAnalysis）</li>
+                <li>2026 年 6 月中国 AI 算力服务器市场实际成交行情</li>
                 <li>进化湾算力服务器业务实际成交案例数据</li>
             </ul>
+            <p style="margin-top:8px;"><strong>市场声明：</strong>受全球供需失衡和出口管制影响，2026 年中国市场 H200/B300 价格已大幅偏离官方指导价，溢价率达 300-600%。本文价格数据基于 2026 年 6 月市场行情估算，实际成交价可能因渠道、交货周期和批量而异。</p>
         </div>
 
         <div class="cta-box">
