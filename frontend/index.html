@@ -393,6 +393,70 @@
             .nav-links { display: flex !important; }
             .contact-btn { display: inline-block; }
         }
+    
+        /* AI 培训模块 */
+        .training-spotlight { padding: 100px 0; background: linear-gradient(160deg, #0a0a1a, #16213e); color: #fff; }
+        .training-spotlight .section-label { color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; text-align: center; margin-bottom: 12px; }
+        .training-spotlight h2 { text-align: center; font-size: clamp(1.5em, 3.2vw, 2.2em); margin-bottom: 12px; color: #fff; font-weight: 700; }
+        .training-spotlight .section-subtitle { text-align: center; color: rgba(255,255,255,0.65); margin-bottom: 50px; font-size: 1.1em; }
+        .training-highlights { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 40px; }
+        .training-highlights .highlight-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 32px 24px; text-align: center; transition: all 0.3s; }
+        .training-highlights .highlight-item:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); }
+        .training-highlights .highlight-item .icon { font-size: 2.4em; margin-bottom: 14px; display: block; }
+        .training-highlights .highlight-item h4 { color: #fff; font-size: 1.15em; margin-bottom: 8px; font-weight: 600; }
+        .training-highlights .highlight-item p { color: rgba(255,255,255,0.6); font-size: 0.88em; line-height: 1.6; }
+        .training-cta { text-align: center; display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .training-cta .cta-btn { display: inline-block; padding: 14px 36px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1.05em; transition: all 0.3s; }
+        .training-cta .cta-btn.primary { background: #fff; color: #0f4c81; }
+        .training-cta .cta-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        .training-cta .cta-btn.outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.4); }
+        .training-cta .cta-btn.outline:hover { border-color: #fff; background: rgba(255,255,255,0.08); }
+
+        /* 动态/案例/新闻模块 */
+        .news-section { padding: 100px 0; background: var(--bg-section); }
+        .news-section .section-label { color: var(--primary); font-size: 14px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; text-align: center; margin-bottom: 12px; }
+        .news-section h2 { text-align: center; font-size: clamp(1.5em, 3.2vw, 2.2em); margin-bottom: 16px; color: #1a1a2e; font-weight: 700; }
+        .news-section .section-subtitle { text-align: center; color: var(--text-light); margin-bottom: 50px; font-size: 1.08em; }
+        .news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+        .news-card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); transition: all 0.3s; }
+        .news-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-hover); }
+        .news-card .card-header { padding: 24px 24px 0; display: flex; align-items: center; gap: 10px; }
+        .news-card .card-header .type-tag { font-size: 0.78em; font-weight: 600; padding: 3px 12px; border-radius: 20px; letter-spacing: 1px; }
+        .news-card .card-header .type-tag.event { background: #e8f0fe; color: #0f4c81; }
+        .news-card .card-header .type-tag.case { background: #e8f8e8; color: #27ae60; }
+        .news-card .card-header .type-tag.announce { background: #fef3e2; color: #d68910; }
+        .news-card .card-body { padding: 16px 24px 24px; }
+        .news-card .card-body h4 { font-size: 1.05em; color: #1a1a2e; margin-bottom: 10px; line-height: 1.5; min-height: 2.8em; }
+        .news-card .card-body p { color: #999; font-size: 0.85em; margin-bottom: 16px; }
+        .news-card .card-body .news-link { color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9em; }
+        .news-card .card-body .news-link:hover { text-decoration: underline; }
+        /* 空状态 */
+        .news-empty { grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: #bbb; }
+        .news-empty .empty-icon { font-size: 3em; margin-bottom: 16px; opacity: 0.5; }
+        .news-empty p { font-size: 1.05em; margin-bottom: 8px; }
+        .news-more { text-align: center; margin-top: 40px; }
+        .news-more a { display: inline-block; color: var(--primary); text-decoration: none; font-weight: 600; font-size: 1em; padding: 10px 28px; border: 2px solid var(--primary); border-radius: 8px; transition: all 0.3s; }
+        .news-more a:hover { background: var(--primary); color: #fff; }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .training-highlights { grid-template-columns: repeat(2, 1fr); }
+            .news-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        }
+        @media (max-width: 768px) {
+            .training-spotlight { padding: 60px 0; }
+            .training-highlights { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .training-highlights .highlight-item { padding: 24px 16px; }
+            .training-cta { flex-direction: column; align-items: center; }
+            .training-cta .cta-btn { width: 100%; max-width: 300px; text-align: center; }
+            .news-section { padding: 60px 0; }
+            .news-grid { grid-template-columns: 1fr; gap: 20px; }
+            .news-card .card-body h4 { min-height: auto; }
+        }
+        @media (max-width: 480px) {
+            .training-highlights { grid-template-columns: 1fr; }
+        }
+
     </style>
 
     <!-- 网站统计 -->
@@ -419,7 +483,10 @@
         <div class="container">
             <a href="./" class="logo">进化湾</a>
             <nav class="nav-links" id="navLinks">
+                <a href="/training/">AI训练师培训</a>
+                <a href="/subsidy/">创业补贴</a>
                 <a href="/#services">核心服务</a>
+                <a href="/news/">动态</a>
                 <a href="/#space">产业基地</a>
                 <a href="/#partners">生态伙伴</a>
                 <a href="/#form">联系我们</a>
@@ -483,17 +550,17 @@
             <div class="value-item">
                 <span class="icon">🎯</span>
                 <h3>不为技术选型困扰</h3>
-                <p>面对超过 10,000 款 AI 工具的纷杂市场，选错方案是最大的隐性成本。我们从您的实际业务场景出发，精准匹配最适合的技术路径，帮您节约至少 90% 的试错时间。</p>
+                <p>面对超过 10,000 款 AI 工具的纷杂市场，选错方案是最大的隐性成本。我们从您的实际业务场景出发，精准匹配最适合的技术路径，帮您大幅节省选型与试错时间。</p>
             </div>
             <div class="value-item">
                 <span class="icon">⚡</span>
                 <h3>不为概念验证买单</h3>
-                <p>从需求诊断到方案上线，平均 30 天完成交付。我们不卖 PPT、不做概念验证——只交付可感知、可衡量的业务效果。</p>
+                <p>AI 营销与工具部署类项目，从需求诊断到方案上线，典型周期 14-30 天（算力服务器交付周期视设备供应而定）。我们不卖 PPT、不做概念验证——只交付可感知、可衡量的业务效果。</p>
             </div>
             <div class="value-item">
                 <span class="icon">📈</span>
                 <h3>不为效果未知焦虑</h3>
-                <p>每项服务在启动前即设定可量化的效果指标。典型客户案例显示：AI 营销模块 ROI 达 3-8 倍，视频生产效率提升 50 倍——每一分投入，都有迹可循。</p>
+                <p>每项服务在启动前即设定可量化的效果指标。参考已交付项目统计：AI 营销模块的 ROI 区间通常为 3-8 倍（因行业与规模而异），视频生产效率在引入 AI 后可提升 10-50 倍不等。每一分投入，都有迹可循<sup>&#8224;</sup>。</p>
             </div>
         </div>
     </section>
@@ -595,7 +662,7 @@
                     <div class="service-card">
                         <span class="icon" style="font-style:normal;color:var(--primary);font-size:1.6em;line-height:1;">◈</span>
                         <h3>AI 营销与增长</h3>
-                        <p class="desc">基于 GEO（生成式搜索引擎优化）与 AI 智能内容技术，重构企业的获客与转化链路，实现获客成本降低 <strong>40%</strong>+<sup>&#8224;</sup>、转化率提升 <strong>200%</strong>+<sup>&#8224;</sup>。</p>
+                        <p class="desc">基于 GEO（生成式搜索引擎优化）与 AI 智能内容技术，重构企业的获客与转化链路，在典型 AI 营销项目中，获客成本可降低 20-40%<sup>&#8224;</sup>、转化率可提升 100-200%<sup>&#8224;</sup>。</p>
                         <div class="service-tag">适合：有产品但缺流量的企业</div>
                         <ul>
                             <li>GEO 优化诊断与策略部署</li>
@@ -611,7 +678,7 @@
                     <div class="service-card">
                         <span class="icon" style="font-style:normal;color:var(--primary);font-size:1.6em;line-height:1;">◈</span>
                         <h3>AI 视频与数字人</h3>
-                        <p class="desc">提供从数字人形象定制到批量视频生产的端到端方案。相比传统视频生产方式，制作成本降低 <strong>90%</strong><sup>&#8224;</sup>，产出效率提升 <strong>50</strong> 倍<sup>&#8224;</sup>。</p>
+                        <p class="desc">提供从数字人形象定制到批量视频生产的端到端方案。相比传统视频生产方式，制作成本可降低 60-90%<sup>&#8224;</sup>，产出效率可提升 10-50 倍<sup>&#8224;</sup>。</p>
                         <div class="service-tag">适合：需要批量视频 / 数字人直播的团队</div>
                         <ul>
                             <li>企业级数字人形象与声音克隆</li>
@@ -654,7 +721,7 @@
                     <div class="service-card">
                         <span class="icon" style="font-style:normal;color:var(--primary);font-size:1.6em;line-height:1;">◈</span>
                         <h3>AI 创业孵化</h3>
-                        <p class="desc">为 AI 创业者提供从创意验证、产品开发到融资对接的全流程陪跑。入孵项目平均 6 个月内完成 MVP 验证并获得首轮融资意向<sup>&#8224;</sup>。依托与天使成长营、进化家等创业教育平台的战略合作，链接数百位实战导师与活跃投资人网络<sup>&#8224;</sup>。</p>
+                        <p class="desc">为 AI 创业者提供从创意验证、产品开发到融资对接的全流程陪跑。入孵项目在融资对接支持中，已有项目在 6-12 个月内获得投资机构的首轮融资意向。具体时间线取决于项目成熟度与市场环境<sup>&#8224;</sup>。依托与天使成长营、进化家等创业教育平台的战略合作，链接数百位实战导师与活跃投资人网络<sup>&#8224;</sup>。</p>
                         <div class="service-tag">适合：有 AI 想法但不确定如何落地的创业者</div>
                         <ul>
                             <li>AI 应用 MVP 快速验证（30 天）</li>
@@ -707,6 +774,44 @@
         </div>
     </section>
 
+    
+    <!-- AI 人才认证与培训 -->
+    <section class="training-spotlight" id="training-spotlight">
+        <div class="container">
+            <div class="section-label">AI 人才认证与培训</div>
+            <h2>考取人工智能训练师证书<br>抢占 AI 时代职业先机</h2>
+            <p class="section-subtitle">人社部认证 &middot; 国网可查 &middot; 终身有效 &middot; 深圳补贴最高 3000 元</p>
+            
+            <div class="training-highlights">
+                <div class="highlight-item">
+                    <span class="icon">&#x1F3C5;</span>
+                    <h4>国家认证</h4>
+                    <p>人社部新职业（4-04-05-05），职业技能等级证书全国通用，国网可查</p>
+                </div>
+                <div class="highlight-item">
+                    <span class="icon">&#x1F4B0;</span>
+                    <h4>政府补贴</h4>
+                    <p>深圳补贴 1000-3000 元，三级及以上 2026 年补贴再涨 30%</p>
+                </div>
+                <div class="highlight-item">
+                    <span class="icon">&#x1F3AF;</span>
+                    <h4>通过率高</h4>
+                    <p>系统培训 + 1200 道题库 + 实操平台，往期通过率 82.7%</p>
+                </div>
+                <div class="highlight-item">
+                    <span class="icon">&#x1F4F1;</span>
+                    <h4>在线学习</h4>
+                    <p>不受时间地点限制，在职可学，滚动开班，随到随学</p>
+                </div>
+            </div>
+            
+            <div class="training-cta">
+                <a href="/training/" class="cta-btn primary">了解培训详情 &rarr;</a>
+                <a href="/training/#form" class="cta-btn outline">立即咨询报名</a>
+            </div>
+        </div>
+    </section>
+
     <!-- 线下空间 -->
     <section class="space" id="space">
         <div class="container">
@@ -724,7 +829,7 @@
                 </div>
                 <div class="space-feature">
                     <h4>💼 投融资路演厅</h4>
-                    <p>每月举办闭门路演，对接多家活跃产业基金与投资机构。入孵项目平均 6 个月内获得首轮融资意向。</p>
+                    <p>每月举办闭门路演，对接多家活跃产业基金与投资机构。入孵项目在融资对接支持下，已有项目获得投资机构的融资意向。具体进展视项目成熟度与市场环境而定。</p>
                 </div>
                 <div class="space-feature">
                     <h4>🎓 实训与认证中心</h4>
@@ -732,7 +837,7 @@
                 </div>
                 <div class="space-feature">
                     <h4>🔧 技术配置工坊</h4>
-                    <p>从算力服务器部署到 AI 工具环境搭建，一天之内让您的 AI 系统真正"跑起来"。H200/B300 算力集群现场体验。</p>
+                    <p>在硬件设备就绪的前提下，进化湾工程师可快速完成 AI 工具环境的搭建与配置。欢迎预约 H200/B300 算力集群现场体验，直观感受从硬件部署到 AI 应用落地的完整路径。实际交付周期视设备供应与具体方案而定。</p>
                 </div>
             </div>
             <div class="space-footer" style="text-align:center;margin-top:48px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.08);">
@@ -742,6 +847,55 @@
                 <p style="color:rgba(255,255,255,0.5);font-size:0.85em;">
                     18718528592 · YCQH_SZ@163.com
                 </p>
+            </div>
+        </div>
+    </section>
+
+    
+    <!-- 进化湾动态 -->
+    <section class="news-section" id="news">
+        <div class="container">
+            <div class="section-label">进化湾动态</div>
+            <h2>了解最新进展与客户故事</h2>
+            <p class="section-subtitle">平台活动、客户成功案例、官方公告——见证进化湾与 AI 产业共同成长</p>
+            
+            <div class="news-grid">
+                <!-- 平台活动 -->
+                <div class="news-card">
+                    <div class="card-header">
+                        <span class="type-tag event">&#x1F4E2; 平台活动</span>
+                    </div>
+                    <div class="card-body">
+                        <h4>活动内容即将上线</h4>
+                        <p>线下沙龙、线上直播、行业展会……精彩活动敬请期待</p>
+                    </div>
+                </div>
+                
+                <!-- 客户案例 -->
+                <div class="news-card">
+                    <div class="card-header">
+                        <span class="type-tag case">&#x1F4BC; 客户案例</span>
+                    </div>
+                    <div class="card-body">
+                        <h4>成功案例即将发布</h4>
+                        <p>企业 AI 转型、入孵项目成长、学员持证故事……真实案例陆续呈现</p>
+                    </div>
+                </div>
+                
+                <!-- 官方公告 -->
+                <div class="news-card">
+                    <div class="card-header">
+                        <span class="type-tag announce">&#x1F4F0; 官方公告</span>
+                    </div>
+                    <div class="card-body">
+                        <h4>公告即将发布</h4>
+                        <p>合作签约、资质认证、服务升级……第一时间了解进化湾动态</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="news-more">
+                <a href="/news/">查看全部动态 &rarr;</a>
             </div>
         </div>
     </section>
@@ -868,7 +1022,10 @@
                 <div>
                     <h4>快速链接</h4>
                     <p><a href="./">首页</a></p>
+                    <p><a href="/training/">AI训练师培训</a></p>
+                    <p><a href="/subsidy/">创业补贴</a></p>
                     <p><a href="/#services">核心服务</a></p>
+                    <p><a href="/news/">动态</a></p>
                     <p><a href="/faq/">常见问题 FAQ</a></p>
                     <p><a href="/glossary/">AI 术语表</a></p>
                                         <p><a href="/#space">产业基地</a></p>

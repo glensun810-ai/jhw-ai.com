@@ -227,7 +227,8 @@ def get_service_label(service_value):
         'ai-tools': 'AI 技术部署',
         'ai-compliance': 'AI 合规与风控',
         'ai-industry': '行业 AI 解决方案',
-        'other': '其他 AI 相关需求'
+        'other': '其他 AI 相关需求',
+        'AI训练师培训': 'AI 训练师培训'
     }
     return service_map.get(service_value, service_value or '-')
 
@@ -819,6 +820,21 @@ def admin_api_delete_lead(lead_id):
 @admin_required
 def admin_api_analytics():
     import sqlite3, datetime, os
+    # 路径 → 友好名称映射，维护此字典即可添加/修改页面别名
+    PATH_ALIAS = {
+        '/':                                     ('🏠 首页', ''),
+        '/training/':                            ('🎓 AI 培训介绍', ''),
+        '/faq/':                                 ('❓ 常见问题（FAQ）', ''),
+        '/glossary/':                            ('📖 术语库（Glossary）', ''),
+        '/blog/':                                ('📝 博客列表', ''),
+        '/blog/guide/geo-optimization-guide.html':       ('🌍 GEO 优化指南', ''),
+        '/blog/guide/ai-startup-incubation-guide.html':  ('🚀 AI 创业孵化指南', ''),
+        '/blog/guide/ai-marketing-roi-case-study.html':  ('📊 AI 营销 ROI 案例研究', ''),
+        '/blog/guide/h200-b300-server-comparison.html':  ('🖥 H200 vs B300 服务器对比', ''),
+        '/news/':                                ('📰 新闻动态', ''),
+        '/wechat/ai-training-guide.html':        ('💬 微信·AI 培训指南', ''),
+        '/subsidy/':                             ('💰 深圳创业补贴', ''),
+    }
     db = os.path.join(os.path.dirname(DB_PATH), 'analytics.db')
     if not os.path.exists(db):
         return jsonify({'code': 0, 'data': {'total_views': 0, 'total_visitors': 0, 'today_views': 0, 'daily_trend': [], 'top_pages': []}})
@@ -830,14 +846,34 @@ def admin_api_analytics():
     ts = datetime.date.today().isoformat()
     tod = c.execute("SELECT SUM(count) as v FROM pageviews_daily WHERE date=?", (ts,)).fetchone()
     trend = c.execute("SELECT date, SUM(count) as views FROM pageviews_daily WHERE date >= date('now', '-14 days') GROUP BY date ORDER BY date").fetchall()
-    top = c.execute("SELECT path, SUM(count) as views FROM pageviews_daily GROUP BY path ORDER BY views DESC LIMIT 10").fetchall()
+    sql = """SELECT path, SUM(count) as views FROM pageviews_daily 
+WHERE (
+  path = '/' 
+  OR path LIKE '/blog/%' 
+  OR path LIKE '/training/%' 
+  OR path LIKE '/faq/%' 
+  OR path LIKE '/glossary/%' 
+  OR path LIKE '/news/%' 
+  OR path LIKE '/wechat/%' 
+  OR path LIKE '/subsidy/%'
+)
+AND path NOT LIKE '/wp-%'
+AND path NOT LIKE '/.env%'
+AND path NOT LIKE '/.git%'
+AND path NOT LIKE '/xmlrpc%'
+AND path NOT LIKE '/favicon%'
+AND path NOT LIKE '/robots.txt'
+AND path NOT LIKE '/sitemap%'
+AND path != '/health'
+GROUP BY path ORDER BY views DESC LIMIT 10"""
+    top = c.execute(sql).fetchall()
     conn.close()
     return jsonify({'code': 0, 'data': {
         'total_views': tr['value'] if tr else 0,
         'total_visitors': ur['value'] if ur else 0,
         'today_views': tod['v'] if tod and tod['v'] else 0,
         'daily_trend': [{'date': r['date'], 'views': r['views']} for r in trend],
-        'top_pages': [{'path': r['path'], 'views': r['views']} for r in top]
+        'top_pages': [format_page(r['path'], r['views'], PATH_ALIAS) for r in top]
     }})
 
 
@@ -952,6 +988,54 @@ LOGIN_TEMPLATE = '''
 </html>
 '''
 
+def _is_noise_path(path):
+    """判断路径是否为攻击扫描/敏感文件/非业务请求"""
+    noise_prefixes = (
+        '/wp-', '/wordpress', '/.env', '/.git', '/.svn', '/xmlrpc',
+        '/phpmyadmin', '/pma', '/adminer', '/phpinfo', '/shell',
+        '/backup', '/dump', '/tmp', '/test', '/testing', '/debug',
+        '/vendor/', '/node_modules/', '/composer', '/web/',
+        '/SDK/', '/sdk/',
+    )
+    if path.startswith(noise_prefixes):
+        return True
+    if path.endswith('.php') and not path.startswith('/blog/'):
+        return True
+    return False
+
+
+def format_page(path, views, alias_map):
+    """将 path 转换为带友好名称和可访问 URL 的条目"""
+    import re
+    # 精确匹配
+    if path in alias_map:
+        name, url_suffix = alias_map[path]
+        url = url_suffix if url_suffix else path
+        return {'path': path, 'name': name, 'url': url, 'views': views}
+    # 博客文章子页面：/blog/guide/xxx.html
+    m = re.match(r'^/blog/guide/(.+)\.html$', path)
+    if m:
+        from urllib.parse import unquote
+        title = unquote(m.group(1).replace('-', ' ').replace('_', ' '))
+        name = f'📄 博客文章：{title}'
+        return {'path': path, 'name': name, 'url': path, 'views': views}
+    # 其他已知前缀兜底
+    prefix_map = {
+        '/faq/':       '❓ FAQ',
+        '/training/':  '🎓 培训',
+        '/news/':      '📰 新闻',
+        '/blog/':      '📝 博客',
+        '/wechat/':    '💬 微信',
+        '/glossary/':  '📖 术语',
+    }
+    for prefix, label in prefix_map.items():
+        if path.startswith(prefix):
+            sub = path[len(prefix):].lstrip('/')
+            name = f'{label}：{sub}' if sub else label
+            return {'path': path, 'name': name, 'url': path, 'views': views}
+    # 未知路径
+    return {'path': path, 'name': path, 'url': path, 'views': views}
+
 if __name__ == '__main__':
     print('='*60)
     print('进化湾® 表单数据服务启动中...')
@@ -961,3 +1045,5 @@ if __name__ == '__main__':
     print('健康检查: http://your-server:5000/health')
     print('='*60)
     app.run(host='0.0.0.0', port=5000, debug=False)
+
+

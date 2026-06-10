@@ -344,10 +344,12 @@ const DashboardView = {
             // 热门页面
             var list = document.getElementById('ana-pages-list');
             if (list && d.top_pages && d.top_pages.length > 0) {
-                var h = '<table class="mini-table"><thead><tr><th>页面</th><th>访问量</th></tr></thead><tbody>';
+                var h = '<table class="mini-table" style="table-layout:auto;"><thead><tr><th>页面名称</th><th>访问量</th></tr></thead><tbody>';
                 d.top_pages.forEach(function(p) {
-                    var path = p.path.length > 40 ? p.path.slice(0,40) + '...' : p.path;
-                    h += '<tr><td>' + path + '</td><td>' + p.views + '</td></tr>';
+                    var name = p.name || p.path;
+                    var url = p.url || p.path;
+                    var pathHint = p.path.length > 50 ? p.path.slice(0,50) + '...' : p.path;
+                    h += '<tr><td><a href="' + url + '" target="_blank" title="' + pathHint + '" style="text-decoration:none;color:#0f4c81;">' + name + '</a><br><span style="font-size:0.75em;color:#999;">' + pathHint + '</span></td><td style="text-align:center;font-weight:bold;">' + p.views + '</td></tr>';
                 });
                 h += '</tbody></table>';
                 list.innerHTML = h;
