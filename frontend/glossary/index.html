@@ -28,9 +28,19 @@
         header { background: #1a1a2e; color: #fff; padding: 60px 0 40px; text-align: center; }
         header h1 { font-size: 2.4em; margin-bottom: 12px; }
         header p { opacity: 0.7; font-size: 1.1em; }
-        nav { background: #fff; border-bottom: 1px solid #eee; padding: 12px 0; position: sticky; top: 0; z-index: 100; }
-        nav a { color: #0f4c81; text-decoration: none; font-weight: 600; }
-        nav a:hover { text-decoration: underline; }
+        nav { background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 20px rgba(0,0,0,0.06); border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 1000; }
+        nav .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 54px; }
+        nav .nav-links { display: flex; gap: 28px; align-items: center; }
+        nav .nav-links a { color: #555; text-decoration: none; font-weight: 500; font-size: 15px; position: relative; white-space: nowrap; transition: color 0.25s; }
+        nav .nav-links a:hover { color: #0f4c81; }
+        nav .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #0f4c81; transition: width 0.3s; }
+        nav .nav-links a:hover::after { width: 100%; }
+nav .logo { font-size: 22px; font-weight: 700; color: #1a1a2e; text-decoration: none; flex-shrink: 0; }
+        nav .logo:hover { color: #1a1a2e; }
+        nav .contact-btn { background: #0f4c81; color: #fff; padding: 8px 22px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(15,76,129,0.2); white-space: nowrap; flex-shrink: 0; }
+        nav .contact-btn:hover { background: #0a3d62; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,76,129,0.3); }
+        @media (max-width: 860px) { nav .nav-links { display: none; } }
+
         .search-bar { padding: 32px 0; }
         .search-bar input { width: 100%; padding: 14px 20px; border: 2px solid #eee; border-radius: 8px; font-size: 1.1em; }
         .search-bar input:focus { outline: none; border-color: #0f4c81; }
@@ -45,7 +55,17 @@
         .index-nav { display: flex; flex-wrap: wrap; gap: 8px; padding: 20px 0; }
         .index-nav a { display: inline-block; padding: 6px 14px; background: #f0f4f8; color: #0f4c81; text-decoration: none; border-radius: 4px; font-size: 0.9em; }
         .index-nav a:hover { background: #0f4c81; color: #fff; }
-        footer { background: #1a1a2e; color: #aaa; text-align: center; padding: 40px 0; margin-top: 60px; }
+        
+        footer { background: #1a1a2e; color: #ccc; padding: 80px 0 40px; margin-top: 60px; }
+        footer .footer-grid { display: grid; grid-template-columns: 2fr 1.5fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+        footer h4 { color: #fff; margin-bottom: 20px; font-size: 1.05em; font-weight: 600; }
+        footer p { color: #aaa; line-height: 1.8; font-size: 0.92em; margin-bottom: 12px; }
+        footer a { color: #ccc; text-decoration: none; transition: color 0.25s; }
+        footer a:hover { color: #fff; }
+        footer .copyright { text-align: center; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.08); color: #888; font-size: 0.88em; }
+        @media (max-width: 768px) { footer .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+        @media (max-width: 480px) { footer .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
+
         footer a { color: #ccc; text-decoration: none; }
     
         @media (max-width: 768px) {
@@ -80,17 +100,29 @@
     </script>
 </head>
 <body>
+<nav>
+    <div class="nav-inner">
+        <a href="/" class="logo">进化湾</a>
+        <div class="nav-links">
+            <a href="/#services">核心服务</a>
+            <a href="/training/">AI训练师培训</a>
+            <a href="/subsidy/">创业补贴</a>
+            <a href="/about/">关于</a>
+            <a href="/news/">动态·洞察</a>
+            <a href="/faq/">FAQ</a>
+            <a href="/glossary/">术语表</a>
+            <a href="/#form">联系我们</a>
+        </div>
+        <a href="/#form" class="contact-btn">获取方案</a>
+    </div>
+</nav>
 <header>
     <div class="container">
         <h1>AI 术语详解</h1>
         <p>关键概念 · 通俗解释 · 进化湾专家团队编撰</p>
     </div>
 </header>
-<nav>
-    <div class="container">
-        <a href="./">← 返回首页</a> &nbsp;·&nbsp; <a href="/faq/">常见问题</a>
-    </div>
-</nav>
+
 <div class="container">
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="搜索 AI 术语，例如：GEO、大模型、AI Agent...">
@@ -116,7 +148,44 @@ const terms = [
   {id:'aistartup',cn:'AI 创业孵化',en:'AI Startup Incubation',def:'为AI领域的初创项目提供从创意验证、产品开发、商业模式设计到融资对接的全流程支持服务。与传统孵化器不同，AI创业孵化需要同时具备技术判断力（这个AI方案技术上是否可行？）、商业洞察力（这个AI应用市场愿意买单吗？）和资本对接能力（哪些投资人投AI？）。深圳南山是全国AI创业最活跃的区域之一。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['AI投融资','企业AI']},
   {id:'einvestment',cn:'AI 投融资',en:'AI Investment & Financing',def:'面向AI领域的股权投资和融资活动。2026年AI投融资的几大热点：AI Agent应用层、多模态AI、垂直行业AI解决方案、AI基础设施（算力/数据/安全）。深圳南山区通过'X-Day'西丽湖路演社等平台，2025-2026年已累计促成AI相关股权投资超9.4亿元。',related:['AI创业孵化','企业AI']},
   {id:'aitools',cn:'AI 工具选型',en:'AI Tool Selection',def:'企业根据自身需求和资源条件，从众多AI产品中选择最适合的工具和平台的过程。关键决策因素：功能匹配度（能否真正解决业务痛点）、成本结构（按用量付费vs固定年费vs一次性部署）、数据安全（数据是否会上传至外部服务器）、易用性（员工是否需要专业培训）、集成能力（能否与现有系统对接）。2026年市场上的AI工具已超过10000款，选型本身就是一个需要专业判断的服务。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['中小企业AI','SaaS','企业AI']},
-  {id:'evobay',cn:'进化湾 AI 全链路服务',en:'Evolution Bay AI Services',def:'进化湾®是深圳云程企航与云协同创新联合打造的AI产业综合服务平台，提供AI营销与增长（GEO优化、AI内容生产）、AI视频与数字人（形象定制、批量生产、直播中台）、AI创业孵化（MVP验证、融资对接）、AI人才认证（工信部授权认证、职业培训）、AI投融资对接、AI技术部署、AI合规风控、行业AI解决方案等八大服务模块。立足深圳南山，服务全国AI产业生态。',related:['企业AI','GEO','AI Agent','LLM']}
+  {id:'evobay',cn:'进化湾 AI 全链路服务',en:'Evolution Bay AI Services',def:'进化湾®是深圳云程企航与云协同创新联合打造的AI产业综合服务平台，提供AI营销与增长（GEO优化、AI内容生产）、AI视频与数字人（形象定制、批量生产、直播中台）、AI创业孵化（MVP验证、融资对接）、AI人才认证（工信部授权认证、职业培训）、AI投融资对接、AI技术部署、AI合规风控、行业AI解决方案等八大服务模块。立足深圳南山，服务全国AI产业生态。',related:['企业AI','GEO','AI Agent','LLM']},
+  {id:'gpu',cn:'GPU（图形处理器）',en:'Graphics Processing Unit',def:'一种专门用于并行计算的处理器芯片。在AI领域，GPU是训练和运行深度学习模型的核心硬件。NVIDIA的H200和B300是企业级AI推理和训练的主力GPU型号。GPU的核心指标包括：显存容量（决定能运行的模型大小）、显存带宽（决定数据处理速度）、FP8算力（决定计算速度）。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['算力','H200','B300']},
+  {id:'h200',cn:'NVIDIA H200',en:'NVIDIA H200 Tensor Core GPU',def:'NVIDIA基于Hopper架构打造的高端AI加速卡，是H100的高显存升级版本。H200拥有141GB HBM3e显存和4.8TB/s显存带宽，FP8算力约1,979 TFLOPS。相比H100，H200的显存容量和带宽提升约1.7倍，特别适合大规模AI推理和模型微调场景。功耗700W TDP，采用NVLink 4.0互连（900GB/s）。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['GPU','算力','B300']},
+  {id:'b300',cn:'NVIDIA B300',en:'NVIDIA B300 Tensor Core GPU',def:'NVIDIA基于Blackwell架构的旗舰AI加速卡，2025年Q2上市。B300拥有192GB HBM3e显存和8TB/s显存带宽，FP8算力约4,000 TFLOPS，是H200的两倍。功耗1,000W TDP，采用NVLink 5.0互连（1,800GB/s）。适合70B+参数大模型的训练和实时推理场景。供应紧张，溢价显著。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['GPU','算力','H200']},
+  {id:'tco',cn:'TCO（总拥有成本）',en:'Total Cost of Ownership',def:'评估IT基础设施时综合考虑的长期总成本。在算力服务器领域，TCO不仅包括硬件采购成本，还涵盖电力消耗、散热系统、机房空间租赁、运维人员等运营成本。以典型8卡服务器3年周期为例，电力和散热成本通常占TCO的10-15%。算力服务器的TCO计算对于企业的采购决策至关重要。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['GPU','算力','数据中心']},
+  {id:'fp8',cn:'FP8 精度',en:'8-bit Floating Point',def:'一种使用8位二进制表示浮点数的数据格式，在AI推理中广泛应用。FP8相比FP16（16位浮点）可减少约50%的数据存储需求并提升约2倍的计算速度，同时精度损失在可接受范围内。NVIDIA H200和B300等现代GPU都支持FP8精度计算。在推理部署中合理使用FP8可以显著降低延迟和成本。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['GPU','推理','量化']},
+  {id:'inference',cn:'AI 推理',en:'AI Inference',def:'使用已训练完成的AI模型对新数据进行预测或生成的过程。推理是AI落地的最终环节——如AI客服回答用户问题、AI绘画生成图片、AI翻译转换语言等。推理对延迟和吞吐量有较高要求，通常使用GPU或专用推理芯片。与训练相比，推理的计算需求更低但部署规模更大。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['GPU','训练','模型部署']},
+  {id:'training',cn:'AI 训练',en:'AI Model Training',def:'使用大规模数据集调整AI模型参数，使其学习特定任务的过程。训练是AI技术中最消耗算力的环节——训练一个GPT-4级别的模型可能需要数千张GPU连续运行数周到数月。企业通常不需要训练基础大模型（成本极高），而是在预训练模型的基础上通过微调适配自身业务场景。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['GPU','微调','推理']},
+  {id:'finetuning',cn:'微调',en:'Fine-Tuning',def:'在预训练的通用AI模型基础上，使用特定领域的数据进行额外训练，使模型在特定任务上表现更优的技术。微调相比从头训练可节省90%以上的算力和时间。常见的微调方法有全参数微调和LoRA（低秩适配）等参数高效微调方法。企业对开源模型（如Llama、DeepSeek、Qwen）进行微调是最常见的AI应用模式。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['训练','LoRA','LLM']},
+  {id:'lora',cn:'LoRA（低秩适配）',en:'Low-Rank Adaptation',def:'一种参数高效微调技术。LoRA通过在原始模型权重旁附加少量可训练参数来实现模型适配，而不是修改全部模型参数。通常只需训练原始模型参数量的0.1-1%（数千万参数而不是数十亿），即可达到接近全参数微调的效果。LoRA大幅降低了企业微调大模型的门槛和成本。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['微调','LLM','训练']},
+  {id:'quantization',cn:'量化',en:'Quantization',def:'将AI模型参数从高精度数值（如32位浮点）转换为低精度数值（如8位整数）的技术。量化后的模型大小可减少至原来的25-50%，推理速度提升2-4倍，同时精度损失通常控制在1-3%以内。量化是企业将AI模型部署到生产环境的关键优化步骤，尤其适合对响应速度和成本敏感的在线推理场景。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['推理','模型部署','FP8']},
+  {id:'vector',cn:'向量数据库',en:'Vector Database',def:'专门存储和检索高维向量数据的数据库系统。向量数据库是RAG架构的核心组件：文本、图片等非结构化数据被AI模型转换为向量（Embedding），存入向量数据库；用户提问时，系统在库中快速搜索最相似的向量，提取相关信息供AI生成答案。Mlivus、Pinecone、Weaviate、Qdrant是主流的向量数据库产品。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['RAG','LLM','Embedding']},
+  {id:'embedding',cn:'Embedding（嵌入向量）',en:'Embedding Vector',def:'将文本、图片等非结构化数据转换为固定长度的数值向量表示的技术。Embedding的核心价值是让计算机能够"理解"语义相似性——语义相近的文本会被转换为距离相近的向量。Embedding广泛应用于语义搜索、推荐系统、RAG知识库检索等场景。OpenAI、Cohere等公司都提供Embedding API服务。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['向量数据库','RAG','LLM']},
+  {id:'prompt',cn:'提示词工程',en:'Prompt Engineering',def:'设计和优化输入到AI模型的指令（提示词），以获得更准确、更有用的输出结果的技术。好的提示词设计可以显著提升AI输出质量。核心技巧包括：明确角色设定（"你是一名资深HR专家"）、提供示例（few-shot）、分步骤引导（chain-of-thought）、设定输出格式要求。提示词工程是2025-2026年AI应用领域增长最快的技能之一。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['LLM','AI Agent','RAG']},
+  {id:'hallucination',cn:'AI 幻觉',en:'AI Hallucination',def:'AI模型生成看似合理但实际不存在的虚假信息的现象。幻觉是大语言模型的固有特性，无法完全消除但可以大幅降低。减少幻觉的常用方法：使用RAG架构（让AI基于检索到的真实信息回答）、要求AI标注不确定的信息、人工审核关键事实。不同的模型在产生幻觉的概率上存在差异，选择合适的模型也是降低幻觉的策略之一。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['LLM','RAG','企业AI']},
+  {id:'multimodal',cn:'多模态 AI',en:'Multimodal AI',def:'能够同时理解和生成文本、图像、音频、视频等多种类型数据的AI模型。代表产品如GPT-4V（能看图）、Claude 3.5 Vision、Gemini等。多模态AI让企业能够处理更复杂的任务：从产品图片自动生成描述文案、从会议录音自动生成纪要、从视频中提取关键信息并进行分类。2026年多模态AI已逐步成熟并进入企业应用阶段。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['LLM','AI视频','AI Agent']},
+  {id:'opensource',cn:'开源 AI 模型',en:'Open-Source AI Model',def:'模型权重和架构公开可访问的AI模型。与闭源模型（如GPT-4、Claude）不同，开源模型（如Llama、DeepSeek、Qwen、Mistral）允许企业在本地私有化部署，数据不出企业网络。2025-2026年，开源模型在性能上已接近甚至部分超越闭源模型，加上其数据安全优势，成为企业AI应用的首选方案。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['LLM','模型部署','微调']},
+  {id:'deepseek',cn:'DeepSeek',en:'DeepSeek',def:'由深度求索（DeepSeek）开发的中国开源大语言模型系列。DeepSeek-V3和DeepSeek-R1在多项基准测试中达到或接近GPT-4水平，同时训练成本显著低于同类模型。DeepSeek的崛起标志着中国AI技术能力的重大突破，也对全球AI市场的定价产生了深远影响——2025-2026年，AI模型API价格因DeepSeek等国产模型的竞争下降了80-95%。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['开源模型','LLM','企业AI']},
+  {id:'mcp',cn:'MCP（模型上下文协议）',en:'Model Context Protocol',def:'由OpenAI提出的标准化协议，用于定义AI模型与外部工具、数据源之间的交互规范。MCP让AI Agent能够以统一的方式调用搜索引擎、数据库、API接口等外部资源。2026年，MCP正在成为AI Agent生态的事实标准，类似HTTP对于Web的重要性。支持MCP的Agent可以"即插即用"地接入各种工具和服务。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['AI Agent','LLM','工具调用']},
+  {id:'a2a',cn:'A2A（Agent到Agent协议）',en:'Agent-to-Agent Protocol',def:'由Google提出的开放协议，用于不同AI Agent之间的直接通信和协作。A2A协议让不同厂商开发的AI Agent可以"互相对话"、协同完成复杂的多步骤任务。2026年A2A与MCP正共同构建AI Agent生态的基础互联标准——MCP定义Agent如何连接工具，A2A定义Agent如何连接Agent。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['AI Agent','MCP','LLM']},
+  {id:'rpa',cn:'RPA（机器人流程自动化）',en:'Robotic Process Automation',def:'使用软件机器人自动执行重复性、规则明确的数字业务流程的技术。传统RPA基于预设规则（如"如果收到邮件A，则执行操作B"），而AI+RPA（智能自动化）可以处理非结构化数据、理解自然语言、适应变化的环境。典型场景：自动回复客户邮件、自动审核合同条款、自动数据格式转换。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['AI Agent','自动化工作流','企业AI']},
+  {id:'aivideo',cn:'AI 视频生成',en:'AI Video Generation',def:'利用AI模型从文字描述、图片或视频片段自动生成视频内容的技术。代表工具包括Sora（OpenAI）、Runway Gen-3、Pika、可灵AI、即梦等。2026年，AI视频在短视频营销、产品展示、培训视频、数字人直播等场景已大规模商用。企业实测效率：传统制作一条30秒宣传视频需2-3天，AI视频生成可将时间缩短至30分钟以内。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['数字人','LLM','多模态AI']},
+  {id:'text2speech',cn:'语音合成',en:'Text-to-Speech (TTS)',def:'将文字转换为自然语音的AI技术。2026年的AI语音合成已能实现高度逼真的情感化语音，可以模拟不同年龄、性别、方言甚至特定人物的音色。企业在数字人直播、AI客服、有声内容制作、无障碍服务等场景广泛应用。主流语音合成API包括：Azure TTS、火山引擎TTS、Fish Audio等。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['数字人','AI视频','LLM']},
+  {id:'saas',cn:'SaaS（软件即服务）',en:'Software as a Service',def:'一种通过互联网提供软件使用的交付模式。在AI领域，SaaS服务让企业无需自建AI基础设施，通过浏览器或API即可使用AI能力。AI SaaS代表产品包括：ChatGPT（对话AI）、Midjourney（AI绘画）、Notion AI（AI写作）、进化湾AI营销平台等。SaaS模式降低了AI应用的门槛，中小企业也可快速享受到AI能力。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['企业AI','AI工具选型','模型部署']},
+  {id:'aiseo',cn:'AI SEO（AI驱动SEO）',en:'AI-Powered SEO',def:'利用AI技术辅助搜索引擎优化的方法体系。包括：AI关键词研究（分析海量搜索数据发现机会）、AI内容生产（批量生成SEO友好的文章）、AI竞争分析（自动分析对手策略）、AI排名监控（实时追踪关键词排名变化）。AI SEO与传统SEO的核心区别在于自动化程度和分析深度大幅提升。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['GEO','AI搜索','企业AI']},
+  {id:'datasecurity',cn:'AI 数据安全',en:'AI Data Security',def:'在AI系统的数据采集、存储、处理和输出全过程中保护数据免受泄露、篡改和滥用的技术和措施。关键要求包括：训练数据的合规采集（确保不包含个人隐私和商业机密）、推理过程的隐私保护（防止用户问题被泄露）、模型输出的内容安全（防止生成有害内容）。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['AI合规','AI治理','企业AI']},
+  {id:'claude',cn:'Claude',en:'Claude (by Anthropic)',def:'由Anthropic公司开发的大语言模型系列，以注重安全性、长文本处理和高质量对话能力著称。Claude的特点包括：超长上下文窗口（支持10万+ token的输入）、低幻觉率、自然的人类对话风格。Claude 3.5 Sonnet和Claude 4是2025-2026年企业级AI应用的热门选择，特别适合文档分析、代码生成、客户服务等场景。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['LLM','AI Agent','企业AI']},
+  {id:'gemini',cn:'Gemini',en:'Gemini (by Google)',def:'Google推出的多模态大语言模型系列。Gemini 2.0和Gemini 2.5系列支持原生多模态（同时理解文本、图片、音频、视频），并深度集成Google生态系统。Gemini的特点包括：与Google搜索、Google Workspace的无缝集成，长上下文支持，强大的推理和代码能力。对于使用Google生态的企业，Gemini是首选的AI底座。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['LLM','多模态AI','企业AI']},
+  {id:'chatgpt',cn:'ChatGPT',en:'ChatGPT (by OpenAI)',def:'OpenAI开发的对话式AI产品，基于GPT系列大语言模型。ChatGPT是全球用户最多的AI应用之一，提供网页版、App和API服务。ChatGPT Search功能还集成了实时网络搜索，可直接引用网页内容生成带来源的答案。对于企业来说，ChatGPT是企业AI应用的入门级工具，适合文案创作、数据分析、编程辅助、客户服务等通用场景。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['LLM','AI搜索','企业AI']},
+  {id:'aisub',cn:'AI 订阅模式',en:'AI Subscription Model',def:'AI服务的按周期付费模式。常见的AI订阅形式：AI SaaS工具的月/年订阅费（如ChatGPT Plus ¥150/月、Midjourney ¥200/月）、AI API的按量计费（按token数量）、进化湾AI服务的按项目付费。企业对AI服务的投入应根据使用频率和业务价值选择不同的付费模式，避免为不常用的功能付费。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['SaaS','企业AI','AI工具选型']},
+  {id:'aigovernance',cn:'AI 治理',en:'AI Governance',def:'管理AI系统的开发、部署和使用的一整套政策、流程和控制措施。AI治理包括：明确AI使用的伦理原则、建立AI项目的审批机制、制定AI输出的审核标准、定期进行AI系统的合规审计。良好的AI治理可以帮助企业在创新和风险之间取得平衡，也是应对AI监管趋势的主动策略。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['AI合规','数据安全','企业AI']},
+  {id:'aicontent',cn:'AI 内容生产',en:'AI Content Generation',def:'利用AI工具批量生产文本、图片、音频、视频等内容的技术流程。企业AI内容生产的最佳实践是"AI+人工"协作模式：AI负责初稿和批量生成（提升10-50倍效率），人工负责策略规划、创意把关和质量审核。2026年，AI内容生产已覆盖公众号文章、小红书笔记、短视频脚本、营销海报、产品介绍等几乎所有企业内容类型。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['AI视频','数字人','GEO']},
+  {id:'edgeai',cn:'端侧 AI / 边缘 AI',en:'Edge AI',def:'在本地设备（如手机、摄像头、IoT设备）上直接运行AI模型的技术，而不是将数据发送到云端处理。边缘AI的核心优势：低延迟（实时响应）、数据隐私（不用上传云端）、离线可用（无需网络）、低带宽成本。2026年，边缘AI在智能摄像头、工业质检、智能穿戴设备等场景快速发展，高通、联发科等芯片厂商已推出专用AI加速芯片。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['模型部署','推理','AI终端']},
+  {id:'knowledgebase',cn:'企业知识库',en:'Enterprise Knowledge Base',def:'将企业的文档、数据、经验等结构化/非结构化信息集中存储和管理的系统。AI时代的企业知识库通常采用RAG架构：文档被切分→嵌入向量→存入向量数据库→AI基于检索到的内容回答问题。企业知识库是AI在企业落地的核心场景之一，让AI不再是"通用智能"而是"懂业务"的助手。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['RAG','向量数据库','企业AI']},
+  {id:'aiops',cn:'AI 运维（AIOps）',en:'AI for IT Operations',def:'将AI技术应用于IT运维管理的实践。AIOps通过分析海量运维数据（日志、指标、告警），实现智能异常检测、故障根因分析、自动化修复、容量预测等能力。典型价值：将平均故障恢复时间（MTTR）从数小时缩短至数十分钟，运维效率提升50%以上。适合IT团队规模较大或有严格SLA要求的企业。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['企业AI','自动化工作流','模型部署']},
+  {id:'nocodeai',cn:'无代码 AI',en:'No-Code AI',def:'无需编写代码即可构建和使用AI应用的技术平台。无代码AI工具让非技术背景的业务人员也能利用AI能力：通过拖拽式界面搭建AI工作流、上传文档快速构建RAG知识库、用自然语言描述需求生成AI应用。2026年无代码AI平台大幅降低了企业AI应用的技术门槛，让"业务人员主导AI落地"成为可能。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['SaaS','企业AI','AI工具选型']},
+  {id:'smbai',cn:'中小企业 AI',en:'SMB AI Adoption',def:'中小型企业引入和应用AI技术的策略和实践。中小企业在AI应用上与大企业面临不同挑战：预算有限（无法承担定制化AI大项目）、技术团队薄弱（没有AI工程师）、业务场景多样但规模小。最佳实践：从低成本的SaaS工具入手（如AI写作、AI客服），选择1-2个场景快速验证效果，逐步扩大应用范围。进化湾提供专为中小企业设计的轻量级AI服务包。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['企业AI','AI工具选型','SaaS']},
+  {id:'aicost',cn:'AI 成本优化',en:'AI Cost Optimization',def:'通过技术和管理手段降低AI应用的总成本。主要方法：选择合适的模型大小（不一定用最大的模型）、使用量化技术减少计算需求、合理规划GPU使用模式（如spot实例、混合部署）、通过模型蒸馏创建小模型替代大模型、利用开源模型避免API调用费。2025-2026年，随着国产AI模型的竞争，AI应用的单位成本已下降80%以上。<a href="/#form" style="color:#0f4c81;text-decoration:none;font-weight:500;">进化湾提供该领域的企业级咨询与服务 →</a>',related:['模型部署','推理','开源模型']},
 ];
 
 // Populate glossary
@@ -152,5 +221,49 @@ document.getElementById('searchInput').addEventListener('input', function(e) {
   });
 });
 </script>
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4>关于进化湾®</h4>
+                    <p>进化湾®是深圳云程企航与云协同创新联合打造的 AI 产业服务平台，立足深圳南山，提供算力基础设施、AI 营销增长、视频与数字人、创业孵化、人才认证、商业选址与投融资对接等全链路服务。</p>
+                </div>
+                
+                <div>
+                    <h4>联系我们</h4>
+                    <p>地址：<br>深圳市南山区粤海街道高新区社区沙河西路 1809 号深圳湾科技生态园 2 栋 A1101</p>
+                    <p><span style="color:#888;font-weight:500;">电话</span> <a href="tel:18718528592">18718528592</a></p>
+                    <p><span style="color:#888;font-weight:500;">邮箱</span> <a href="mailto:YCQH_SZ@163.com">YCQH_SZ@163.com</a></p>
+                    <p><a href="https://www.jhw-ai.com">www.jhw-ai.com</a></p>
+                </div>
+                
+                <div>
+                    <h4>快速链接</h4>
+                    <p><a href="./">首页</a></p>
+                    <p><a href="/#services">核心服务</a></p>
+                    <p><a href="/training/">AI训练师培训</a></p>
+                    <p><a href="/subsidy/">创业补贴</a></p>
+                    <p><a href="/news/">动态·洞察</a></p>
+                    <p><a href="/faq/">常见问题 FAQ</a></p>
+                    <p><a href="/glossary/">AI 术语表</a></p>
+                    <p><a href="/#form">联系我们</a></p>
+                </div>
+                
+                <div>
+                    <h4>关注我们</h4>
+                    <p>扫码添加微信<br>获取 AI 解决方案</p>
+                    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;">
+                        <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">微信公众号</span>
+                        <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">小红书</span>
+                        <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">知乎</span>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="copyright">
+                &copy; 2026 深圳云程企航商务服务有限公司 版权所有 | 进化湾&reg; | 粤ICP备2026019539号-2
+            </p>
+        </div>
+    </footer>
 </body>
 </html>

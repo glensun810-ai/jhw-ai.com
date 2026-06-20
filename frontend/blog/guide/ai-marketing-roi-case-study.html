@@ -34,8 +34,22 @@
         header { background: linear-gradient(160deg, #0a0a1a, #16213e); color: #fff; padding: 80px 0 60px; text-align: center; }
         header h1 { font-size: 2em; line-height: 1.35; margin-bottom: 16px; }
         header .byline { opacity: 0.7; font-size: 0.95em; }
-        nav { background: #fff; border-bottom: 1px solid #eee; padding: 12px 0; position: sticky; top: 0; z-index: 100; }
-        nav a { color: #0f4c81; text-decoration: none; font-weight: 600; }
+        nav { background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 20px rgba(0,0,0,0.06); border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 1000; }
+        nav .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 54px; }
+        nav .nav-links { display: flex; gap: 28px; align-items: center; }
+        nav .nav-links a { color: #555; text-decoration: none; font-weight: 500; font-size: 15px; position: relative; white-space: nowrap; transition: color 0.25s; }
+        nav .nav-links a:hover { color: #0f4c81; }
+        nav .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #0f4c81; transition: width 0.3s; }
+        nav .nav-links a:hover::after { width: 100%; }
+nav .logo { font-size: 22px; font-weight: 700; color: #1a1a2e; text-decoration: none; flex-shrink: 0; }
+        nav .logo:hover { color: #1a1a2e; }
+        nav .contact-btn { background: #0f4c81; color: #fff; padding: 8px 22px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(15,76,129,0.2); white-space: nowrap; flex-shrink: 0; }
+        nav .contact-btn:hover { background: #0a3d62; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,76,129,0.3); }
+
+        nav .back-link { color: #555; text-decoration: none; font-weight: 500; font-size: 14px; flex-shrink: 0; }
+        nav .back-link:hover { color: #0f4c81; }
+        @media (max-width: 860px) { nav .nav-links { display: none; } }
+
         article { padding: 40px 0; }
         article h2 { font-size: 1.45em; color: #1a1a2e; margin: 48px 0 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f0f0; }
         article h3 { font-size: 1.15em; color: #1a1a2e; margin: 28px 0 16px; }
@@ -77,17 +91,28 @@
     </style>
 </head>
 <body>
+<nav>
+    <div class="nav-inner">
+        <a href="/blog/" class="back-link">&larr; AI 知识中心</a>
+        <div class="nav-links">
+            <a href="/training/">AI训练师培训</a>
+            <a href="/subsidy/">创业补贴</a>
+            <a href="/about/">关于</a>
+            <a href="/news/">动态·洞察</a>
+            <a href="/faq/">FAQ</a>
+            <a href="/glossary/">术语表</a>
+            <a href="/#form">联系我们</a>
+        </div>
+        <a href="/#form" class="contact-btn">获取方案</a>
+    </div>
+</nav>
 <header>
     <div class="container">
         <h1>企业 AI 营销 ROI 提升实战案例拆解</h1>
         <p class="byline">进化湾 AI 研究团队 · 2026-06-05 · 约 2500 字</p>
     </div>
 </header>
-<nav>
-    <div class="container">
-        <a href="/blog/">← AI 知识中心</a> &nbsp;·&nbsp; <a href="./">进化湾首页</a> &nbsp;·&nbsp; <a href="/faq/">常见问题</a> &nbsp;·&nbsp; <a href="/glossary/">AI 术语表</a>
-    </div>
-</nav>
+
 <article>
     <div class="container">
         <p style="font-size:1.1em;color:#333;">2026 年，企业营销面临的核心挑战是：<strong>流量成本持续上升 + 用户注意力碎片化</strong>。AI 营销不是"锦上添花"的选项，而是降本增效的刚需。</p>
@@ -159,7 +184,13 @@
             <p><strong>数据来源说明：</strong>本案例基于进化湾服务客户的真实实施数据（已做脱敏处理）。具体效果因行业、规模及实施深度而异。</p>
         </div>
 
-        <div class="cta-box">
+            <div class="resource-hook" style="background:#f0f4f8;border:1px solid #d0dff5;padding:28px 32px;border-radius:12px;margin:40px 0;">
+        <h3 style="color:#1a1a2e;margin-bottom:12px;">📥 免费下载：《AI营销机会诊断报告》样本</h3>
+        <p style="color:#555;margin-bottom:16px;">了解进化湾如何为您的企业出具AI营销诊断报告——涵盖获客成本分析、GEO机会评估、AI内容策略建议。</p>
+        <a href="/#form" style="display:inline-block;background:#0f4c81;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:600;">免费获取样本 →</a>
+    </div>
+
+    <div class="cta-box">
             <h3>您的企业也想实现这样的效果？</h3>
             <p style="color:rgba(255,255,255,0.8);margin:12px 0;">进化湾提供 AI 营销诊断服务，免费为您出具定制化方案</p>
             <a href="/#form">免费获取 AI 诊断报告 →</a>

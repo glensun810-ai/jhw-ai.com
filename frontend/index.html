@@ -425,6 +425,7 @@
         .news-card .card-header .type-tag.event { background: #e8f0fe; color: #0f4c81; }
         .news-card .card-header .type-tag.case { background: #e8f8e8; color: #27ae60; }
         .news-card .card-header .type-tag.announce { background: #fef3e2; color: #d68910; }
+        .news-card .card-header .type-tag.guide { background: #e8e8f8; color: #5b4fa0; }
         .news-card .card-body { padding: 16px 24px 24px; }
         .news-card .card-body h4 { font-size: 1.05em; color: #1a1a2e; margin-bottom: 10px; line-height: 1.5; min-height: 2.8em; }
         .news-card .card-body p { color: #999; font-size: 0.85em; margin-bottom: 16px; }
@@ -483,12 +484,13 @@
         <div class="container">
             <a href="./" class="logo">进化湾</a>
             <nav class="nav-links" id="navLinks">
+                <a href="./">首页</a>
+                <a href="/#services">核心服务</a>
                 <a href="/training/">AI训练师培训</a>
                 <a href="/subsidy/">创业补贴</a>
-                <a href="/#services">核心服务</a>
-                <a href="/news/">动态</a>
-                <a href="/#space">产业基地</a>
-                <a href="/#partners">生态伙伴</a>
+                <a href="/about/">关于</a>
+                <a href="/news/">动态·洞察</a>
+                <a href="/faq/">FAQ</a>
                 <a href="/#form">联系我们</a>
             </nav>
             <button class="hamburger" id="hamburgerBtn" aria-label="菜单" aria-expanded="false">
@@ -860,36 +862,39 @@
             <p class="section-subtitle">平台活动、客户成功案例、官方公告——见证进化湾与 AI 产业共同成长</p>
             
             <div class="news-grid">
-                <!-- 平台活动 -->
-                <div class="news-card">
-                    <div class="card-header">
-                        <span class="type-tag event">&#x1F4E2; 平台活动</span>
-                    </div>
-                    <div class="card-body">
-                        <h4>活动内容即将上线</h4>
-                        <p>线下沙龙、线上直播、行业展会……精彩活动敬请期待</p>
-                    </div>
-                </div>
-                
-                <!-- 客户案例 -->
-                <div class="news-card">
-                    <div class="card-header">
-                        <span class="type-tag case">&#x1F4BC; 客户案例</span>
-                    </div>
-                    <div class="card-body">
-                        <h4>成功案例即将发布</h4>
-                        <p>企业 AI 转型、入孵项目成长、学员持证故事……真实案例陆续呈现</p>
-                    </div>
-                </div>
-                
                 <!-- 官方公告 -->
                 <div class="news-card">
                     <div class="card-header">
                         <span class="type-tag announce">&#x1F4F0; 官方公告</span>
                     </div>
                     <div class="card-body">
-                        <h4>公告即将发布</h4>
-                        <p>合作签约、资质认证、服务升级……第一时间了解进化湾动态</p>
+                        <h4><a href="/news/article-20260621-ai-consumer.html" style="color:#1a1a2e;text-decoration:none;">八部门联合发文加快"人工智能+消费"发展</a></h4>
+                        <p>商务部等8部门发布《实施意见》。进化湾在深圳、佛山、成都的AI体验中心与产教融合示范基地布局全面启动。</p>
+                        <div class="meta" style="color:#999;font-size:0.82em;margin-top:12px;">2026年6月21日</div>
+                    </div>
+                </div>
+                
+                <!-- Blog精选 -->
+                <div class="news-card">
+                    <div class="card-header">
+                        <span class="type-tag guide">&#x1F4D6; 深度指南</span>
+                    </div>
+                    <div class="card-body">
+                        <h4><a href="/blog/guide/geo-optimization-guide.html" style="color:#1a1a2e;text-decoration:none;">GEO优化实战：让您的内容被AI搜索引用</a></h4>
+                        <p>2026年AI搜索分流30%+传统搜索流量，教您如何让ChatGPT、豆包优先引用您的品牌内容。</p>
+                        <div class="meta" style="color:#999;font-size:0.82em;margin-top:12px;">进化湾 AI 研究团队 · 2026-05-28</div>
+                    </div>
+                </div>
+                
+                <!-- 实战案例 -->
+                <div class="news-card">
+                    <div class="card-header">
+                        <span class="type-tag case">&#x1F4BC; 案例拆解</span>
+                    </div>
+                    <div class="card-body">
+                        <h4><a href="/blog/guide/ai-marketing-roi-case-study.html" style="color:#1a1a2e;text-decoration:none;">企业 AI 营销 ROI 提升实战案例拆解</a></h4>
+                        <p>电商企业AI营销实战：获客成本降低45%、转化率提升65%、月GMV增长38%的完整拆解。</p>
+                        <div class="meta" style="color:#999;font-size:0.82em;margin-top:12px;">进化湾 AI 研究团队 · 2026-06-05</div>
                     </div>
                 </div>
             </div>

@@ -124,8 +124,19 @@
         header { background: linear-gradient(160deg, #0a0a1a, #16213e); color: #fff; padding: 60px 0 40px; text-align: center; }
         header h1 { font-size: 2.4em; margin-bottom: 12px; }
         header p { opacity: 0.7; font-size: 1.1em; max-width: 600px; margin: 0 auto; }
-        nav { background: #fff; border-bottom: 1px solid #eee; padding: 12px 0; position: sticky; top: 0; z-index: 100; }
-        nav a { color: #0f4c81; text-decoration: none; font-weight: 600; }
+        nav { background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 20px rgba(0,0,0,0.06); border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 1000; }
+        nav .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 54px; }
+        nav .nav-links { display: flex; gap: 28px; align-items: center; }
+        nav .nav-links a { color: #555; text-decoration: none; font-weight: 500; font-size: 15px; position: relative; white-space: nowrap; transition: color 0.25s; }
+        nav .nav-links a:hover { color: #0f4c81; }
+        nav .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #0f4c81; transition: width 0.3s; }
+        nav .nav-links a:hover::after { width: 100%; }
+nav .logo { font-size: 22px; font-weight: 700; color: #1a1a2e; text-decoration: none; flex-shrink: 0; }
+        nav .logo:hover { color: #1a1a2e; }
+        nav .contact-btn { background: #0f4c81; color: #fff; padding: 8px 22px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(15,76,129,0.2); white-space: nowrap; flex-shrink: 0; }
+        nav .contact-btn:hover { background: #0a3d62; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,76,129,0.3); }
+        @media (max-width: 860px) { nav .nav-links { display: none; } }
+
         .faq-list { padding: 40px 0; }
         .faq-item { margin-bottom: 24px; border: 1px solid #eee; border-radius: 12px; overflow: hidden; }
         .faq-q { padding: 20px 28px; background: #fafbfc; font-weight: 700; font-size: 1.1em; color: #1a1a2e; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
@@ -144,8 +155,18 @@
         .cta-box p { opacity: 0.85; margin-bottom: 20px; }
         .cta-box a { display: inline-block; background: #fff; color: #0f4c81; padding: 14px 36px; border-radius: 6px; text-decoration: none; font-weight: 700; }
         .cta-box a:hover { box-shadow: 0 8px 24px rgba(255,255,255,0.3); }
-        footer { background: #1a1a2e; color: #aaa; text-align: center; padding: 40px 0; }
-        footer a { color: #ccc; text-decoration: none; }
+        
+        footer { background: #1a1a2e; color: #ccc; padding: 80px 0 40px; margin-top: 60px; }
+        footer .footer-grid { display: grid; grid-template-columns: 2fr 1.5fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+        footer h4 { color: #fff; margin-bottom: 20px; font-size: 1.05em; font-weight: 600; }
+        footer p { color: #aaa; line-height: 1.8; font-size: 0.92em; margin-bottom: 12px; }
+        footer a { color: #ccc; text-decoration: none; transition: color 0.25s; }
+        footer a:hover { color: #fff; }
+        footer .copyright { text-align: center; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.08); color: #888; font-size: 0.88em; }
+        @media (max-width: 768px) { footer .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+        @media (max-width: 480px) { footer .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+        footer a { color: #ccc; text-decoration: none; transition: color 0.25s; }
     
         @media (max-width: 768px) {
             header { padding: 40px 0 30px; }
@@ -178,17 +199,29 @@
     </script>
 </head>
 <body>
+<nav>
+    <div class="nav-inner">
+        <a href="/" class="logo">进化湾</a>
+        <div class="nav-links">
+            <a href="/#services">核心服务</a>
+            <a href="/training/">AI训练师培训</a>
+            <a href="/subsidy/">创业补贴</a>
+            <a href="/about/">关于</a>
+            <a href="/news/">动态·洞察</a>
+            <a href="/faq/">FAQ</a>
+            <a href="/glossary/">术语表</a>
+            <a href="/#form">联系我们</a>
+        </div>
+        <a href="/#form" class="contact-btn">获取方案</a>
+    </div>
+</nav>
 <header>
     <div class="container">
         <h1>进化湾® 常见问题</h1>
         <p>关于进化湾服务流程、收费方式、合作模式与交付标准的官方解答</p>
     </div>
 </header>
-<nav>
-    <div class="container">
-        <a href="./">← 返回首页</a> &nbsp;·&nbsp; <a href="/glossary/">AI 术语表</a>
-    </div>
-</nav>
+
 <div class="container">
     <div class="toc">
         <h3>快速导航</h3>
@@ -208,6 +241,27 @@
 </footer>
 <script>
 const faqs = [
+
+  {q:'进化湾提供哪些核心服务？',a:'进化湾提供AI全链路服务：1）AI算力服务器供应（H200/B300全新及二手）；2）AI营销与增长（含GEO优化、AI内容生产）；3）AI视频与数字人（数字人定制、批量视频生产、7×24直播）；4）AI创业孵化（创意验证到融资对接全流程）；5）AI人才认证与培训（人工智能训练师职业技能等级证书）；6）AI投融资对接；7）AI技术部署；8）AI合规与风控；9）行业AI解决方案；10）商业选址与企业服务。'},
+  {q:'进化湾的服务覆盖哪些城市？',a:'进化湾总部位于深圳南山，服务覆盖全国。目前已在深圳设立AI体验中心，在佛山推进产教融合示范基地，在成都布局人工智能体验中心。无论您的企业位于哪个城市，我们都可提供远程咨询和现场服务。'},
+  {q:'进化湾的客户主要是哪些类型？',a:'进化湾服务三类主要客户：1）有AI转型需求的中小企业——希望借助AI提升效率但尚未建立技术团队；2）AI创业团队——从创意验证到融资落地的全流程支持；3）规模化企业——需要定制化AI解决方案和算力基础设施。已服务涵盖电商、教育、制造、金融、医疗等多个行业。'},
+  {q:'首次咨询需要付费吗？',a:'首次咨询完全免费。您可以预约一次30-60分钟的需求沟通，我们的顾问会针对您的情况提供初步建议和方案框架。如后续需要深入诊断和定制方案，我们会提前说明费用结构，绝无隐性收费。'},
+  {q:'进化湾的AI营销服务能保证效果吗？',a:'每项AI营销服务在启动前会设定可量化的效果指标。参考已交付项目：AI营销模块的ROI区间通常为3-8倍（因行业与规模而异），视频生产效率可提升10-50倍。我们不做无法验证的承诺，每一分投入都有明确的预期目标和验收标准。'},
+  {q:'GEO优化需要多长时间见效？',a:'GEO优化与传统SEO类似，需要一定的内容积累周期。一般规律：第1-2周完成内容审计和策略制定；第3-6周实施内容优化和结构化数据部署；第6-12周开始看到AI搜索引用量的增长。持续优化6个月以上效果最佳。重要的是，GEO是一个持续投入的过程，而非一次性工程。'},
+  {q:'AI训练师证书国家认可吗？报考条件是什么？',a:'人工智能训练师职业技能等级证书由人社部备案的评价机构认定颁发，国家认可、国网可查（人社部技能人才评价工作网）。报考条件：五级/初级工——年满16周岁即可报考；四级/中级工——累计从事本职业或相关职业工作满5年，或取得五级证书后工作满3年；三级/高级工——取得四级证书后工作满4年，或相关专业大专及以上学历。'},
+  {q:'深圳创业补贴申请条件是什么？',a:'深圳自主创业补贴主要面向：1）毕业5年内普通高校/职业学校/技工院校毕业生；2）毕业5年内留学回国人员；3）深圳普通高校/职业学校在校生；4）退役军人；5）港澳台居民。核心要求：在深圳创办初创企业（成立3年内），正常经营并依法缴交社保。补贴总额最高可达8万元（初创补贴1万+社保补贴最高2.3万+场租补贴最高4.5万+带动就业补贴最高3万）。'},
+  {q:'算力服务器从下单到交付需要多久？',a:'交货周期视设备供应情况而定：全新H200/B300服务器通常需要8-16周（受全球供应链和出口管制影响）；二手H200服务器供应相对充足，检测认证后可在2-4周内交付。进化湾会协助客户提前规划，建议预留充足的采购周期。如需加急，请提前与我们的算力团队沟通。'},
+  {q:'二手算力服务器有质保吗？',a:'进化湾供应的二手算力服务器均经过严格的检测认证流程（含72小时满载burn-in测试），并提供至少6个月的质保期。我们优先选择运行时间短、温度控制良好的设备，并提供完整的使用工况记录。具体质保条款根据设备型号和批次有所不同，以采购合同为准。'},
+  {q:'创业孵化是怎样的流程？',a:'进化湾创业孵化流程分为四个阶段：1）创意验证（2-4周）——市场调研、竞品分析、可行性评估；2）MVP搭建（4-8周）——最小可行产品开发与内测；3）市场验证（4-8周）——种子用户获取、数据收集、产品迭代；4）融资对接（持续）——商业计划书打磨、投资人路演、条款谈判。入孵项目平均6个月内完成MVP验证并获得首轮融资意向。'},
+  {q:'AI技术部署包括哪些内容？',a:'进化湾的AI技术部署服务包括：1）大模型部署（DeepSeek、Llama、Qwen等开源模型的本地化部署）；2）RAG架构搭建（企业知识库+AI问答系统）；3）AI工作流自动化（自动生成报告、智能客服、数据处理管道）；4）AI工具环境配置（Stable Diffusion、ComfyUI等创作工具的安装和优化）。适合有AI应用需求但无技术团队的企业。'},
+  {q:'AI合规服务具体做什么？',a:'进化湾的AI合规与风控服务覆盖：1）AI应用数据合规审计——检查数据采集、存储、使用是否符合《数据安全法》《个人信息保护法》要求；2）AI生成内容标识方案——满足国家关于AI生成内容标注的规定；3）AI使用规范制定——为企业建立内部AI使用政策和审核流程；4）跨境数据合规——如涉及海外业务，协助满足GDPR等国际法规要求。'},
+  {q:'商业选址服务覆盖深圳哪些区域？',a:'进化湾的商业选址服务聚焦深圳，重点覆盖：南山区（科技园、深圳湾、前海、后海）、福田区（CBD、华强北）、宝安区（宝安中心区）、龙华区（深圳北站商圈）。我们帮助客户进行商圈分析、场地谈判、政策对接，确保入驻企业享受到最优的营商环境和政策扶持。'},
+  {q:'投融资对接的成功率如何？',a:'进化湾入孵项目通过我们的投融资路演体系，每月有机会对接多家活跃产业基金与投资机构。具体融资结果视项目成熟度、市场规模和团队执行力而定，存在个体差异。我们的优势在于：精准匹配最合适的投资机构、专业的路演材料打磨、持续的投后支持。已有项目在我们的对接支持下获得了投资机构的融资意向。'},
+  {q:'AI视频和数字人服务适合哪些行业？',a:'进化湾的AI视频与数字人服务特别适合以下行业：电商直播（7×24小时数字人带货、批量商品展示视频）、教育培训（AI数字人讲师、课程自动化录制）、品牌内容营销（批量短视频生产、口播视频AI化）、企业宣传（数字人形象代言、多语言版本制作）。实测视频生产效率可提升10-50倍。'},
+  {q:'企业AI转型应该从哪里入手？',a:'建议按以下路径推进：1）诊断评估（1-2周）——梳理业务流程，识别AI可优化的环节；2）小范围试点（2-4周）——选择1-2个低风险高收益场景（如AI辅助文案、智能客服）先跑通；3）效果验证（4-8周）——量化对比AI引入前后的效率提升；4）规模化推广——将成功的AI应用复制到更多业务环节。进化湾提供《AI转型机会诊断报告》帮助企业快速定位切入点。'},
+  {q:'AI行业解决方案覆盖哪些领域？',a:'进化湾的行业AI解决方案目前覆盖：电商（智能推荐、AI客服、AI商品图生成）、教育（智能批改、个性化学习路径、AI数字人讲师）、医疗（辅助诊断、病历分析、健康管理）、制造（质量检测、预测性维护、智能排产）、金融（风控模型、智能投顾、合规审核）。其他行业可按需定制。'},
+  {q:'进化湾的AI认证体系有什么特点？',a:'进化湾的AI认证体系与市场上纯理论考试最大的区别是"实战能力验证"导向。认证流程包括：线上理论培训→线下实操训练→真实项目考核→专家评审。认证方向涵盖：AI基础应用、AI营销师、AI视频工程师、AI训练师等。联合多家行业机构推出，注重学员的实际动手能力而非死记硬背。'},
+  {q:'和进化湾合作有哪些流程和步骤？',a:'合作流程一般分为五步：1）免费需求沟通（30-60分钟，了解您的情况和需求）；2）方案定制（根据需求出具方案框架和报价）；3）方案确认（详细沟通方案细节，调整至双方满意）；4）服务交付（按约定周期执行，定期同步进度）；5）效果验收（对照预设指标进行交付验收）。简单服务最快14-30天可完成交付上线。'},
   {q:'GEO优化是什么？和传统SEO有什么区别？',a:'GEO（生成式引擎优化）是让品牌内容在AI搜索引擎（如ChatGPT、Perplexity、豆包、元宝等）的AI生成答案中被优先引用和展示的优化技术。与SEO的区别在于：SEO目标是提升网页在搜索结果中的排名（获得点击），GEO目标是让AI回答中引用你的内容（获得品牌提及和权威背书）。两者互补而非替代——你需要先做好SEO让AI搜索引擎能找到你的内容，再通过GEO策略让AI优先引用你的内容。'},
   {q:'中小企业用AI从哪里开始？',a:'建议从以下三步开始：1）选1-2个最容易见效的场景（如用AI写营销文案、做客服FAQ），不要追求全面铺开；2）先用免费/低价的SaaS工具（如DeepSeek、豆包、剪映AI版），验证效果后再考虑定制化部署；3）建立内部AI分享机制（每周15分钟分享会，积累有效提示词库），让AI使用能力在组织内自然扩散。关键是"用起来"而非"学理论"。'},
   {q:'数字人直播要花多少钱？',a:'2026年数字人直播的成本大幅下降。入门级方案（SaaS工具）：年费3000-10000元+数字人定制500-2000元/个。专业级方案（源码私有化部署）：首期投入5-15万，年维护3-5万。相比真人主播（月成本3.5-9.5万），数字人直播可降低65-70%的直播成本，且能实现7×24小时不间断直播。'},
@@ -256,5 +310,49 @@ faqs.forEach((f, i) => {
   faqDiv.appendChild(item);
 });
 </script>
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4>关于进化湾®</h4>
+                    <p>进化湾®是深圳云程企航与云协同创新联合打造的 AI 产业服务平台，立足深圳南山，提供算力基础设施、AI 营销增长、视频与数字人、创业孵化、人才认证、商业选址与投融资对接等全链路服务。</p>
+                </div>
+                
+                <div>
+                    <h4>联系我们</h4>
+                    <p>地址：<br>深圳市南山区粤海街道高新区社区沙河西路 1809 号深圳湾科技生态园 2 栋 A1101</p>
+                    <p><span style="color:#888;font-weight:500;">电话</span> <a href="tel:18718528592">18718528592</a></p>
+                    <p><span style="color:#888;font-weight:500;">邮箱</span> <a href="mailto:YCQH_SZ@163.com">YCQH_SZ@163.com</a></p>
+                    <p><a href="https://www.jhw-ai.com">www.jhw-ai.com</a></p>
+                </div>
+                
+                <div>
+                    <h4>快速链接</h4>
+                    <p><a href="./">首页</a></p>
+                    <p><a href="/#services">核心服务</a></p>
+                    <p><a href="/training/">AI训练师培训</a></p>
+                    <p><a href="/subsidy/">创业补贴</a></p>
+                    <p><a href="/news/">动态·洞察</a></p>
+                    <p><a href="/faq/">常见问题 FAQ</a></p>
+                    <p><a href="/glossary/">AI 术语表</a></p>
+                    <p><a href="/#form">联系我们</a></p>
+                </div>
+                
+                <div>
+                    <h4>关注我们</h4>
+                    <p>扫码添加微信<br>获取 AI 解决方案</p>
+                    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;">
+                        <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">微信公众号</span>
+                        <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">小红书</span>
+                        <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">知乎</span>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="copyright">
+                &copy; 2026 深圳云程企航商务服务有限公司 版权所有 | 进化湾&reg; | 粤ICP备2026019539号-2
+            </p>
+        </div>
+    </footer>
 </body>
 </html>

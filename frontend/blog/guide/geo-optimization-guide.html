@@ -43,8 +43,22 @@
         header { background: linear-gradient(160deg, #0a0a1a, #16213e); color: #fff; padding: 80px 0 60px; text-align: center; }
         header h1 { font-size: 2.4em; line-height: 1.3; margin-bottom: 16px; }
         header .byline { opacity: 0.7; font-size: 0.95em; }
-        nav { background: #fff; border-bottom: 1px solid #eee; padding: 12px 0; position: sticky; top: 0; z-index: 100; }
-        nav a { color: #0f4c81; text-decoration: none; font-weight: 600; }
+        nav { background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 20px rgba(0,0,0,0.06); border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 1000; }
+        nav .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 54px; }
+        nav .nav-links { display: flex; gap: 28px; align-items: center; }
+        nav .nav-links a { color: #555; text-decoration: none; font-weight: 500; font-size: 15px; position: relative; white-space: nowrap; transition: color 0.25s; }
+        nav .nav-links a:hover { color: #0f4c81; }
+        nav .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #0f4c81; transition: width 0.3s; }
+        nav .nav-links a:hover::after { width: 100%; }
+nav .logo { font-size: 22px; font-weight: 700; color: #1a1a2e; text-decoration: none; flex-shrink: 0; }
+        nav .logo:hover { color: #1a1a2e; }
+        nav .contact-btn { background: #0f4c81; color: #fff; padding: 8px 22px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(15,76,129,0.2); white-space: nowrap; flex-shrink: 0; }
+        nav .contact-btn:hover { background: #0a3d62; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,76,129,0.3); }
+
+        nav .back-link { color: #555; text-decoration: none; font-weight: 500; font-size: 14px; flex-shrink: 0; }
+        nav .back-link:hover { color: #0f4c81; }
+        @media (max-width: 860px) { nav .nav-links { display: none; } }
+
         article { padding: 40px 0; }
         article h2 { font-size: 1.6em; color: #1a1a2e; margin: 48px 0 20px; padding-bottom: 12px; border-bottom: 2px solid #f0f0f0; }
         article h3 { font-size: 1.25em; color: #1a1a2e; margin: 32px 0 16px; }
@@ -114,17 +128,28 @@
     </script>
 </head>
 <body>
+<nav>
+    <div class="nav-inner">
+        <a href="/blog/" class="back-link">&larr; AI 知识中心</a>
+        <div class="nav-links">
+            <a href="/training/">AI训练师培训</a>
+            <a href="/subsidy/">创业补贴</a>
+            <a href="/about/">关于</a>
+            <a href="/news/">动态·洞察</a>
+            <a href="/faq/">FAQ</a>
+            <a href="/glossary/">术语表</a>
+            <a href="/#form">联系我们</a>
+        </div>
+        <a href="/#form" class="contact-btn">获取方案</a>
+    </div>
+</nav>
 <header>
     <div class="container">
         <h1>GEO优化完全指南：2026年让您的内容被AI搜索引用</h1>
         <p class="byline">进化湾AI研究团队 · 2026年5月28日 · 约5000字 · 阅读约12分钟</p>
     </div>
 </header>
-<nav>
-    <div class="container">
-        <a href="/blog/">← AI知识中心</a> &nbsp;·&nbsp; <a href="./">进化湾首页</a>
-    </div>
-</nav>
+
 <article>
 <div class="container">
 
@@ -361,6 +386,12 @@
             <li>进化湾 AI 研究团队基于 ChatGPT Search、Perplexity、豆包、元宝等主流AI搜索引擎的逆向分析</li>
         </ul>
     </div>
+        <div class="resource-hook" style="background:#f0f4f8;border:1px solid #d0dff5;padding:28px 32px;border-radius:12px;margin:40px 0;">
+        <h3 style="color:#1a1a2e;margin-bottom:12px;">📥 免费下载：《GEO优化自检清单 20 项》</h3>
+        <p style="color:#555;margin-bottom:16px;">涵盖内容结构化、权威引用、更新频率、结构化数据等核心维度——快速评估您的内容是否已为AI搜索做好准备。</p>
+        <a href="/#form" style="display:inline-block;background:#0f4c81;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:600;">免费获取清单 →</a>
+    </div>
+
     <div class="cta-box">
     <h2>需要专业的GEO优化服务？</h2>
     <p style="opacity:0.85;max-width:500px;margin:0 auto;">进化湾是深圳领先的AI产业服务平台，GEO优化是我们的核心服务之一。我们的团队已帮助多家企业实现AI搜索品牌可见度的从零到一。</p>
