@@ -840,6 +840,61 @@
         </div>
     </section>
 
+    <!-- ===== Claude/Codex 国内部署方案横幅 ===== -->
+    <section class="banner-claude" style="padding: 0 0;">
+      <div class="banner-claude-inner" style="max-width:1200px;margin:0 auto;position:relative;overflow:hidden;border-radius:16px;background:linear-gradient(135deg,#0a0a1a 0%,#16213e 40%,#0f4c81 100%);padding:56px 48px;min-height:240px;display:flex;align-items:center;justify-content:space-between;gap:32px;box-shadow:0 20px 60px rgba(15,76,129,0.2),0 8px 20px rgba(0,0,0,0.1);border:1px solid rgba(255,255,255,0.08);">
+        <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0.04;">
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px);background-size:60px 60px;"></div>
+        </div>
+        <div style="position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);top:15%;left:25%;pointer-events:none;opacity:0.3;"></div>
+        <div style="position:absolute;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.3);top:60%;left:15%;pointer-events:none;opacity:0.3;"></div>
+        <div style="position:absolute;width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);top:30%;right:30%;pointer-events:none;opacity:0.3;"></div>
+        <div style="position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.35);bottom:25%;right:20%;pointer-events:none;opacity:0.3;"></div>
+
+        <div style="position:relative;z-index:2;flex:1;min-width:0;">
+          <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);padding:4px 14px;border-radius:20px;font-size:0.75rem;color:rgba(255,255,255,0.7);letter-spacing:2px;font-weight:600;margin-bottom:16px;text-transform:uppercase;">
+            <span style="width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block;"></span>
+            国内可用 · 无需魔法
+          </div>
+          <h2 style="font-size:clamp(1.5em,3vw,2.4em);font-weight:800;color:#fff;line-height:1.2;margin:0 0 12px;letter-spacing:-0.02em;">
+            想用 <span style="background:linear-gradient(90deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Claude / Codex</span>？<br>国内直连，即刻启用
+          </h2>
+          <p style="font-size:clamp(0.95em,1.4vw,1.1em);color:rgba(255,255,255,0.75);line-height:1.7;margin:0;max-width:580px;">
+            不用折腾网络、不怕封号、不依赖海外支付。进化湾提供 Claude / OpenAI Codex / Cursor 等先进 AI 工具的国内部署与代理接入方案，同时支持 DeepSeek、Qwen、智谱 GLM 等国产大模型无缝切换。
+          </p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;">
+            <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:5px 14px;border-radius:6px;font-size:0.82rem;color:rgba(255,255,255,0.8);">⚡ 国内网络直连</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:5px 14px;border-radius:6px;font-size:0.82rem;color:rgba(255,255,255,0.8);">🛡️ 企业级账号稳定</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:5px 14px;border-radius:6px;font-size:0.82rem;color:rgba(255,255,255,0.8);">💰 价格优于官方</span>
+            <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);padding:5px 14px;border-radius:6px;font-size:0.82rem;color:rgba(255,255,255,0.8);">🔄 国产模型可切换</span>
+          </div>
+        </div>
+
+        <div style="position:relative;z-index:2;flex-shrink:0;text-align:center;">
+          <a href="/#form" class="banner-cta-btn" style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0f4c81;padding:16px 36px;border-radius:10px;font-size:1.05em;font-weight:700;text-decoration:none;box-shadow:0 8px 30px rgba(255,255,255,0.15);transition:all 0.3s ease;white-space:nowrap;cursor:pointer;border:none;font-family:inherit;" onclick="event.preventDefault();var f=document.getElementById('form');if(f)f.scrollIntoView({behavior:'smooth',block:'start'});else window.location.href='/#';">
+            立即获取国内可用方案
+            <span style="display:inline-block;transition:transform 0.3s ease;">→</span>
+          </a>
+          <span style="display:block;margin-top:12px;font-size:0.82rem;color:rgba(255,255,255,0.5);">
+            或 <a href="/faq/" style="color:rgba(255,255,255,0.7);text-decoration:underline;text-underline-offset:2px;">查看常见问题</a>
+          </span>
+        </div>
+      </div>
+    </section>
+    <style>
+      .banner-cta-btn:hover { transform: translateY(-3px) !important; box-shadow: 0 16px 48px rgba(255,255,255,0.3) !important; }
+      .banner-cta-btn:hover span { transform: translateX(4px); }
+      @media (max-width:860px) {
+        .banner-claude-inner { flex-direction:column !important; text-align:center !important; padding:40px 28px !important; gap:24px !important; }
+        .banner-claude-inner h2 { max-width:100% !important; }
+        .banner-claude-inner p { max-width:100% !important; }
+        .banner-claude-inner .banner-cta-btn { width:100% !important; justify-content:center !important; }
+      }
+      @media (max-width:480px) {
+        .banner-claude-inner { padding:32px 20px !important; }
+        .banner-claude-inner > div:first-of-type + div > div { flex-direction:column !important; align-items:center !important; }
+      }
+    </style>
     
     <!-- AI 人才认证与培训 -->
     <section class="training-spotlight" id="training-spotlight">

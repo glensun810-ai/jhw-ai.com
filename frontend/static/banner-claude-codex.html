@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>进化湾 · Claude/Codex 国内部署方案</title>
+<style>
+/* ===== 品牌色 (与进化湾一致) ===== */
+:root {
+  --primary: #0f4c81;
+  --primary-dark: #0a3d62;
+  --primary-light: #1a6bb0;
+  --accent: #f39c12;
+  --bg-dark: #1a1a2e;
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a5568;
+  --text-light: #718096;
+  --border-light: #edf2f7;
+  --font-sans: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ===== 海报容器 ===== */
+.banner-claude {
+  font-family: var(--font-sans);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.banner-claude-inner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #0a0a1a 0%, #16213e 40%, #0f4c81 100%);
+  padding: 56px 48px;
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  box-shadow: 0 20px 60px rgba(15,76,129,0.2), 0 8px 20px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ===== 背景装饰 ===== */
+.banner-claude-inner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,107,176,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.banner-claude-inner::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(15,76,129,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ===== 网格线装饰 ===== */
+.banner-grid-lines {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.04;
+}
+.banner-grid-lines::before,
+.banner-grid-lines::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ===== 浮动粒子 ===== */
+.banner-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.3;
+}
+.banner-particle:nth-child(1) {
+  width: 6px; height: 6px;
+  background: rgba(255,255,255,0.4);
+  top: 15%; left: 25%;
+  animation: float-particle 8s ease-in-out infinite;
+}
+.banner-particle:nth-child(2) {
+  width: 4px; height: 4px;
+  background: rgba(255,255,255,0.3);
+  top: 60%; left: 15%;
+  animation: float-particle 6s ease-in-out infinite 1s;
+}
+.banner-particle:nth-child(3) {
+  width: 8px; height: 8px;
+  background: rgba(255,255,255,0.2);
+  top: 30%; right: 30%;
+  animation: float-particle 10s ease-in-out infinite 2s;
+}
+.banner-particle:nth-child(4) {
+  width: 5px; height: 5px;
+  background: rgba(255,255,255,0.35);
+  bottom: 25%; right: 20%;
+  animation: float-particle 7s ease-in-out infinite 0.5s;
+}
+.banner-particle:nth-child(5) {
+  width: 3px; height: 3px;
+  background: rgba(255,255,255,0.25);
+  top: 45%; right: 45%;
+  animation: float-particle 9s ease-in-out infinite 3s;
+}
+
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+  50% { transform: translateY(-20px) scale(1.2); opacity: 0.6; }
+}
+
+/* ===== 文本区 ===== */
+.banner-text {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-width: 0;
+}
+
+.banner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 2px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+.banner-badge .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.banner-title {
+  font-size: clamp(1.5em, 3vw, 2.4em);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+}
+.banner-title .highlight {
+  background: linear-gradient(90deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.banner-desc {
+  font-size: clamp(0.95em, 1.4vw, 1.1em);
+  color: rgba(255,255,255,0.75);
+  line-height: 1.7;
+  margin: 0 0 0;
+  max-width: 580px;
+}
+
+/* ===== 卖点列表 ===== */
+.banner-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+.banner-feature {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.8);
+}
+.banner-feature .icon {
+  font-size: 1em;
+  font-style: normal;
+}
+
+/* ===== CTA 区 ===== */
+.banner-cta {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: var(--primary);
+  padding: 16px 36px;
+  border-radius: 10px;
+  font-size: 1.05em;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 8px 30px rgba(255,255,255,0.15);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+.banner-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(255,255,255,0.3);
+}
+.banner-btn:active {
+  transform: translateY(-1px);
+}
+.banner-btn .arrow {
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+.banner-btn:hover .arrow {
+  transform: translateX(4px);
+}
+
+.banner-sub-cta {
+  display: block;
+  margin-top: 12px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.banner-sub-cta a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.banner-sub-cta a:hover {
+  color: #fff;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 860px) {
+  .banner-claude-inner {
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 28px;
+    gap: 24px;
+  }
+  .banner-title { max-width: 100%; }
+  .banner-desc { max-width: 100%; }
+  .banner-features { justify-content: center; }
+  .banner-cta { width: 100%; }
+  .banner-btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .banner-claude-inner { padding: 32px 20px; }
+  .banner-features { flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+<!-- ===== 海报 HTML ===== -->
+<section class="banner-claude">
+  <div class="banner-claude-inner">
+    <!-- 装饰元素 -->
+    <div class="banner-grid-lines"></div>
+    <div class="banner-particle"></div>
+    <div class="banner-particle"></div>
+    <div class="banner-particle"></div>
+    <div class="banner-particle"></div>
+    <div class="banner-particle"></div>
+
+    <!-- 文本区 -->
+    <div class="banner-text">
+      <div class="banner-badge">
+        <span class="dot"></span>
+        国内可用 · 无需魔法
+      </div>
+      <h2 class="banner-title">
+        想用 <span class="highlight">Claude / Codex</span>？<br>国内直连，即刻启用
+      </h2>
+      <p class="banner-desc">
+        不用折腾网络、不怕封号、不依赖海外支付。进化湾提供 Claude / OpenAI Codex / Cursor 等先进 AI 工具的国内部署与代理接入方案，同时支持 DeepSeek、Qwen、智谱 GLM 等国产大模型无缝切换。
+      </p>
+      <div class="banner-features">
+        <span class="banner-feature"><span class="icon">⚡</span> 国内网络直连</span>
+        <span class="banner-feature"><span class="icon">🛡️</span> 企业级账号稳定</span>
+        <span class="banner-feature"><span class="icon">💰</span> 价格优于官方</span>
+        <span class="banner-feature"><span class="icon">🔄</span> 国产模型可切换</span>
+      </div>
+    </div>
+
+    <!-- CTA 区 -->
+    <div class="banner-cta">
+      <a href="/#form" class="banner-btn" onclick="event.preventDefault();document.getElementById('form')?.scrollIntoView({behavior:'smooth'});">
+        立即获取国内可用方案
+        <span class="arrow">→</span>
+      </a>
+      <span class="banner-sub-cta">
+        或 <a href="/faq/">查看常见问题</a>
+      </span>
+    </div>
+  </div>
+</section>
+
+<script>
+// 确保CTA按钮平滑滚动到表单
+document.querySelector('.banner-btn')?.addEventListener('click', function(e) {
+  e.preventDefault();
+  var form = document.getElementById('form');
+  if (form) {
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    window.location.href = '/#form';
+  }
+});
+</script>
+</body>
+</html>
