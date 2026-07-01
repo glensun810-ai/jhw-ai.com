@@ -25,27 +25,8 @@
       "mainEntity": {"@type": "Organization", "name": "进化湾", "foundingDate": "2025"}
     }
     </script>
+    <link rel="stylesheet" href="/static/shared.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --primary: #0f4c81; --primary-dark: #0a3d62; --bg-dark: #1a1a2e; --bg-section: #fafbfc; --text-primary: #2c3e50; --text-secondary: #555; --text-light: #666; --card-radius: 12px; --shadow-sm: 0 4px 24px rgba(0,0,0,0.05); --shadow-hover: 0 12px 40px rgba(0,0,0,0.1); }
-        body { font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', -apple-system, sans-serif; color: var(--text-primary); line-height: 1.8; background: #fff; -webkit-font-smoothing: antialiased; }
-        .container { max-width: 1000px; margin: 0 auto; padding: 0 24px; }
-        nav { background: rgba(255,255,255,0.98); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 20px rgba(0,0,0,0.06); border-bottom: 1px solid #f0f0f0; position: sticky; top: 0; z-index: 1000; }
-        nav .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; height: 54px; }
-        nav .nav-links { display: flex; gap: 28px; align-items: center; }
-        nav .nav-links a { color: #555; text-decoration: none; font-weight: 500; font-size: 15px; position: relative; white-space: nowrap; transition: color 0.25s; }
-        nav .nav-links a:hover { color: #0f4c81; }
-        nav .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #0f4c81; transition: width 0.3s; }
-        nav .nav-links a:hover::after { width: 100%; }
-nav .logo { font-size: 22px; font-weight: 700; color: #1a1a2e; text-decoration: none; flex-shrink: 0; }
-        nav .logo:hover { color: #1a1a2e; }
-        nav .contact-btn { background: #0f4c81; color: #fff; padding: 8px 22px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(15,76,129,0.2); white-space: nowrap; flex-shrink: 0; }
-        nav .contact-btn:hover { background: #0a3d62; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,76,129,0.3); }
-        @media (max-width: 860px) { nav .nav-links { display: none; } }
-        .page-header { background: linear-gradient(160deg, #0a0a1a, #16213e); color: #fff; padding: 70px 0 50px; text-align: center; }
-        .page-header h1 { font-size: 2.4em; margin-bottom: 16px; }
-        .page-header p { opacity: 0.7; font-size: 1.1em; max-width: 650px; margin: 0 auto; }
-        .content { padding: 60px 0; }
         .section-title { font-size: 1.6em; color: #1a1a2e; margin-bottom: 16px; text-align: center; }
         .section-divider { width: 60px; height: 4px; background: linear-gradient(90deg, var(--primary), #16213e); margin: 0 auto 40px; border-radius: 2px; }
         .about-intro p { font-size: 1.08em; color: var(--text-secondary); margin-bottom: 20px; text-align: justify; max-width: 800px; margin-left: auto; margin-right: auto; }
@@ -54,7 +35,7 @@ nav .logo { font-size: 22px; font-weight: 700; color: #1a1a2e; text-decoration: 
         .mission h2 { font-size: 1.6em; color: #1a1a2e; margin-bottom: 20px; }
         .mission .mission-text { font-size: 1.15em; color: var(--text-secondary); max-width: 700px; margin: 0 auto 40px; }
         .mission-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
-        .mission-item { background: #fff; padding: 32px 28px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border-light, #edf2f7); }
+        .mission-item { background: #fff; padding: 32px 28px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border-light); }
         .mission-item .icon { font-size: 2.4em; margin-bottom: 16px; display: block; }
         .mission-item h3 { font-size: 1.15em; color: #1a1a2e; margin-bottom: 10px; }
         .mission-item p { color: var(--text-light); font-size: 0.95em; }
@@ -70,14 +51,14 @@ nav .logo { font-size: 22px; font-weight: 700; color: #1a1a2e; text-decoration: 
         .values { background: var(--bg-section); padding: 60px 0; }
         .values h2 { text-align: center; font-size: 1.6em; color: #1a1a2e; margin-bottom: 40px; }
         .values-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; max-width: 800px; margin: 0 auto; }
-        .value-item { background: #fff; padding: 28px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border-light, #edf2f7); }
+        .value-item { background: #fff; padding: 28px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border-light); }
         .value-item h3 { color: var(--primary); font-size: 1.1em; margin-bottom: 8px; }
         .value-item p { color: var(--text-light); font-size: 0.95em; }
         .team { padding: 60px 0; }
         .team h2 { text-align: center; font-size: 1.6em; color: #1a1a2e; margin-bottom: 16px; }
         .team .subtitle { text-align: center; color: var(--text-light); margin-bottom: 40px; }
         .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; max-width: 900px; margin: 0 auto; }
-        .team-card { text-align: center; padding: 32px 24px; background: #fff; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border-light, #edf2f7); }
+        .team-card { text-align: center; padding: 32px 24px; background: #fff; border-radius: var(--radius-md); box-shadow: var(--shadow-md); border: 1px solid var(--border-light); }
         .team-card .avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), #16213e); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2em; font-weight: 700; }
         .team-card h3 { color: #1a1a2e; font-size: 1.1em; margin-bottom: 4px; }
         .team-card .role { color: var(--primary); font-size: 0.88em; font-weight: 500; margin-bottom: 10px; }
@@ -87,210 +68,280 @@ nav .logo { font-size: 22px; font-weight: 700; color: #1a1a2e; text-decoration: 
         .cta-section p { opacity: 0.8; margin-bottom: 28px; }
         .cta-section a { display: inline-block; background: #fff; color: var(--primary); padding: 16px 44px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1.1em; transition: transform 0.2s; }
         .cta-section a:hover { transform: translateY(-2px); }
-        footer { background: var(--bg-dark); color: #ccc; padding: 80px 0 40px; }
-        footer .footer-grid { display: grid; grid-template-columns: 2fr 1.5fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
-        footer h4 { color: #fff; margin-bottom: 20px; font-size: 1.05em; font-weight: 600; }
-        footer p { color: #aaa; line-height: 1.8; font-size: 0.92em; margin-bottom: 12px; }
-        footer a { color: #ccc; text-decoration: none; transition: color 0.25s; }
-        footer a:hover { color: #fff; }
-        footer .copyright { text-align: center; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.08); color: #888; font-size: 0.88em; }
+
         @media (max-width: 768px) {
             .page-header h1 { font-size: 1.7em; }
             .mission-grid { grid-template-columns: 1fr; }
             .values-grid { grid-template-columns: 1fr; }
-            footer .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
             .team-grid { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 480px) {
-            footer .footer-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-<nav>
-    <div class="nav-inner">
-        <a href="/" class="logo">进化湾</a>
-        <div class="nav-links">
-            <a href="/#services">核心服务</a>
-            <a href="/training/">AI训练师培训</a>
-            <a href="/subsidy/">创业补贴</a>
-            <a href="/about/">关于</a>
-            <a href="/news/">动态·洞察</a>
-            <a href="/faq/">FAQ</a>
-            <a href="/glossary/">术语表</a>
-            <a href="/#form">联系我们</a>
+    <header>
+        <div class="container">
+            <a href="/" class="logo"><img src="/static/logo.png" alt="进化湾" />进化湾</a>
+            <nav class="nav-links" id="navLinks">
+                <a href="/">首页</a>
+                <a href="/#services">核心服务</a>
+                <a href="/smart-agent/">AI智造</a>
+                <a href="/training/">AI训练师培训</a>
+                <a href="/subsidy/">创业补贴</a>
+                <a href="/about/" class="active">关于</a>
+                <a href="/news/">动态·洞察</a>
+                <a href="/faq/">FAQ</a>
+                <a href="/#form">联系我们</a>
+            </nav>
+            <button class="hamburger" id="hamburgerBtn" aria-label="菜单" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <a href="/#form" class="contact-btn">获取方案</a>
         </div>
-        <a href="/#form" class="contact-btn">获取方案</a>
-    </div>
-</nav>
-<div class="page-header">
-    <div class="container">
-        <h1>关于进化湾</h1>
-        <p>从 AI 技术到商业价值——我们为每一次进化铺路</p>
-    </div>
-</div>
-<div class="content about-intro">
-    <div class="container">
-        <div class="section-title">我们是谁</div>
-        <div class="section-divider"></div>
-        <p><strong>进化湾®（Evolution Bay）</strong>是深圳云程企航商务服务有限公司与深圳市云协同创新数据空间服务有限公司联合打造的 <strong>AI 产业综合服务平台</strong>。公司总部位于深圳市南山区粤海街道深圳湾科技生态园——粤港澳大湾区 AI 产业密度最高的核心区域。</p>
-        <p>我们致力于 <strong>加速 AI 技术到商业价值的转化</strong>，通过整合算力基础设施、AI 营销增长、AI 视频与数字人、创业孵化、人才认证、商业选址与投融资对接等全链路服务，帮助企业完成从 AI 想法到商业落地的每一步。</p>
-        <p>自 2025 年成立以来，进化湾已累计服务涵盖电商、教育、制造、金融、医疗等行业的数十家企业，与多所高校及职业院校建立产教融合合作，并逐步在深圳、佛山、成都等核心城市布局线下 AI 体验中心与产业示范基地。</p>
-    </div>
-</div>
-<div class="mission">
-    <div class="container">
-        <h2>我们的核心理念</h2>
-        <p class="mission-text">不做不解决问题的技术展示——每一份方案都从真实的业务痛点出发，追求可量化、可交付的商业效果。</p>
-        <div class="mission-grid">
-            <div class="mission-item">
-                <span class="icon">🎯</span>
-                <h3>效果为先</h3>
-                <p>每项服务启动前设定可量化指标。AI营销ROI区间3-8倍，视频生产效率提升10-50倍——数据说话，效果可验。</p>
-            </div>
-            <div class="mission-item">
-                <span class="icon">🔗</span>
-                <h3>全链服务</h3>
-                <p>从GPU算力、模型部署、内容生产到商业变现，打通AI落地的每一环——企业不需要自己拼凑供应商。</p>
-            </div>
-            <div class="mission-item">
-                <span class="icon">🤝</span>
-                <h3>长期陪跑</h3>
-                <p>跟随企业发展阶段提供匹配的服务——从创意验证、MVP搭建到规模化增长，做AI时代的长期伙伴。</p>
-            </div>
+    </header>
+    <div class="nav-overlay" id="navOverlay"></div>
+
+    <div class="page-header">
+        <div class="container">
+            <h1>关于进化湾</h1>
+            <p>从 AI 技术到商业价值——我们为每一次进化铺路</p>
         </div>
     </div>
-</div>
-<div class="timeline">
-    <div class="container">
-        <h2>发展历程</h2>
-        <div class="timeline-list">
-            <div class="timeline-item">
-                <div class="date">2025 年 Q1</div>
-                <h3>进化湾正式成立</h3>
-                <p>深圳云程企航与云协同创新联合发起，总部落地深圳湾科技生态园，启动AI产业服务平台建设。</p>
-            </div>
-            <div class="timeline-item">
-                <div class="date">2025 年 Q2</div>
-                <h3>首批服务上线</h3>
-                <p>AI算力服务器供应、AI营销增长、AI视频与数字人三大核心服务正式面向企业客户开放。</p>
-            </div>
-            <div class="timeline-item">
-                <div class="date">2025 年 Q3</div>
-                <h3>产教融合起步</h3>
-                <p>人工智能训练师职业技能等级认证培训项目启动，与多所职业院校达成人才培养合作意向。</p>
-            </div>
-            <div class="timeline-item">
-                <div class="date">2025 年 Q4</div>
-                <h3>生态初具规模</h3>
-                <p>累计服务企业客户30+家，与AI产业链上下游多家企业建立战略合作关系，服务版图初步成型。</p>
-            </div>
-            <div class="timeline-item">
-                <div class="date">2026 年 H1</div>
-                <h3>全国化布局启动</h3>
-                <p>深圳总部AI体验中心规划落地，佛山产教融合示范基地、成都人工智能体验中心启动筹备，品牌升级为进化湾®。</p>
-            </div>
-            <div class="timeline-item">
-                <div class="date">2026 年 6 月</div>
-                <h3>八部门政策引领新发展</h3>
-                <p>商务部等8部门发布《关于加快"人工智能+消费"发展的实施意见》，进化湾全面加速全国AI体验中心与示范基地布局。</p>
-            </div>
+
+    <div class="content about-intro">
+        <div class="container">
+            <div class="section-title">我们是谁</div>
+            <div class="section-divider"></div>
+            <p><strong>进化湾®</strong>是深圳云程企航商务服务有限公司与深圳市云协同创新数据空间服务有限公司联合打造的 <strong>AI 产业综合服务平台</strong>。公司总部位于深圳市南山区粤海街道深圳湾科技生态园——粤港澳大湾区 AI 产业密度最高的核心区域。</p>
+            <p>我们致力于 <strong>加速 AI 技术到商业价值的转化</strong>，通过整合算力基础设施、AI 营销增长、AI 视频与数字人、创业孵化、人才认证、商业选址与投融资对接等全链路服务，帮助企业完成从 AI 想法到商业落地的每一步。</p>
+            <p>自 2025 年成立以来，进化湾已累计服务涵盖电商、教育、制造、金融、医疗等行业的数十家企业，与多所高校及职业院校建立产教融合合作，并逐步在深圳、佛山、成都等核心城市布局线下 AI 体验中心与产业示范基地。</p>
         </div>
     </div>
-</div>
-<div class="values">
-    <div class="container">
-        <h2>我们的价值观</h2>
-        <div class="values-grid">
-            <div class="value-item">
-                <h3>🏆 结果导向</h3>
-                <p>不卖概念，只交付可衡量的商业效果。每一笔投入都有明确的预期目标和验收标准。</p>
-            </div>
-            <div class="value-item">
-                <h3>💡 技术务实</h3>
-                <p>不为最前沿而前沿，只为企业匹配最合适的技术方案——合适的才是最好的。</p>
-            </div>
-            <div class="value-item">
-                <h3>🤝 互信共赢</h3>
-                <p>与客户、伙伴建立长期信任关系，而非一次性交易。我们关心的是客户3年后的发展。</p>
-            </div>
-            <div class="value-item">
-                <h3>🚀 持续进化</h3>
-                <p>AI行业日新月异，进化湾自身也在持续学习和迭代——与产业共同进化，是我们的立身之本。</p>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="team">
-    <div class="container">
-        <h2>核心团队</h2>
-        <p class="subtitle">来自AI技术、企业服务、教育培训、投融资等领域的资深从业者</p>
-        <div class="team-grid">
-            <div class="team-card">
-                <div class="avatar">Y</div>
-                <h3>云程企航团队</h3>
-                <div class="role">创始运营方</div>
-                <p>深耕企业服务与商务咨询领域，在AI产业孵化、政策咨询、商业选址等方面拥有丰富实操经验。</p>
-            </div>
-            <div class="team-card">
-                <div class="avatar">Y</div>
-                <h3>云协同创新团队</h3>
-                <div class="role">联合发起方</div>
-                <p>专注于数据空间与AI技术应用研究，在AI技术部署、数据安全与合规领域提供专业技术支撑。</p>
-            </div>
-            <div class="team-card">
-                <div class="avatar">A</div>
-                <h3>AI 专家顾问组</h3>
-                <div class="role">技术顾问</div>
-                <p>由AI算法、大模型应用、AI营销等领域的资深从业者组成，为服务交付提供专业技术保障。</p>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="cta-section">
-    <div class="container">
-        <h2>与进化湾一起，加速您的 AI 进化之路</h2>
-        <p>无论是技术选型、团队搭建还是商业落地——我们全程陪跑</p>
-        <a href="/#form">立即咨询，获取专属方案 →</a>
-    </div>
-</div>
-<footer>
-    <div class="container">
-        <div class="footer-grid">
-            <div>
-                <h4>关于进化湾®</h4>
-                <p>进化湾®是深圳云程企航与云协同创新联合打造的 AI 产业服务平台，立足深圳南山，提供算力基础设施、AI 营销增长、视频与数字人、创业孵化、人才认证、商业选址与投融资对接等全链路服务。</p>
-            </div>
-            <div>
-                <h4>联系我们</h4>
-                <p>地址：<br>深圳市南山区粤海街道高新区社区沙河西路 1809 号深圳湾科技生态园 2 栋 A1101</p>
-                <p><span style="color:#888;font-weight:500;">电话</span> <a href="tel:18718528592">18718528592</a></p>
-                <p><span style="color:#888;font-weight:500;">邮箱</span> <a href="mailto:YCQH_SZ@163.com">YCQH_SZ@163.com</a></p>
-                <p><a href="https://www.jhw-ai.com">www.jhw-ai.com</a></p>
-            </div>
-            <div>
-                <h4>快速链接</h4>
-                <p><a href="./">首页</a></p>
-                <p><a href="/#services">核心服务</a></p>
-                <p><a href="/training/">AI训练师培训</a></p>
-                <p><a href="/subsidy/">创业补贴</a></p>
-                <p><a href="/news/">动态·洞察</a></p>
-                <p><a href="/faq/">常见问题 FAQ</a></p>
-                <p><a href="/glossary/">AI 术语表</a></p>
-                <p><a href="/#form">联系我们</a></p>
-            </div>
-            <div>
-                <h4>关注我们</h4>
-                <p>扫码添加微信<br>获取 AI 解决方案</p>
-                <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;">
-                    <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">微信公众号</span>
-                    <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">小红书</span>
-                    <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">知乎</span>
+
+    <div class="mission">
+        <div class="container">
+            <h2>我们的核心理念</h2>
+            <p class="mission-text">不做不解决问题的技术展示——每一份方案都从真实的业务痛点出发，追求可量化、可交付的商业效果。</p>
+            <div class="mission-grid">
+                <div class="mission-item">
+                    <span class="icon">🎯</span>
+                    <h3>效果为先</h3>
+                    <p>每项服务启动前设定可量化指标。AI营销ROI区间3-8倍，视频生产效率提升10-50倍——数据说话，效果可验。</p>
+                </div>
+                <div class="mission-item">
+                    <span class="icon">🔗</span>
+                    <h3>全链服务</h3>
+                    <p>从GPU算力、模型部署、内容生产到商业变现，打通AI落地的每一环——企业不需要自己拼凑供应商。</p>
+                </div>
+                <div class="mission-item">
+                    <span class="icon">🤝</span>
+                    <h3>长期陪跑</h3>
+                    <p>跟随企业发展阶段提供匹配的服务——从创意验证、MVP搭建到规模化增长，做AI时代的长期伙伴。</p>
                 </div>
             </div>
         </div>
-        <p class="copyright">&copy; 2026 深圳云程企航商务服务有限公司 版权所有 | 进化湾&reg; | 粤ICP备2026019539号-2</p>
     </div>
-</footer>
+
+    <div class="timeline">
+        <div class="container">
+            <h2>发展历程</h2>
+            <div class="timeline-list">
+                <div class="timeline-item">
+                    <div class="date">2025 年 Q1</div>
+                    <h3>进化湾正式成立</h3>
+                    <p>深圳云程企航与云协同创新联合发起，总部落地深圳湾科技生态园，启动AI产业服务平台建设。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2025 年 Q2</div>
+                    <h3>首批服务上线</h3>
+                    <p>AI算力服务器供应、AI营销增长、AI视频与数字人三大核心服务正式面向企业客户开放。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2025 年 Q3</div>
+                    <h3>产教融合起步</h3>
+                    <p>人工智能训练师职业技能等级认证培训项目启动，与多所职业院校达成人才培养合作意向。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2025 年 Q4</div>
+                    <h3>生态初具规模</h3>
+                    <p>累计服务企业客户30+家，与AI产业链上下游多家企业建立战略合作关系，服务版图初步成型。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2026 年 H1</div>
+                    <h3>全国化布局启动</h3>
+                    <p>深圳总部AI体验中心规划落地，佛山产教融合示范基地、成都人工智能体验中心启动筹备，品牌升级为进化湾®。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">2026 年 6 月</div>
+                    <h3>八部门政策引领新发展</h3>
+                    <p>商务部等8部门发布《关于加快"人工智能+消费"发展的实施意见》，进化湾全面加速全国AI体验中心与示范基地布局。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="values">
+        <div class="container">
+            <h2>我们的价值观</h2>
+            <div class="values-grid">
+                <div class="value-item">
+                    <h3>🏆 结果导向</h3>
+                    <p>不卖概念，只交付可衡量的商业效果。每一笔投入都有明确的预期目标和验收标准。</p>
+                </div>
+                <div class="value-item">
+                    <h3>💡 技术务实</h3>
+                    <p>不为最前沿而前沿，只为企业匹配最合适的技术方案——合适的才是最好的。</p>
+                </div>
+                <div class="value-item">
+                    <h3>🤝 互信共赢</h3>
+                    <p>与客户、伙伴建立长期信任关系，而非一次性交易。我们关心的是客户3年后的发展。</p>
+                </div>
+                <div class="value-item">
+                    <h3>🚀 持续进化</h3>
+                    <p>AI行业日新月异，进化湾自身也在持续学习和迭代——与产业共同进化，是我们的立身之本。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="team">
+        <div class="container">
+            <h2>核心团队</h2>
+            <p class="subtitle">来自AI技术、企业服务、教育培训、投融资等领域的资深从业者</p>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="avatar">Y</div>
+                    <h3>云程企航团队</h3>
+                    <div class="role">创始运营方</div>
+                    <p>深耕企业服务与商务咨询领域，在AI产业孵化、政策咨询、商业选址等方面拥有丰富实操经验。</p>
+                </div>
+                <div class="team-card">
+                    <div class="avatar">Y</div>
+                    <h3>云协同创新团队</h3>
+                    <div class="role">联合发起方</div>
+                    <p>专注于数据空间与AI技术应用研究，在AI技术部署、数据安全与合规领域提供专业技术支撑。</p>
+                </div>
+                <div class="team-card">
+                    <div class="avatar">A</div>
+                    <h3>AI 专家顾问组</h3>
+                    <div class="role">技术顾问</div>
+                    <p>由AI算法、大模型应用、AI营销等领域的资深从业者组成，为服务交付提供专业技术保障。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <div class="container">
+            <h2>与进化湾一起，加速您的 AI 进化之路</h2>
+            <p>无论是技术选型、团队搭建还是商业落地——我们全程陪跑</p>
+            <a href="/#form">立即咨询，获取专属方案 →</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h4>关于进化湾®</h4>
+                    <p>进化湾®是深圳云程企航与云协同创新联合打造的 AI 产业服务平台，立足深圳南山，提供算力基础设施、AI 营销增长、视频与数字人、创业孵化、人才认证、商业选址与投融资对接等全链路服务。</p>
+                </div>
+                <div>
+                    <h4>联系我们</h4>
+                    <p>地址：<br>深圳市南山区粤海街道高新区社区沙河西路 1809 号深圳湾科技生态园 2 栋 A1101</p>
+                    <p><span style="color:#888;font-weight:500;">电话</span> <a href="tel:18718528592">18718528592</a></p>
+                    <p><span style="color:#888;font-weight:500;">邮箱</span> <a href="mailto:YCQH_SZ@163.com">YCQH_SZ@163.com</a></p>
+                    <p><a href="https://www.jhw-ai.com">www.jhw-ai.com</a></p>
+                </div>
+                <div>
+                    <h4>快速链接</h4>
+                    <p><a href="/">首页</a></p>
+                    <p><a href="/training/">AI训练师培训</a></p>
+                    <p><a href="/subsidy/">创业补贴</a></p>
+                    <p><a href="/#services">核心服务</a><a href="/smart-agent/">AI智造</a></p>
+                    <p><a href="/news/">动态</a></p>
+                    <p><a href="/faq/">常见问题 FAQ</a></p>
+                    <p><a href="/glossary/">AI 术语表</a></p>
+                    <p><a href="/#space">产业基地</a></p>
+                    <p><a href="/#form">联系我们</a></p>
+                </div>
+                <div>
+                    <h4>关注我们</h4>
+                    <p>扫码添加微信<br>获取 AI 解决方案</p>
+                    <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;">
+                        <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">微信公众号</span>
+                        <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">小红书</span>
+                        <span style="color:#fff;font-size:0.92em;padding:6px 14px;background:rgba(255,255,255,0.1);border-radius:6px;cursor:default;">知乎</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wechat-info">
+                <p>扫码添加微信 · 获取专属 AI 方案</p>
+                <div class="qr-grid">
+                    <div class="qr-item">
+                        <p style="color: #ccc; font-size: 0.9em; margin-bottom: 10px;">个人微信</p>
+                        <div class="wechat-qr">
+                            <img src="/static/qr-wechat.png" alt="进化湾官方微信二维码 YCQH_SZ" loading="lazy">
+                        </div>
+                        <p style="margin-top: 10px; color: #fff; font-size: 0.9em;">YCQH_SZ</p>
+                    </div>
+                    <div class="qr-item">
+                        <p style="color: #ccc; font-size: 0.9em; margin-bottom: 10px;">企业微信</p>
+                        <div class="wechat-qr">
+                            <img src="/static/wecom-qr.png" alt="进化湾企业微信服务二维码" loading="lazy">
+                        </div>
+                        <p style="margin-top: 10px; color: #fff; font-size: 0.9em;">企业服务</p>
+                    </div>
+                    <div class="qr-item">
+                        <p style="color: #ccc; font-size: 0.9em; margin-bottom: 10px;">社群入口</p>
+                        <div class="wechat-qr">
+                            <img src="/static/group-qr.png" alt="进化湾AI行业交流群二维码" loading="lazy">
+                        </div>
+                        <p style="margin-top: 10px; color: #fff; font-size: 0.9em;">AI 交流群</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="copyright">© <span id="copyrightYear">2026</span> 深圳云程企航商务服务有限公司 版权所有 | 进化湾® | 粤ICP备2026019539号-2</p>
+        </div>
+    </footer>
+
+    <button class="back-to-top" id="backToTop">↑</button>
+
+    <script src="/static/include.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var hamburgerBtn = document.getElementById('hamburgerBtn');
+            var navLinks = document.getElementById('navLinks');
+            var navOverlay = document.getElementById('navOverlay');
+
+            hamburgerBtn.addEventListener('click', function() {
+                hamburgerBtn.classList.toggle('active');
+                navLinks.classList.toggle('active');
+                navOverlay.classList.toggle('active');
+            });
+
+            navOverlay.addEventListener('click', function() {
+                hamburgerBtn.classList.remove('active');
+                navLinks.classList.remove('active');
+                navOverlay.classList.remove('active');
+            });
+
+            var backToTop = document.getElementById('backToTop');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            });
+
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
 </body>
 </html>

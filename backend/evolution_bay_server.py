@@ -131,22 +131,20 @@ init_db()
 
 def add_lead_log(lead_id, action, field_name=None, old_value=None, new_value=None, operator="admin"):
     try:
-        conn = sqlite3.connect(DB_PATH)
-        c = conn.cursor()
-        c.execute("INSERT INTO lead_logs (lead_id, action, field_name, old_value, new_value, operator) VALUES (?,?,?,?,?,?)", (lead_id, action, field_name, old_value, new_value, operator))
-        conn.commit()
-        conn.close()
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.execute("INSERT INTO lead_logs (lead_id, action, field_name, old_value, new_value, operator) VALUES (?,?,?,?,?,?)", (lead_id, action, field_name, old_value, new_value, operator))
+            conn.commit()
     except Exception:
         pass
 
 def get_lead_logs(lead_id):
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    c = conn.cursor()
-    c.execute("SELECT * FROM lead_logs WHERE lead_id=? ORDER BY created_at DESC LIMIT 50", (lead_id,))
-    logs = [dict(row) for row in c.fetchall()]
-    conn.close()
-    return logs
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.row_factory = sqlite3.Row
+            logs = [dict(row) for row in conn.execute("SELECT * FROM lead_logs WHERE lead_id=? ORDER BY created_at DESC LIMIT 50", (lead_id,)).fetchall()]
+        return logs
+    except Exception:
+        return []
 
 def get_db():
     """获取数据库连接"""
@@ -166,29 +164,28 @@ def hash_phone(phone):
 
 def is_duplicate_submit(phone, ip_address, minutes=30):
     """检查是否在指定时间内重复提交"""
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
     phone_hash = hash_phone(phone)
-    
-    c.execute('''
-        SELECT COUNT(*) FROM submit_logs 
-        WHERE phone_hash = ? AND submit_time > datetime('now', ?)
-    ''', (phone_hash, f'-{minutes} minutes'))
-    
-    count = c.fetchone()[0]
-    conn.close()
-    return count > 0
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            count = conn.execute('''
+                SELECT COUNT(*) FROM submit_logs 
+                WHERE phone_hash = ? AND submit_time > datetime('now', ?)
+            ''', (phone_hash, f'-{minutes} minutes')).fetchone()[0]
+        return count > 0
+    except Exception:
+        return False
 
 def log_submission(phone, ip_address):
     """记录提交日志"""
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('''
-        INSERT INTO submit_logs (phone_hash, ip_address)
-        VALUES (?, ?)
-    ''', (hash_phone(phone), ip_address))
-    conn.commit()
-    conn.close()
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            conn.execute('''
+                INSERT INTO submit_logs (phone_hash, ip_address)
+                VALUES (?, ?)
+            ''', (hash_phone(phone), ip_address))
+            conn.commit()
+    except Exception:
+        pass
 
 def validate_phone(phone):
     """验证手机号格式（支持中国大陆和香港）"""
@@ -503,7 +500,23 @@ def get_leads(request_or_args, page=None, per_page=None, sort_by=None, sort_orde
 def export_csv():
     """导出 CSV（增强版，支持搜索筛选后的结果）"""
     leads = get_leads(request)
-    
+
+    # 日期筛选（额外过滤，在 get_leads 结果之上）
+    date_from = request.args.get('date_from', '').strip()
+    date_to = request.args.get('date_to', '').strip()
+    if date_from or date_to:
+        filtered = []
+        for lead in leads:
+            t = lead.get('submit_time', '')
+            if t:
+                d = t[:10] if len(t) >= 10 else t
+                if date_from and d < date_from:
+                    continue
+                if date_to and d > date_to:
+                    continue
+            filtered.append(lead)
+        leads = filtered
+
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow([
@@ -533,10 +546,7 @@ def export_csv():
 @app.route('/admin/api/export')
 @admin_required
 def admin_api_export_csv():
-    # 可选日期筛选
-    date_from = request.args.get('date_from', '')
-    date_to = request.args.get('date_to', '')
-    """导出 CSV（API 版本，支持 Bearer token + query token）"""
+    """导出 CSV（API 版本，支持 Bearer token + query token + 日期筛选）"""
     return export_csv()
 
 @app.route('/admin/update_status', methods=['POST'])

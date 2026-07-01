@@ -8,8 +8,9 @@
     <meta name="keywords" content="人工智能+消费,八部门,AI政策,进化湾,AI体验中心,产教融合,深圳AI,佛山AI,成都AI">
     <link rel="canonical" href="https://www.jhw-ai.com/news/article-20260621-ai-consumer.html">
     <link rel="icon" type="image/png" href="/static/logo.png">
-    <link rel="apple-touch-icon" href="/static/logo.png">
-    <meta property="og:title" content="八部门发文加快"人工智能+消费"发展 进化湾全国AI体验中心布局加速落地">
+  <link rel="apple-touch-icon" href="/static/logo.png">
+  <link rel="stylesheet" href="/static/shared.css">
+  <meta property="og:title" content="八部门发文加快"人工智能+消费"发展 进化湾全国AI体验中心布局加速落地">
     <meta property="og:description" content="商务部等8部门发布实施意见推动AI与消费深度融合。进化湾在深圳、佛山、成都的AI体验中心与产教融合示范基地全面启动。">
     <meta property="og:url" content="https://www.jhw-ai.com/news/article-20260621-ai-consumer.html">
     <meta property="og:type" content="article">
@@ -31,14 +32,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; color: #2c3e50; line-height: 1.8; background: #fafbfc; }
         .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
-        nav { background: #fff; border-bottom: 1px solid #eee; padding: 12px 0; position: sticky; top: 0; z-index: 100; }
-        nav .container { display: flex; justify-content: space-between; align-items: center; }
-        nav a { color: #0f4c81; text-decoration: none; font-weight: 600; font-size: 0.95em; }
-        nav a:hover { opacity: 0.8; }
-        nav .nav-inner { max-width: 900px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
-        nav .nav-links { display: flex; gap: 20px; }
-        nav .nav-links a { color: #555; font-weight: 400; font-size: 0.9em; }
-        @media (max-width: 768px) { nav .nav-links { display: none; } }
 
         .article-header { background: linear-gradient(160deg, #0a0a1a, #16213e); color: #fff; padding: 70px 0 50px; text-align: center; }
         .article-header .category { display: inline-block; background: rgba(255,255,255,0.15); padding: 4px 16px; border-radius: 14px; font-size: 0.82em; letter-spacing: 1px; margin-bottom: 20px; }
@@ -88,22 +81,29 @@
     </style>
 </head>
 <body>
-<nav>
-    <div class="nav-inner">
-        <a href="/news/" class="back-link">&larr; 返回动态列表</a>
-        <div class="nav-links">
+<header>
+    <div class="container">
+        <a href="/" class="logo"><img src="/static/logo.png" alt="进化湾" />进化湾</a>
+        <nav class="nav-links" id="navLinks">
+            <a href="/">首页</a>
             <a href="/#services">核心服务</a>
+            <a href="/smart-agent/">AI智造</a>
             <a href="/training/">AI训练师培训</a>
             <a href="/subsidy/">创业补贴</a>
             <a href="/about/">关于</a>
             <a href="/news/">动态·洞察</a>
             <a href="/faq/">FAQ</a>
-            <a href="/glossary/">术语表</a>
             <a href="/#form">联系我们</a>
-        </div>
+        </nav>
+        <button class="hamburger" id="hamburgerBtn" aria-label="菜单" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <a href="/#form" class="contact-btn">获取方案</a>
     </div>
-</nav>
+</header>
+<div class="nav-overlay" id="navOverlay"></div>
 <article>
     <div class="article-header">
         <div class="container">
@@ -213,13 +213,15 @@
                 <div>
                     <h4>快速链接</h4>
                     <p><a href="./">首页</a></p>
-                    <p><a href="/#services">核心服务</a></p>
-                    <p><a href="/training/">AI训练师培训</a></p>
-                    <p><a href="/subsidy/">创业补贴</a></p>
-                    <p><a href="/news/">动态·洞察</a></p>
-                    <p><a href="/faq/">常见问题 FAQ</a></p>
-                    <p><a href="/glossary/">AI 术语表</a></p>
-                    <p><a href="/#form">联系我们</a></p>
+<p><a href="/#services">核心服务</a>
+                <a href="/smart-agent/">AI智造</a></p>
+<p><a href="/training/">AI训练师培训</a></p>
+<p><a href="/subsidy/">创业补贴</a></p>
+<p><a href="/news/">动态</a></p>
+<p><a href="/faq/">常见问题 FAQ</a></p>
+<p><a href="/glossary/">AI 术语表</a></p>
+<p><a href="/#space">产业基地</a></p>
+<p><a href="/#form">联系我们</a></p>
                 </div>
                 
                 <div>
@@ -238,5 +240,7 @@
             </p>
         </div>
     </footer>
+
+<script src="/static/include.js"></script>
 </body>
 </html>
