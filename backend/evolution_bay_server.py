@@ -6,7 +6,7 @@
 增强版：数据验证、重复提交防护、搜索、导出、统计分析
 """
 
-from flask import Flask, request, jsonify, render_template_string, send_file, send_from_directory, g
+from flask import Flask, request, jsonify, render_template_string, send_file, send_from_directory, g, Response
 from flask.views import MethodView
 import sqlite3
 import datetime
@@ -21,6 +21,12 @@ import json
 import re
 from functools import wraps
 
+try:
+    import bcrypt
+    USE_BCRYPT = True
+except ImportError:
+    USE_BCRYPT = False
+
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'dev-secret-key-change-in-production')
 
@@ -32,12 +38,69 @@ ADMIN_SPA_DIR = os.environ.get('ADMIN_SPA_DIR',
 
 # 管理后台认证（从环境变量读取，生产环境必须设置）
 ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
-ADMIN_PASSWORD_HASH = hashlib.sha256(
-    os.environ.get('ADMIN_PASSWORD', 'changeme').encode()
-).hexdigest()
+
+_admin_password = os.environ.get('ADMIN_PASSWORD', 'changeme')
+if USE_BCRYPT:
+    ADMIN_PASSWORD_HASH = bcrypt.hashpw(_admin_password.encode(), bcrypt.gensalt())
+else:
+    ADMIN_PASSWORD_HASH = hashlib.sha256(_admin_password.encode()).hexdigest()
+
 TOKEN_SECRET = os.environ.get('TOKEN_SECRET', app.secret_key).encode()
 TOKEN_EXPIRY_HOURS = int(os.environ.get('TOKEN_EXPIRY_HOURS', '12'))
 LEGACY_TOKEN = os.environ.get('LEGACY_TOKEN', '')
+
+LOGIN_ATTEMPT_LIMIT = 5
+LOGIN_LOCKOUT_MINUTES = 15
+_login_attempts = {}
+
+
+def verify_password(password):
+    """验证密码（兼容 bcrypt 和 SHA256）"""
+    if USE_BCRYPT:
+        return bcrypt.checkpw(password.encode(), ADMIN_PASSWORD_HASH)
+    else:
+        return hashlib.sha256(password.encode()).hexdigest() == ADMIN_PASSWORD_HASH
+
+
+def get_client_ip():
+    """获取客户端真实 IP"""
+    ip = request.headers.get('X-Forwarded-For', '')
+    if ip:
+        return ip.split(',')[0].strip()
+    ip = request.headers.get('X-Real-IP', '')
+    if ip:
+        return ip.strip()
+    return request.remote_addr
+
+
+def check_login_lockout(ip):
+    """检查 IP 是否被锁定"""
+    if ip not in _login_attempts:
+        return False, 0
+    attempts, lock_time = _login_attempts[ip]
+    if attempts >= LOGIN_ATTEMPT_LIMIT:
+        elapsed = time.time() - lock_time
+        if elapsed < LOGIN_LOCKOUT_MINUTES * 60:
+            remaining = int((LOGIN_LOCKOUT_MINUTES * 60 - elapsed) / 60)
+            return True, remaining
+        else:
+            del _login_attempts[ip]
+    return False, 0
+
+
+def record_login_failure(ip):
+    """记录登录失败尝试"""
+    if ip in _login_attempts:
+        attempts, _ = _login_attempts[ip]
+        _login_attempts[ip] = (attempts + 1, time.time())
+    else:
+        _login_attempts[ip] = (1, time.time())
+
+
+def reset_login_attempts(ip):
+    """重置登录尝试计数（登录成功后）"""
+    if ip in _login_attempts:
+        del _login_attempts[ip]
 
 
 def generate_token(username):
@@ -123,6 +186,15 @@ def init_db():
     ''')
     
     c.execute('CREATE TABLE IF NOT EXISTS lead_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, lead_id INTEGER NOT NULL, action TEXT NOT NULL, field_name TEXT, old_value TEXT, new_value TEXT, operator TEXT DEFAULT "admin", created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
+    
+    # 添加索引（优化查询性能）
+    c.execute('CREATE INDEX IF NOT EXISTS idx_leads_submit_time ON leads(submit_time)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_leads_service ON leads(service)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_leads_name ON leads(name)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_submit_logs_phone_hash ON submit_logs(phone_hash)')
+    c.execute('CREATE INDEX IF NOT EXISTS idx_lead_logs_lead_id ON lead_logs(lead_id)')
+    
     conn.commit()
     conn.close()
 
@@ -354,19 +426,33 @@ def admin_login():
 def admin_api_login():
     """管理后台 API 登录（返回 JSON + token）"""
     try:
+        client_ip = get_client_ip()
+        
+        locked, remaining = check_login_lockout(client_ip)
+        if locked:
+            return jsonify({'code': -4, 'msg': f'登录失败次数过多，请 {remaining} 分钟后重试'})
+
         data = request.get_json() or {}
         username = data.get('username', '').strip()
         password = data.get('password', '').strip()
 
         if not username or not password:
+            record_login_failure(client_ip)
             return jsonify({'code': -1, 'msg': '用户名和密码不能为空'})
 
-        password_hash = hashlib.sha256(password.encode()).hexdigest()
-        if username == ADMIN_USERNAME and password_hash == ADMIN_PASSWORD_HASH:
+        if username == ADMIN_USERNAME and verify_password(password):
+            reset_login_attempts(client_ip)
             token = generate_token(username)
             return jsonify({'code': 0, 'msg': '登录成功', 'token': token})
 
-        return jsonify({'code': -1, 'msg': '用户名或密码错误'})
+        record_login_failure(client_ip)
+        
+        attempts, _ = _login_attempts.get(client_ip, (0, 0))
+        remaining_attempts = LOGIN_ATTEMPT_LIMIT - attempts
+        if remaining_attempts > 0:
+            return jsonify({'code': -1, 'msg': f'用户名或密码错误，还剩 {remaining_attempts} 次尝试机会'})
+        else:
+            return jsonify({'code': -4, 'msg': f'登录失败次数过多，请 {LOGIN_LOCKOUT_MINUTES} 分钟后重试'})
     except Exception as e:
         return jsonify({'code': -1, 'msg': f'登录失败：{str(e)}'})
 
@@ -399,6 +485,72 @@ def admin_spa_js(filename):
     return send_from_directory(js_dir, filename)
 
 
+@app.route('/admin/api/leads/batch', methods=['POST'])
+@admin_required
+def admin_api_batch_update():
+    """批量更新线索状态"""
+    try:
+        data = request.get_json() or {}
+        lead_ids = data.get('ids', [])
+        new_status = data.get('status', '').strip()
+        
+        if not lead_ids or not new_status:
+            return jsonify({'code': -1, 'msg': '缺少必要参数'})
+        
+        if new_status not in ['新提交', '已联系', '沟通中', '已转化', '无效']:
+            return jsonify({'code': -1, 'msg': '无效的状态值'})
+        
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        placeholders = ','.join('?' * len(lead_ids))
+        c.execute(f'UPDATE leads SET status = ? WHERE id IN ({placeholders})', 
+                  [new_status] + lead_ids)
+        
+        updated_count = c.rowcount
+        
+        for lead_id in lead_ids:
+            c.execute('SELECT status FROM leads WHERE id = ?', (lead_id,))
+            old_status = c.fetchone()[0] if c.fetchone() else None
+            add_lead_log(lead_id, '批量状态更新', 'status', old_status, new_status)
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'code': 0, 'msg': f'成功更新 {updated_count} 条线索', 'updated': updated_count})
+    except Exception as e:
+        return jsonify({'code': -1, 'msg': f'批量更新失败：{str(e)}'})
+
+
+@app.route('/admin/api/leads/batch/delete', methods=['POST'])
+@admin_required
+def admin_api_batch_delete():
+    """批量删除线索"""
+    try:
+        data = request.get_json() or {}
+        lead_ids = data.get('ids', [])
+        
+        if not lead_ids:
+            return jsonify({'code': -1, 'msg': '缺少必要参数'})
+        
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        
+        for lead_id in lead_ids:
+            add_lead_log(lead_id, '批量删除')
+        
+        placeholders = ','.join('?' * len(lead_ids))
+        c.execute(f'DELETE FROM leads WHERE id IN ({placeholders})', lead_ids)
+        
+        deleted_count = c.rowcount
+        conn.commit()
+        conn.close()
+        
+        return jsonify({'code': 0, 'msg': f'成功删除 {deleted_count} 条线索', 'deleted': deleted_count})
+    except Exception as e:
+        return jsonify({'code': -1, 'msg': f'批量删除失败：{str(e)}'})
+
+
 ALLOWED_SORT_COLUMNS = {
     'id', 'name', 'company', 'phone', 'wechat', 'service',
     'budget', 'submit_time', 'status'
@@ -424,6 +576,8 @@ def get_leads(request_or_args, page=None, per_page=None, sort_by=None, sort_orde
 
     search_query = args.get('q', '').strip()
     status_filter = args.get('status', '').strip()
+    date_from = args.get('date_from', '').strip()
+    date_to = args.get('date_to', '').strip()
 
     where_clause = 'WHERE 1=1'
     params = []
@@ -436,6 +590,14 @@ def get_leads(request_or_args, page=None, per_page=None, sort_by=None, sort_orde
     if status_filter:
         where_clause += ' AND status = ?'
         params.append(status_filter)
+
+    if date_from:
+        where_clause += ' AND DATE(submit_time) >= ?'
+        params.append(date_from)
+
+    if date_to:
+        where_clause += ' AND DATE(submit_time) <= ?'
+        params.append(date_to)
 
     # 排序（白名单校验防 SQL 注入）
     order_by = 'submit_time DESC'
@@ -495,52 +657,100 @@ def get_leads(request_or_args, page=None, per_page=None, sort_by=None, sort_orde
 
     return leads
 
-@app.route('/admin/export')
-@admin_required
-def export_csv():
-    """导出 CSV（增强版，支持搜索筛选后的结果）"""
-    leads = get_leads(request)
-
-    # 日期筛选（额外过滤，在 get_leads 结果之上）
-    date_from = request.args.get('date_from', '').strip()
-    date_to = request.args.get('date_to', '').strip()
-    if date_from or date_to:
-        filtered = []
-        for lead in leads:
-            t = lead.get('submit_time', '')
-            if t:
-                d = t[:10] if len(t) >= 10 else t
-                if date_from and d < date_from:
-                    continue
-                if date_to and d > date_to:
-                    continue
-            filtered.append(lead)
-        leads = filtered
-
-    output = io.StringIO()
-    writer = csv.writer(output)
-    writer.writerow([
+def generate_csv_rows(conn, where_clause, params, order_by):
+    """生成 CSV 行数据（流式生成器）"""
+    yield '\ufeff'
+    yield ','.join([
         'ID', '姓名', '公司', '电话', '微信', '服务类型', '预算', 
         '需求描述', '提交时间', '状态', '备注', 'IP地址', '来源页面'
-    ])
+    ]) + '\n'
     
-    for lead in leads:
-        writer.writerow([
-            lead['id'], lead['name'], lead['company'], lead['phone'],
-            lead['wechat'], lead['service_label'], lead['budget_label'],
-            lead['details'], lead['submit_time'], lead['status'], 
-            lead['note'], lead['ip_address'], lead['referrer']
-        ])
+    c = conn.cursor()
+    c.execute(f'SELECT * FROM leads {where_clause} ORDER BY {order_by}', params)
     
-    output.seek(0)
+    while True:
+        row = c.fetchone()
+        if row is None:
+            break
+        
+        columns = ['id', 'name', 'company', 'phone', 'wechat', 'service', 'budget',
+                   'details', 'submit_time', 'status', 'note', 'ip_address',
+                   'user_agent', 'referrer', 'form_source']
+        lead = dict(zip(columns, row))
+        
+        service_label = get_service_label(lead['service'])
+        budget_label = get_budget_label(lead['budget'])
+        
+        row_data = [
+            str(lead['id']),
+            lead['name'] or '',
+            lead['company'] or '',
+            lead['phone'] or '',
+            lead['wechat'] or '',
+            service_label or '',
+            budget_label or '',
+            lead['details'] or '',
+            lead['submit_time'] or '',
+            lead['status'] or '',
+            lead['note'] or '',
+            lead['ip_address'] or '',
+            lead['referrer'] or ''
+        ]
+        
+        writer = io.StringIO()
+        csv.writer(writer).writerow(row_data)
+        yield writer.getvalue()
+
+
+@admin_required
+def _export_csv_stream(request):
+    """导出 CSV（流式版本，避免内存溢出）"""
+    search_query = request.args.get('q', '').strip()
+    status_filter = request.args.get('status', '').strip()
+    date_from = request.args.get('date_from', '').strip()
+    date_to = request.args.get('date_to', '').strip()
+    sort_by = request.args.get('sort_by', 'submit_time')
+    sort_order = request.args.get('sort_order', 'desc')
+    
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    
+    where_clause = 'WHERE 1=1'
+    params = []
+    
+    if search_query:
+        where_clause += ' AND (name LIKE ? OR company LIKE ? OR phone LIKE ? OR wechat LIKE ? OR details LIKE ?)'
+        search_term = f'%{search_query}%'
+        params.extend([search_term] * 5)
+    
+    if status_filter:
+        where_clause += ' AND status = ?'
+        params.append(status_filter)
+    
+    if date_from:
+        where_clause += ' AND DATE(submit_time) >= ?'
+        params.append(date_from)
+    
+    if date_to:
+        where_clause += ' AND DATE(submit_time) <= ?'
+        params.append(date_to)
+    
+    order_by = 'submit_time DESC'
+    if sort_by and sort_by in ['id', 'name', 'company', 'phone', 'service', 'budget', 'submit_time', 'status']:
+        direction = 'DESC' if sort_order == 'desc' else 'ASC'
+        order_by = f'{sort_by} {direction}'
+    
     filename = f'进化湾线索_{datetime.datetime.now().strftime("%Y%m%d_%H%M")}.csv'
     
-    return send_file(
-        io.BytesIO(output.getvalue().encode('utf-8-sig')),
-        mimetype='text/csv',
-        as_attachment=True,
-        download_name=filename
-    )
+    response = Response(generate_csv_rows(conn, where_clause, params, order_by), mimetype='text/csv')
+    response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+
+
+@app.route('/admin/export')
+def export_csv():
+    """导出 CSV（增强版，支持搜索筛选后的结果）"""
+    return _export_csv_stream(request)
 
 
 @app.route('/admin/api/export')
@@ -830,7 +1040,6 @@ def admin_api_delete_lead(lead_id):
 @admin_required
 def admin_api_analytics():
     import sqlite3, datetime, os
-    # 路径 → 友好名称映射，维护此字典即可添加/修改页面别名
     PATH_ALIAS = {
         '/':                                     ('🏠 首页', ''),
         '/training/':                            ('🎓 AI 培训介绍', ''),
@@ -842,48 +1051,273 @@ def admin_api_analytics():
         '/blog/guide/ai-marketing-roi-case-study.html':  ('📊 AI 营销 ROI 案例研究', ''),
         '/blog/guide/h200-b300-server-comparison.html':  ('🖥 H200 vs B300 服务器对比', ''),
         '/news/':                                ('📰 新闻动态', ''),
+        '/news/article-20260621-ai-consumer.html':      ('📰 AI消费级应用新闻', ''),
         '/wechat/ai-training-guide.html':        ('💬 微信·AI 培训指南', ''),
         '/subsidy/':                             ('💰 深圳创业补贴', ''),
+        '/about/':                               ('🏢 关于我们', ''),
+        '/smart-agent/':                         ('🤖 智能体解决方案', ''),
     }
     db = os.path.join(os.path.dirname(DB_PATH), 'analytics.db')
     if not os.path.exists(db):
-        return jsonify({'code': 0, 'data': {'total_views': 0, 'total_visitors': 0, 'today_views': 0, 'daily_trend': [], 'top_pages': []}})
+        return jsonify({'code': 0, 'data': {'total_views': 0, 'total_visitors': 0, 'today_views': 0, 'yesterday_views': 0, 'daily_trend': [], 'weekly_trend': [], 'top_pages': [], 'all_pages': [], 'page_conversion': [], 'category_stats': []}})
     conn = sqlite3.connect(db)
     conn.row_factory = sqlite3.Row
     c = conn.cursor()
+
     tr = c.execute("SELECT value FROM summary WHERE metric='total_views'").fetchone()
     ur = c.execute("SELECT value FROM summary WHERE metric='total_unique_visitors'").fetchone()
     ts = datetime.date.today().isoformat()
+    ys = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
+    
     tod = c.execute("SELECT SUM(count) as v FROM pageviews_daily WHERE date=?", (ts,)).fetchone()
-    trend = c.execute("SELECT date, SUM(count) as views FROM pageviews_daily WHERE date >= date('now', '-14 days') GROUP BY date ORDER BY date").fetchall()
-    sql = """SELECT path, SUM(count) as views FROM pageviews_daily 
-WHERE (
-  path = '/' 
-  OR path LIKE '/blog/%' 
-  OR path LIKE '/training/%' 
-  OR path LIKE '/faq/%' 
-  OR path LIKE '/glossary/%' 
-  OR path LIKE '/news/%' 
-  OR path LIKE '/wechat/%' 
-  OR path LIKE '/subsidy/%'
-)
-AND path NOT LIKE '/wp-%'
-AND path NOT LIKE '/.env%'
-AND path NOT LIKE '/.git%'
-AND path NOT LIKE '/xmlrpc%'
-AND path NOT LIKE '/favicon%'
-AND path NOT LIKE '/robots.txt'
-AND path NOT LIKE '/sitemap%'
-AND path != '/health'
-GROUP BY path ORDER BY views DESC LIMIT 10"""
-    top = c.execute(sql).fetchall()
+    yes = c.execute("SELECT SUM(count) as v FROM pageviews_daily WHERE date=?", (ys,)).fetchone()
+
+    daily_trend = c.execute("SELECT date, SUM(count) as views FROM pageviews_daily WHERE date >= date('now', '-30 days') GROUP BY date ORDER BY date").fetchall()
+    weekly_trend = c.execute("""
+        SELECT strftime('%Y-%m-%d', date, 'weekday 0', '-7 days') as week_start,
+               SUM(count) as views
+        FROM pageviews_daily
+        WHERE date >= date('now', '-90 days')
+        GROUP BY week_start
+        ORDER BY week_start
+    """).fetchall()
+
+    all_pages_sql = """SELECT path, SUM(count) as views, 
+                          SUM(unique_ips) as unique_ips
+                      FROM pageviews_daily 
+                      WHERE path NOT LIKE '/wp-%'
+                        AND path NOT LIKE '/.env%'
+                        AND path NOT LIKE '/.git%'
+                        AND path NOT LIKE '/xmlrpc%'
+                        AND path NOT LIKE '/favicon%'
+                        AND path NOT LIKE '/robots.txt'
+                        AND path NOT LIKE '/sitemap%'
+                        AND path != '/health'
+                        AND path NOT LIKE '%.css'
+                        AND path NOT LIKE '%.js'
+                        AND path NOT LIKE '%.png'
+                        AND path NOT LIKE '%.jpg'
+                        AND path NOT LIKE '%.jpeg'
+                        AND path NOT LIKE '%.gif'
+                        AND path NOT LIKE '%.svg'
+                        AND path NOT LIKE '%.ico'
+                        AND path NOT LIKE '%.woff'
+                        AND path NOT LIKE '%.woff2'
+                        AND path NOT LIKE '%.ttf'
+                        AND path NOT LIKE '%.otf'
+                        AND path NOT LIKE '%.json'
+                        AND path NOT LIKE '%.xml'
+                        AND path NOT LIKE '%.txt'
+                        AND path NOT LIKE '%.pdf'
+                        AND path NOT LIKE '%.zip'
+                        AND path NOT LIKE '%.rar'
+                        AND path NOT LIKE '/admin/%'
+                      GROUP BY path ORDER BY views DESC"""
+    all_pages = c.execute(all_pages_sql).fetchall()
+
+    top_pages_sql = """SELECT path, SUM(count) as views FROM pageviews_daily 
+                      WHERE path NOT LIKE '/wp-%'
+                        AND path NOT LIKE '/.env%'
+                        AND path NOT LIKE '/.git%'
+                        AND path NOT LIKE '/xmlrpc%'
+                        AND path NOT LIKE '/favicon%'
+                        AND path NOT LIKE '/robots.txt'
+                        AND path NOT LIKE '/sitemap%'
+                        AND path != '/health'
+                        AND path NOT LIKE '%.css'
+                        AND path NOT LIKE '%.js'
+                        AND path NOT LIKE '%.png'
+                        AND path NOT LIKE '%.jpg'
+                        AND path NOT LIKE '%.jpeg'
+                        AND path NOT LIKE '%.gif'
+                        AND path NOT LIKE '%.svg'
+                        AND path NOT LIKE '%.ico'
+                        AND path NOT LIKE '%.json'
+                        AND path NOT LIKE '/admin/%'
+                      GROUP BY path ORDER BY views DESC LIMIT 10"""
+    top_pages = c.execute(top_pages_sql).fetchall()
+
+    page_week_trend = c.execute("""
+        SELECT path, date, SUM(count) as views
+        FROM pageviews_daily
+        WHERE date >= date('now', '-14 days')
+          AND path NOT LIKE '/wp-%'
+          AND path NOT LIKE '/.env%'
+          AND path NOT LIKE '/.git%'
+          AND path NOT LIKE '%.css'
+          AND path NOT LIKE '%.js'
+          AND path NOT LIKE '%.png'
+          AND path NOT LIKE '%.jpg'
+          AND path NOT LIKE '%.json'
+          AND path NOT LIKE '/admin/%'
+        GROUP BY path, date
+        ORDER BY path, date
+    """).fetchall()
+
+    this_week = c.execute("""
+        SELECT path, SUM(count) as views
+        FROM pageviews_daily
+        WHERE date >= date('now', '-7 days')
+          AND path NOT LIKE '/wp-%'
+          AND path NOT LIKE '/.env%'
+          AND path NOT LIKE '/.git%'
+          AND path NOT LIKE '%.css'
+          AND path NOT LIKE '%.js'
+          AND path NOT LIKE '%.png'
+          AND path NOT LIKE '%.jpg'
+          AND path NOT LIKE '%.json'
+          AND path NOT LIKE '/admin/%'
+        GROUP BY path
+    """).fetchall()
+    last_week = c.execute("""
+        SELECT path, SUM(count) as views
+        FROM pageviews_daily
+        WHERE date >= date('now', '-14 days') AND date < date('now', '-7 days')
+          AND path NOT LIKE '/wp-%'
+          AND path NOT LIKE '/.env%'
+          AND path NOT LIKE '/.git%'
+          AND path NOT LIKE '%.css'
+          AND path NOT LIKE '%.js'
+          AND path NOT LIKE '%.png'
+          AND path NOT LIKE '%.jpg'
+          AND path NOT LIKE '%.json'
+          AND path NOT LIKE '/admin/%'
+        GROUP BY path
+    """).fetchall()
+
+    this_week_dict = {r['path']: r['views'] for r in this_week}
+    last_week_dict = {r['path']: r['views'] for r in last_week}
+
+    category_stats = {}
+    category_map = {
+        '/': 'home',
+        '/blog/': 'blog',
+        '/training/': 'training',
+        '/faq/': 'faq',
+        '/glossary/': 'glossary',
+        '/news/': 'news',
+        '/wechat/': 'wechat',
+        '/subsidy/': 'subsidy',
+        '/about/': 'about',
+        '/smart-agent/': 'smart-agent'
+    }
+    category_names = {
+        'home': '首页',
+        'blog': '博客',
+        'training': '培训',
+        'faq': 'FAQ',
+        'glossary': '术语库',
+        'news': '新闻',
+        'wechat': '微信',
+        'subsidy': '补贴',
+        'about': '关于',
+        'smart-agent': '智能体'
+    }
+
+    for row in all_pages:
+        path = row['path']
+        views = row['views']
+        cat = None
+        for prefix, category in category_map.items():
+            if path == prefix or path.startswith(prefix):
+                cat = category
+                break
+        if cat:
+            if cat not in category_stats:
+                category_stats[cat] = {'views': 0, 'pages': 0}
+            category_stats[cat]['views'] += views
+            category_stats[cat]['pages'] += 1
+
     conn.close()
+
+    conn_leads = sqlite3.connect(DB_PATH)
+    conn_leads.row_factory = sqlite3.Row
+    c_leads = conn_leads.cursor()
+    total_leads = c_leads.execute('SELECT COUNT(*) FROM leads').fetchone()[0]
+    leads_by_referrer = c_leads.execute("""
+        SELECT SUBSTR(referrer, 1, INSTR(referrer || '/', '/', 8) - 1) as ref_path,
+               COUNT(*) as lead_count
+        FROM leads
+        WHERE referrer IS NOT NULL AND referrer != ''
+        GROUP BY ref_path
+        ORDER BY lead_count DESC
+        LIMIT 10
+    """).fetchall()
+    conn_leads.close()
+
+    page_conversion = []
+    for row in all_pages:
+        path = row['path']
+        views = row['views']
+        lead_count = 0
+        for lr in leads_by_referrer:
+            ref = lr['ref_path']
+            if ref and (path == ref or ref.endswith(path) or path.startswith(ref.split('://')[-1].split('/')[0] + '/')):
+                lead_count += lr['lead_count']
+
+        this_w = this_week_dict.get(path, 0)
+        last_w = last_week_dict.get(path, 0)
+        growth = ((this_w - last_w) / last_w * 100) if last_w > 0 else (100 if this_w > 0 else 0)
+        conversion_rate = (lead_count / views * 100) if views > 0 else 0
+
+        quality_score = 0
+        if views >= 100:
+            quality_score += 30
+        elif views >= 50:
+            quality_score += 20
+        else:
+            quality_score += 10
+        if conversion_rate >= 5:
+            quality_score += 40
+        elif conversion_rate >= 2:
+            quality_score += 25
+        else:
+            quality_score += 10
+        if growth >= 20:
+            quality_score += 30
+        elif growth >= 0:
+            quality_score += 20
+        else:
+            quality_score += 10
+        quality_score = min(100, quality_score)
+
+        status = 'normal'
+        if quality_score >= 80:
+            status = 'excellent'
+        elif quality_score >= 60:
+            status = 'good'
+        elif quality_score >= 40:
+            status = 'needs_improvement'
+        else:
+            status = 'critical'
+
+        page_conversion.append({
+            'path': path,
+            'name': format_page(path, views, PATH_ALIAS)['name'],
+            'views': views,
+            'unique_ips': row['unique_ips'],
+            'lead_count': lead_count,
+            'conversion_rate': round(conversion_rate, 2),
+            'this_week_views': this_w,
+            'last_week_views': last_w,
+            'growth_rate': round(growth, 1),
+            'quality_score': quality_score,
+            'status': status
+        })
+
     return jsonify({'code': 0, 'data': {
         'total_views': tr['value'] if tr else 0,
-        'total_visitors': ur['value'] if ur else 0,
+        'total_unique_visitors': ur['value'] if ur else 0,
         'today_views': tod['v'] if tod and tod['v'] else 0,
-        'daily_trend': [{'date': r['date'], 'views': r['views']} for r in trend],
-        'top_pages': [format_page(r['path'], r['views'], PATH_ALIAS) for r in top]
+        'yesterday_views': yes['v'] if yes and yes['v'] else 0,
+        'total_leads': total_leads,
+        'daily_trend': [{'date': r['date'], 'views': r['views']} for r in daily_trend],
+        'weekly_trend': [{'week_start': r['week_start'], 'views': r['views']} for r in weekly_trend],
+        'top_pages': [format_page(r['path'], r['views'], PATH_ALIAS) for r in top_pages],
+        'all_pages': [format_page(r['path'], r['views'], PATH_ALIAS) for r in all_pages],
+        'page_conversion': page_conversion,
+        'category_stats': [{'name': category_names.get(k, k), 'category': k, 'views': v['views'], 'pages': v['pages']} for k, v in category_stats.items()],
+        'leads_by_referrer': [{'path': r['ref_path'], 'count': r['lead_count']} for r in leads_by_referrer]
     }})
 
 

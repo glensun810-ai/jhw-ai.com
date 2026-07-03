@@ -46,10 +46,12 @@
         <nav class="header-nav" id="headerNavDesktop">
             <a href="#" data-nav="dashboard" class="nav-link active">仪表盘</a>
             <a href="#" data-nav="leads" class="nav-link">线索管理</a>
+            <a href="#" data-nav="analytics" class="nav-link">页面分析</a>
         </nav>
         <nav class="header-nav-mobile" id="headerNavMobile">
             <a href="#" data-nav="dashboard" class="nav-link active">仪表盘</a>
             <a href="#" data-nav="leads" class="nav-link">线索管理</a>
+            <a href="#" data-nav="analytics" class="nav-link">页面分析</a>
         </nav>
         <div class="header-right">
             <a href="#" id="btn-export" class="btn btn-outline">导出</a>
@@ -136,15 +138,36 @@
                     <div class="stat-num" id="ana-today-views">-</div>
                     <div class="stat-label">本日浏览量</div>
                 </div>
+                <div class="stat-card" style="border-left-color:#e74c3c;">
+                    <h3>昨日访问</h3>
+                    <div class="stat-num" id="ana-yesterday-views">-</div>
+                    <div class="stat-label">较昨日变化</div>
+                </div>
+                <div class="stat-card" style="border-left-color:#8e44ad;">
+                    <h3>累计线索</h3>
+                    <div class="stat-num" id="ana-total-leads">-</div>
+                    <div class="stat-label">总线索数量</div>
+                </div>
             </div>
-            <div id="ana-chart-container">
-                <h4 style="color:#666;margin-bottom:12px;">近14天访问趋势</h4>
-                <canvas id="ana-chart" height="200"></canvas>
+            <div class="charts-row" style="margin-bottom:16px;">
+                <div style="flex:1;padding-right:12px;">
+                    <h4 style="color:#666;margin-bottom:12px;">近30天访问趋势</h4>
+                    <canvas id="ana-chart" height="200"></canvas>
+                </div>
+                <div style="flex:1;padding-left:12px;">
+                    <h4 style="color:#666;margin-bottom:12px;">页面分类统计</h4>
+                    <canvas id="ana-category-chart" height="200"></canvas>
+                </div>
             </div>
             <div id="ana-top-pages" style="margin-top:16px;">
-                <h4 style="color:#666;margin-bottom:12px;">热门页面</h4>
+                <h4 style="color:#666;margin-bottom:12px;">热门页面 TOP 10</h4>
                 <div id="ana-pages-list"></div>
             </div>
+        </div>
+
+        <div class="chart-card" style="margin-top:16px;">
+            <h3>页面质量分析</h3>
+            <div id="page-quality-table-container"></div>
         </div>
     </div>
 
@@ -201,10 +224,29 @@
             <button id="btn-reset" class="btn btn-ghost">清除</button>
         </div>
 
+        <div class="toolbar" id="batch-toolbar" style="display:none;margin-bottom:12px;padding:12px;background:#f8f9fa;border-radius:8px;">
+            <label style="display:flex;align-items:center;margin-right:16px;">
+                <input type="checkbox" id="select-all" style="width:16px;height:16px;">
+                <span style="margin-left:6px;font-size:0.85em;">全选</span>
+            </label>
+            <span id="selected-count" style="margin-right:16px;font-size:0.85em;color:#666;">已选 0 条</span>
+            <select id="batch-status">
+                <option value="">批量操作</option>
+                <option value="新提交">设为新提交</option>
+                <option value="已联系">设为已联系</option>
+                <option value="沟通中">设为沟通中</option>
+                <option value="已转化">设为已转化</option>
+                <option value="无效">设为无效</option>
+            </select>
+            <button id="btn-batch-update" class="btn btn-primary btn-sm" disabled>批量更新</button>
+            <button id="btn-batch-delete" class="btn btn-danger btn-sm" disabled>批量删除</button>
+        </div>
+
         <div class="table-card">
             <table class="data-table" id="leads-table">
                 <thead>
                     <tr>
+                        <th style="width:40px;"><input type="checkbox" id="select-all-header" style="width:16px;height:16px;"></th>
                         <th data-sort="id" class="sortable">ID <span class="sort-icon"></span></th>
                         <th data-sort="name" class="sortable">姓名 <span class="sort-icon"></span></th>
                         <th data-sort="company">公司</th>
@@ -234,6 +276,8 @@
                 </div>
             </div>
         </div>
+
+        <div class="mobile-card-list" id="mobile-card-list" style="display:none;"></div>
     </main>
         <!-- 底部导航（手机端） -->
         <nav class="bottom-tab-nav" id="bottomTabLeads">
@@ -246,6 +290,89 @@
                 <span class="tab-label">线索</span>
             </a>
         </nav>
+</div>
+
+<!-- Analytics View -->
+<div id="view-analytics" class="view hidden">
+    <header class="header">
+        <div style="display:flex;align-items:center;">
+            <button class="hamburger-admin" id="hamburgerAdmin3" aria-label="菜单">☰</button>
+            <div class="header-left">
+                <h1>进化湾® <span>页面分析</span></h1>
+            </div>
+        </div>
+        <nav class="header-nav" id="headerNavDesktop3">
+            <a href="#" data-nav="dashboard" class="nav-link">仪表盘</a>
+            <a href="#" data-nav="leads" class="nav-link">线索管理</a>
+            <a href="#" data-nav="analytics" class="nav-link active">页面分析</a>
+        </nav>
+        <nav class="header-nav-mobile" id="headerNavMobile3">
+            <a href="#" data-nav="dashboard" class="nav-link">仪表盘</a>
+            <a href="#" data-nav="leads" class="nav-link">线索管理</a>
+            <a href="#" data-nav="analytics" class="nav-link active">页面分析</a>
+        </nav>
+        <div class="header-right">
+            <button id="btn-logout3" class="btn btn-outline">退出</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="chart-card">
+            <h3>网站访问统计</h3>
+            <div class="stats-grid" style="margin-bottom:20px;">
+                <div class="stat-card" style="border-left-color:#0f4c81;">
+                    <h3>累计访问</h3>
+                    <div class="stat-num" id="ana2-total-views">-</div>
+                    <div class="stat-label">总页面浏览量</div>
+                </div>
+                <div class="stat-card" style="border-left-color:#27ae60;">
+                    <h3>独立访客</h3>
+                    <div class="stat-num" id="ana2-total-visitors">-</div>
+                    <div class="stat-label">累计 IP 数</div>
+                </div>
+                <div class="stat-card" style="border-left-color:#f39c12;">
+                    <h3>今日访问</h3>
+                    <div class="stat-num" id="ana2-today-views">-</div>
+                    <div class="stat-label">本日浏览量</div>
+                </div>
+                <div class="stat-card" style="border-left-color:#e74c3c;">
+                    <h3>页面总数</h3>
+                    <div class="stat-num" id="ana2-page-count">-</div>
+                    <div class="stat-label">被访问页面数</div>
+                </div>
+            </div>
+            <div class="charts-row" style="margin-bottom:16px;">
+                <div style="flex:1;padding-right:12px;">
+                    <h4 style="color:#666;margin-bottom:12px;">近30天访问趋势</h4>
+                    <canvas id="ana2-chart" height="200"></canvas>
+                </div>
+                <div style="flex:1;padding-left:12px;">
+                    <h4 style="color:#666;margin-bottom:12px;">页面分类统计</h4>
+                    <canvas id="ana2-category-chart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-card">
+            <h3>所有页面访问数据</h3>
+            <div id="analytics-table-container"></div>
+        </div>
+    </main>
+
+    <nav class="bottom-tab-nav" id="bottomTabAnalytics">
+        <a href="#" data-nav="dashboard" class="tab-item">
+            <span class="tab-icon">📊</span>
+            <span class="tab-label">仪表盘</span>
+        </a>
+        <a href="#" data-nav="leads" class="tab-item">
+            <span class="tab-icon">📝</span>
+            <span class="tab-label">线索</span>
+        </a>
+        <a href="#" data-nav="analytics" class="tab-item active">
+            <span class="tab-icon">📈</span>
+            <span class="tab-label">分析</span>
+        </a>
+    </nav>
 </div>
 
 <!-- Lead Detail Modal -->

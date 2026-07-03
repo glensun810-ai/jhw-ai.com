@@ -92,10 +92,12 @@ const API = {
         return this.request('GET', '/stats');
     },
 
-    getExportUrl() {
-        const token = Auth.getToken();
-        if (token) return `${CONFIG.API_BASE}/export?token=${token}`;
-        return `${CONFIG.API_BASE}/export`;
+    batchUpdateStatus(ids, status) {
+        return this.request('POST', '/leads/batch', { ids, status });
+    },
+
+    batchDelete(ids) {
+        return this.request('POST', '/leads/batch/delete', { ids });
     }
 };
 
@@ -103,6 +105,51 @@ const API = {
 const Loading = {
     show() { document.getElementById('loading-overlay').classList.remove('hidden'); },
     hide() { document.getElementById('loading-overlay').classList.add('hidden'); }
+};
+
+// ==================== Confirm Dialog ====================
+const Confirm = {
+    _resolve: null,
+    
+    show(message, title = '确认操作', type = 'confirm') {
+        return new Promise((resolve) => {
+            this._resolve = resolve;
+            
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.id = 'confirm-overlay';
+            overlay.innerHTML = `
+                <div class="modal-content" style="width:360px;max-width:90vw;">
+                    <div class="modal-header">
+                        <h2>${title}</h2>
+                        <button class="modal-close" onclick="Confirm.close(false)">&times;</button>
+                    </div>
+                    <div class="modal-body" style="text-align:center;padding:24px;">
+                        <div style="font-size:3em;margin-bottom:16px;">${type === 'danger' ? '⚠️' : '❓'}</div>
+                        <p style="font-size:0.95em;color:var(--color-text);">${message}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-ghost" onclick="Confirm.close(false)">取消</button>
+                        <button class="btn ${type === 'danger' ? 'btn-danger' : 'btn-primary'}" onclick="Confirm.close(true)">确认</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            
+            overlay.onclick = (e) => {
+                if (e.target === overlay) this.close(false);
+            };
+        });
+    },
+    
+    close(result) {
+        const overlay = document.getElementById('confirm-overlay');
+        if (overlay) overlay.remove();
+        if (this._resolve) {
+            this._resolve(result);
+            this._resolve = null;
+        }
+    }
 };
 
 // ==================== Router ====================
@@ -125,6 +172,7 @@ const Router = {
             case 'login': this.currentView = LoginView; break;
             case 'dashboard': this.currentView = DashboardView; break;
             case 'leads': this.currentView = LeadsView; break;
+            case 'analytics': this.currentView = AnalyticsView; break;
             default: this.currentView = DashboardView;
         }
 
@@ -318,6 +366,15 @@ const DashboardView = {
             document.getElementById('ana-total-views').textContent = d.total_views || 0;
             document.getElementById('ana-total-visitors').textContent = d.total_visitors || 0;
             document.getElementById('ana-today-views').textContent = d.today_views || 0;
+            document.getElementById('ana-total-leads').textContent = d.total_leads || 0;
+            
+            const today = d.today_views || 0;
+            const yesterday = d.yesterday_views || 0;
+            const diff = today - yesterday;
+            const changePercent = yesterday > 0 ? Math.round((diff / yesterday) * 100) : (today > 0 ? 100 : 0);
+            const changeText = diff >= 0 ? `+${diff} (+${changePercent}%)` : `${diff} (${changePercent}%)`;
+            const changeColor = diff >= 0 ? '#27ae60' : '#e74c3c';
+            document.getElementById('ana-yesterday-views').innerHTML = `${yesterday}<br><span style="font-size:0.75em;color:${changeColor};">${changeText}</span>`;
             
             // 趋势图
             const canvas = document.getElementById('ana-chart');
@@ -337,8 +394,25 @@ const DashboardView = {
                     },
                     options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
                 });
-            } else if (canvas) {
-                document.getElementById('ana-chart-container').innerHTML = '<p style="color:#999;padding:12px;">趋势数据将在 Nginx 日志解析脚本运行后自动生成。</p>';
+            }
+            
+            // 分类统计饼图
+            const catCanvas = document.getElementById('ana-category-chart');
+            if (catCanvas && d.category_stats && d.category_stats.length > 0 && typeof Chart !== 'undefined') {
+                const colors = ['#0f4c81', '#27ae60', '#f39c12', '#e74c3c', '#8e44ad', '#2980b9', '#16a085', '#d35400', '#95a5a6', '#c0392b'];
+                new Chart(catCanvas, {
+                    type: 'doughnut',
+                    data: {
+                        labels: d.category_stats.map(function(c) { return c.name; }),
+                        datasets: [{
+                            data: d.category_stats.map(function(c) { return c.views; }),
+                            backgroundColor: colors.slice(0, d.category_stats.length),
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } } }
+                });
             }
             
             // 热门页面
@@ -353,6 +427,38 @@ const DashboardView = {
                 });
                 h += '</tbody></table>';
                 list.innerHTML = h;
+            }
+            
+            // 页面质量分析表格
+            var qualityContainer = document.getElementById('page-quality-table-container');
+            if (qualityContainer && d.page_conversion && d.page_conversion.length > 0) {
+                var qh = '<table class="data-table" id="page-quality-table" style="font-size:0.85em;"><thead><tr><th>页面名称</th><th>访问量</th><th>独立IP</th><th>线索数</th><th>转化率</th><th>本周访问</th><th>增长率</th><th>质量评分</th><th>状态</th></tr></thead><tbody>';
+                d.page_conversion.forEach(function(p) {
+                    var statusClass = p.status === 'excellent' ? 'status-converted' : 
+                                     p.status === 'good' ? 'status-contacting' : 
+                                     p.status === 'needs_improvement' ? 'status-new' : 'status-invalid';
+                    var statusText = p.status === 'excellent' ? '优秀' : 
+                                     p.status === 'good' ? '良好' : 
+                                     p.status === 'needs_improvement' ? '需优化' : '重点关注';
+                    var growthColor = p.growth_rate >= 0 ? '#27ae60' : '#e74c3c';
+                    var growthIcon = p.growth_rate >= 0 ? '↑' : '↓';
+                    var scoreColor = p.quality_score >= 80 ? '#27ae60' : 
+                                     p.quality_score >= 60 ? '#f39c12' : 
+                                     p.quality_score >= 40 ? '#e67e22' : '#e74c3c';
+                    qh += '<tr><td><a href="' + p.path + '" target="_blank" style="color:#0f4c81;text-decoration:none;" title="' + p.path + '">' + p.name + '</a></td>' +
+                          '<td>' + p.views + '</td>' +
+                          '<td>' + (p.unique_ips || 0) + '</td>' +
+                          '<td style="font-weight:bold;color:#0f4c81;">' + p.lead_count + '</td>' +
+                          '<td>' + p.conversion_rate + '%</td>' +
+                          '<td>' + p.this_week_views + '</td>' +
+                          '<td><span style="color:' + growthColor + ';">' + growthIcon + ' ' + p.growth_rate + '%</span></td>' +
+                          '<td><span style="color:' + scoreColor + ';font-weight:bold;">' + p.quality_score + '</span></td>' +
+                          '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td></tr>';
+                });
+                qh += '</tbody></table>';
+                qualityContainer.innerHTML = qh;
+            } else if (qualityContainer) {
+                qualityContainer.innerHTML = '<p style="color:#999;padding:12px;text-align:center;">暂无页面质量数据，请确保 Nginx 日志解析脚本已配置运行。</p>';
             }
         } catch (err) {
             console.error('Analytics load error:', err);
@@ -520,13 +626,17 @@ const LeadsView = {
         document.getElementById('btn-search').onclick = () => {
             this.state.search = document.getElementById('search-input').value.trim();
             this.state.status = document.getElementById('filter-status').value;
+            this.state.dateFrom = document.getElementById('filter-date-from').value;
+            this.state.dateTo = document.getElementById('filter-date-to').value;
             this.state.page = 1;
             this.load();
         };
         document.getElementById('btn-reset').onclick = () => {
             document.getElementById('search-input').value = '';
             document.getElementById('filter-status').value = '';
-            this.state = { ...this.state, search: '', status: '', page: 1, sortBy: 'submit_time', sortOrder: 'desc' };
+            document.getElementById('filter-date-from').value = '';
+            document.getElementById('filter-date-to').value = '';
+            this.state = { ...this.state, search: '', status: '', dateFrom: '', dateTo: '', page: 1, sortBy: 'submit_time', sortOrder: 'desc' };
             this.load();
         };
         document.getElementById('search-input').onkeydown = (e) => {
@@ -562,6 +672,77 @@ const LeadsView = {
         };
         document.getElementById('modal-save').onclick = () => this.saveLead();
         document.getElementById('modal-delete').onclick = () => this.deleteLead();
+
+        // Batch operations
+        const selectAllHeader = document.getElementById('select-all-header');
+        selectAllHeader.onclick = () => {
+            const checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(cb => cb.checked = selectAllHeader.checked);
+            this.updateBatchToolbar();
+        };
+
+        document.getElementById('select-all').onclick = () => {
+            const selectAllHeader = document.getElementById('select-all-header');
+            selectAllHeader.click();
+        };
+
+        document.getElementById('btn-batch-update').onclick = async () => {
+            const selectedIds = this.getSelectedIds();
+            const status = document.getElementById('batch-status').value;
+            if (!status) {
+                Toast.error('请选择要更新的状态');
+                return;
+            }
+            const confirmed = await Confirm.show(`确认将选中的 ${selectedIds.length} 条线索状态更新为「${status}」？`, '批量更新状态');
+            if (!confirmed) return;
+            try {
+                await API.batchUpdateStatus(selectedIds, status);
+                Toast.success('批量更新成功');
+                this.load();
+            } catch (err) {
+                Toast.error('批量更新失败：' + err.message);
+            }
+        };
+
+        document.getElementById('btn-batch-delete').onclick = async () => {
+            const selectedIds = this.getSelectedIds();
+            const confirmed = await Confirm.show(`确认删除选中的 ${selectedIds.length} 条线索？此操作不可恢复。`, '批量删除', 'danger');
+            if (!confirmed) return;
+            try {
+                await API.batchDelete(selectedIds);
+                Toast.success('批量删除成功');
+                this.load();
+            } catch (err) {
+                Toast.error('批量删除失败：' + err.message);
+            }
+        };
+
+        document.getElementById('batch-status').onchange = () => {
+            this.updateBatchToolbar();
+        };
+    },
+
+    getSelectedIds() {
+        const ids = [];
+        document.querySelectorAll('.row-checkbox:checked').forEach(cb => {
+            ids.push(parseInt(cb.dataset.id));
+        });
+        return ids;
+    },
+
+    updateBatchToolbar() {
+        const selectedIds = this.getSelectedIds();
+        const countEl = document.getElementById('selected-count');
+        const updateBtn = document.getElementById('btn-batch-update');
+        const deleteBtn = document.getElementById('btn-batch-delete');
+        const statusSelect = document.getElementById('batch-status');
+
+        countEl.textContent = `已选 ${selectedIds.length} 条`;
+        const hasSelection = selectedIds.length > 0;
+        const hasStatus = statusSelect.value !== '';
+
+        updateBtn.disabled = !hasSelection || !hasStatus;
+        deleteBtn.disabled = !hasSelection;
     },
 
     async load() {
@@ -575,6 +756,8 @@ const LeadsView = {
             };
             if (this.state.search) params.q = this.state.search;
             if (this.state.status) params.status = this.state.status;
+            if (this.state.dateFrom) params.date_from = this.state.dateFrom;
+            if (this.state.dateTo) params.date_to = this.state.dateTo;
 
             const data = await API.getLeads(params);
             this.state.total = data.total;
@@ -589,28 +772,40 @@ const LeadsView = {
         }
     },
 
+    highlightText(text, keyword) {
+        if (!keyword) return DashboardView.esc(text || '');
+        const regex = new RegExp(`(${DashboardView.esc(keyword)})`, 'gi');
+        return (text || '').replace(regex, '<span class="highlight">$1</span>');
+    },
+
     renderTable(leads) {
         const tbody = document.querySelector('#leads-table tbody');
         const emptyState = document.getElementById('empty-state');
+        const mobileCardList = document.getElementById('mobile-card-list');
+        const searchKeyword = this.state.search;
 
         if (!leads.length) {
             tbody.innerHTML = '';
+            mobileCardList.innerHTML = '';
             emptyState.classList.remove('hidden');
             document.getElementById('pagination').classList.add('hidden');
+            document.getElementById('batch-toolbar').style.display = 'none';
             return;
         }
 
         emptyState.classList.add('hidden');
         document.getElementById('pagination').classList.remove('hidden');
+        document.getElementById('batch-toolbar').style.display = 'flex';
 
         tbody.innerHTML = leads.map(l => {
             const isHL = l.id === this.state.highlightId;
             return `
-            <tr${isHL ? ' style="background:#eaf2fb"' : ''}>
+            <tr${isHL ? ' style="background:#eaf2fb"' : ''} data-row-id="${l.id}">
+                <td><input type="checkbox" class="row-checkbox" data-id="${l.id}" style="width:16px;height:16px;"></td>
                 <td><strong>${l.id}</strong></td>
-                <td><strong>${DashboardView.esc(l.name)}</strong></td>
-                <td>${DashboardView.esc(l.company || '-')}</td>
-                <td><a href="tel:${DashboardView.esc(l.phone)}" style="color:#0f4c81">${DashboardView.esc(l.phone)}</a></td>
+                <td><strong>${this.highlightText(l.name, searchKeyword)}</strong></td>
+                <td>${this.highlightText(l.company || '-', searchKeyword)}</td>
+                <td><a href="tel:${DashboardView.esc(l.phone)}" style="color:#0f4c81">${this.highlightText(l.phone, searchKeyword)}</a></td>
                 <td>${DashboardView.esc(l.service_label)}</td>
                 <td>${DashboardView.esc(l.budget_label)}</td>
                 <td>${(l.submit_time || '').slice(0, 16)}</td>
@@ -626,14 +821,63 @@ const LeadsView = {
             </tr>`;
         }).join('');
 
+        mobileCardList.innerHTML = leads.map(l => {
+            const statusClass = DashboardView.statusClass(l.status);
+            return `
+            <div class="mobile-card status-${statusClass}" data-card-id="${l.id}">
+                <div class="mobile-card-header">
+                    <div>
+                        <div class="mobile-card-title">${this.highlightText(l.name, searchKeyword)}</div>
+                        <div style="font-size:0.75em;color:var(--color-text-muted);margin-top:2px;">#${l.id} · ${(l.submit_time || '').slice(0, 16)}</div>
+                    </div>
+                    <span class="mobile-card-status">${l.status}</span>
+                </div>
+                <div class="mobile-card-info">
+                    <div class="mobile-card-info-item">
+                        <span class="mobile-card-info-label">公司</span>
+                        <span class="mobile-card-info-value">${this.highlightText(l.company || '-', searchKeyword)}</span>
+                    </div>
+                    <div class="mobile-card-info-item">
+                        <span class="mobile-card-info-label">电话</span>
+                        <span class="mobile-card-info-value"><a href="tel:${DashboardView.esc(l.phone)}">${this.highlightText(l.phone, searchKeyword)}</a></span>
+                    </div>
+                    <div class="mobile-card-info-item">
+                        <span class="mobile-card-info-label">服务</span>
+                        <span class="mobile-card-info-value">${DashboardView.esc(l.service_label)}</span>
+                    </div>
+                    <div class="mobile-card-info-item">
+                        <span class="mobile-card-info-label">预算</span>
+                        <span class="mobile-card-info-value">${DashboardView.esc(l.budget_label)}</span>
+                    </div>
+                </div>
+                <div class="mobile-card-actions">
+                    <button class="act-detail" data-action="detail" data-id="${l.id}">详情</button>
+                    ${l.status !== '联系中' ? `<button data-action="status" data-id="${l.id}" data-status="联系中">联系中</button>` : ''}
+                    ${l.status !== '已转化' ? `<button data-action="status" data-id="${l.id}" data-status="已转化">已转化</button>` : ''}
+                    ${l.status !== '无效线索' ? `<button data-action="status" data-id="${l.id}" data-status="无效线索" class="act-delete">无效</button>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+
         // Bind row action buttons
-        tbody.querySelectorAll('button[data-action]').forEach(btn => {
+        document.querySelectorAll('button[data-action]').forEach(btn => {
             btn.onclick = (e) => {
                 e.stopPropagation();
                 const action = btn.dataset.action;
                 const id = parseInt(btn.dataset.id);
                 if (action === 'detail') this.openModal(id);
                 if (action === 'status') this.quickStatus(id, btn.dataset.status);
+            };
+        });
+
+        // Bind checkbox change events
+        tbody.querySelectorAll('.row-checkbox').forEach(cb => {
+            cb.onchange = () => {
+                this.updateBatchToolbar();
+                const selectAllHeader = document.getElementById('select-all-header');
+                const allChecked = document.querySelectorAll('.row-checkbox:checked').length === 
+                                   document.querySelectorAll('.row-checkbox').length;
+                selectAllHeader.checked = allChecked;
             };
         });
 
@@ -663,13 +907,23 @@ const LeadsView = {
     },
 
     async quickStatus(id, status) {
-        if (!confirm(`确认将状态更新为「${status}」？`)) return;
+        const row = document.querySelector(`tr[data-row-id="${id}"]`);
+        const card = document.querySelector(`div[data-card-id="${id}"]`);
+        
+        if (row) row.classList.add('row-updating');
+        if (card) card.classList.add('row-updating');
+        
         try {
             await API.updateStatus(id, status);
-            Toast.success('状态已更新');
-            this.load();
+            Toast.success(`状态已更新为「${status}」`);
+            
+            setTimeout(() => {
+                this.load();
+            }, 300);
         } catch (err) {
             Toast.error('更新失败：' + err.message);
+            if (row) row.classList.remove('row-updating');
+            if (card) card.classList.remove('row-updating');
         }
     },
 
@@ -805,7 +1059,8 @@ const LeadsView = {
             Toast.error('请先打开线索详情');
             return;
         }
-        if (!confirm(`确认删除线索 #${this._modalLead.id}（${this._modalLead.name}）？此操作不可恢复。`)) return;
+        const confirmed = await Confirm.show(`确认删除线索 #${this._modalLead.id}（${this._modalLead.name}）？此操作不可恢复。`, '删除线索', 'danger');
+        if (!confirmed) return;
         try {
             await API.deleteLead(this._modalLead.id);
             Toast.success('已删除');
@@ -823,6 +1078,239 @@ const LeadsView = {
 
     destroy() {
         this.closeModal();
+    }
+};
+
+// ==================== AnalyticsView ====================
+const AnalyticsView = {
+    charts: {},
+
+    init() {
+        this.bindEvents();
+        this.loadData();
+    },
+
+    bindEvents() {
+        document.getElementById('btn-logout3')?.addEventListener('click', () => Auth.logout());
+        
+        ['hamburgerAdmin3'].forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const mobileNav = this.closest('.header').querySelector('.header-nav-mobile');
+                    if (mobileNav) {
+                        const isVisible = mobileNav.style.display === 'flex';
+                        document.querySelectorAll('.header-nav-mobile').forEach(n => n.style.display = 'none');
+                        mobileNav.style.display = isVisible ? 'none' : 'flex';
+                    }
+                });
+            }
+        });
+    },
+
+    async loadData() {
+        try {
+            Loading.show();
+            const token = Auth.getToken();
+            if (!token) return;
+            
+            const resp = await fetch('/admin/api/analytics', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await resp.json();
+            if (data.code !== 0) {
+                Toast.error('加载分析数据失败');
+                return;
+            }
+            
+            const d = data.data;
+            this.renderSummary(d);
+            this.renderCharts(d);
+            this.renderPageTable(d);
+            
+        } catch (err) {
+            Toast.error('加载分析数据失败：' + err.message);
+        } finally {
+            Loading.hide();
+        }
+    },
+
+    renderSummary(d) {
+        document.getElementById('ana2-total-views').textContent = d.total_views || 0;
+        document.getElementById('ana2-total-visitors').textContent = d.total_unique_visitors || 0;
+        document.getElementById('ana2-today-views').textContent = d.today_views || 0;
+        document.getElementById('ana2-page-count').textContent = (d.all_pages || []).length;
+    },
+
+    renderCharts(d) {
+        for (const key in this.charts) {
+            this.charts[key].destroy();
+        }
+        this.charts = {};
+
+        const canvas = document.getElementById('ana2-chart');
+        if (canvas && d.daily_trend && d.daily_trend.length > 0 && typeof Chart !== 'undefined') {
+            this.charts.trend = new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: d.daily_trend.map(r => r.date.slice(5)),
+                    datasets: [{
+                        label: '访问量',
+                        data: d.daily_trend.map(r => r.views),
+                        borderColor: '#0f4c81',
+                        backgroundColor: 'rgba(15,76,129,0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                }
+            });
+        }
+
+        const catCanvas = document.getElementById('ana2-category-chart');
+        if (catCanvas && d.category_stats && d.category_stats.length > 0 && typeof Chart !== 'undefined') {
+            const colors = ['#0f4c81', '#27ae60', '#f39c12', '#e74c3c', '#8e44ad', '#2980b9', '#16a085', '#d35400', '#95a5a6', '#c0392b'];
+            this.charts.category = new Chart(catCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: d.category_stats.map(c => c.name),
+                    datasets: [{
+                        data: d.category_stats.map(c => c.views),
+                        backgroundColor: colors.slice(0, d.category_stats.length),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { font: { size: 11 } } } }
+                }
+            });
+        }
+    },
+
+    renderPageTable(d) {
+        const container = document.getElementById('analytics-table-container');
+        if (!container) return;
+
+        const pages = d.all_pages || [];
+        const pageConversion = d.page_conversion || [];
+        const pageDataMap = {};
+        
+        pageConversion.forEach(p => {
+            pageDataMap[p.path] = p;
+        });
+
+        if (pages.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:#999;padding:40px;">暂无页面访问数据</p>';
+            return;
+        }
+
+        const headers = [
+            { key: 'name', label: '页面名称', width: '25%' },
+            { key: 'path', label: '路径', width: '25%' },
+            { key: 'views', label: '总访问量', width: '12%' },
+            { key: 'unique_ips', label: '独立访客', width: '12%' },
+            { key: 'this_week', label: '本周访问', width: '10%' },
+            { key: 'last_week', label: '上周访问', width: '10%' },
+            { key: 'growth', label: '周增长率', width: '10%' },
+            { key: 'conversion', label: '转化率', width: '10%' },
+            { key: 'status', label: '状态', width: '8%' }
+        ];
+
+        let html = `
+            <div style="overflow-x:auto;">
+                <table class="data-table" style="width:100%;">
+                    <thead>
+                        <tr>${headers.map(h => `<th style="width:${h.width};">${h.label}</th>`).join('')}</tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        pages.forEach((row, index) => {
+            const path = row.path;
+            const conv = pageDataMap[path] || {};
+            const name = conv.name || path;
+            const views = row.views;
+            const unique_ips = row.unique_ips || 0;
+            const this_week = conv.this_week_views || 0;
+            const last_week = conv.last_week_views || 0;
+            const growth = conv.growth_rate !== undefined ? conv.growth_rate : 0;
+            const conversion = conv.conversion_rate !== undefined ? conv.conversion_rate : 0;
+            const status = conv.status || 'normal';
+
+            const growthClass = growth >= 0 ? 'text-green' : 'text-red';
+            const growthText = growth >= 0 ? `+${growth}%` : `${growth}%`;
+            
+            const statusColors = {
+                'excellent': '#27ae60',
+                'good': '#2980b9',
+                'normal': '#f39c12',
+                'needs_improvement': '#e67e22',
+                'critical': '#e74c3c'
+            };
+            const statusLabels = {
+                'excellent': '优秀',
+                'good': '良好',
+                'normal': '正常',
+                'needs_improvement': '需改进',
+                'critical': '关注'
+            };
+
+            html += `
+                <tr style="${index % 2 === 0 ? 'background:#fafafa;' : ''}">
+                    <td style="padding:12px;font-weight:500;">${this.escape(name)}</td>
+                    <td style="padding:12px;font-family:monospace;font-size:0.85em;color:#666;">${this.escape(path)}</td>
+                    <td style="padding:12px;text-align:right;font-weight:600;">${views}</td>
+                    <td style="padding:12px;text-align:right;">${unique_ips}</td>
+                    <td style="padding:12px;text-align:right;">${this_week}</td>
+                    <td style="padding:12px;text-align:right;">${last_week}</td>
+                    <td style="padding:12px;text-align:right;font-weight:600;">
+                        <span class="${growthClass}">${growthText}</span>
+                    </td>
+                    <td style="padding:12px;text-align:right;">${conversion}%</td>
+                    <td style="padding:12px;text-align:center;">
+                        <span style="display:inline-block;padding:4px 10px;border-radius:12px;font-size:0.75em;font-weight:500;color:#fff;background:${statusColors[status] || '#95a5a6'};">
+                            ${statusLabels[status] || '未知'}
+                        </span>
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `
+                    </tbody>
+                </table>
+            </div>
+            <div style="margin-top:12px;font-size:0.85em;color:#999;">
+                共 ${pages.length} 个页面 · 数据更新时间：${new Date().toLocaleString('zh-CN')}
+            </div>
+        `;
+
+        container.innerHTML = html;
+    },
+
+    escape(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    },
+
+    destroy() {
+        for (const key in this.charts) {
+            if (this.charts[key]) {
+                this.charts[key].destroy();
+            }
+        }
+        this.charts = {};
     }
 };
 
